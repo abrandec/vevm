@@ -6,24 +6,40 @@
 
 // Type definitions
 // e == element
-// uint128_t by packing 2 uint64_t into a single struct
+// uint128_t by packing 2 uint64_ts into a single struct
 typedef struct uint128_t {
   uint64_t e[2];
 } uint128_t;
 
-// uint256_t by packing 4 uint64_t into a single struct
+// uint256_t by packing 2 uint128_ts into a single struct
 typedef struct uint256_t {
   uint128_t e[2];
 } uint256_t;
 
 // macros for accessing elements
-// E for e, # for index
-// e.g. E_0(a) is the first e of uint256_t a
+// E for element, # for index
+// e.g. E_0(a) is the first element of uint256_t a
 #define E_0(x) x->e[0]
 #define E_1(x) x->e[1]
 
 #define E0(x) x.e[0]
 #define E1(x) x.e[1]
+
+// macros for accessing uint64_t elements in a uint256_t
+// first 2 elements of a uint256_t
+#define E_0_0(x) x->e[0].e[0]
+#define E_0_1(x) x->e[0].e[1]
+// last 2 elements of a uint256_t
+#define E_1_0(x) x->e[1].e[0]
+#define E_1_1(x) x->e[1].e[1]
+
+// first 2 elements of a uint256_t
+#define E00(x) x.e[0].e[0]
+#define E01(x) x.e[0].e[1]
+
+// last 2 elements of a uint256_t
+#define E10(x) x.e[1].e[0]
+#define E11(x) x.e[1].e[1]
 
 // create a uint128_t initialized to 0
 // @return a pointer to the initialized uint128_t

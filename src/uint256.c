@@ -88,7 +88,28 @@ void lshift_uint128(uint128_t *dest, uint128_t *src, int shift) {
   }
 }
 
-void lshift_uint256(uint256_t *dest, uint256_t *src, int shift) {}
+void lshift_uint256(uint256_t *dest, uint256_t *src, int shift) {
+  if (shift >= 256) {
+    clear_uint256(dest);
+  } else if (shift == 128) {
+    copy_uint128(&E_0(dest), &E_1(src));
+    clear_uint128(&E_1(dest));
+  } else if (shift == 0) {
+    copy_uint256(dest, src);
+  } else if (shift < 128) {
+    uint128_t tmp1;
+    uint128_t tmp2;
+    uint256_t result;
+    lshift_uint128(&tmp1, &E_0(src), shift);
+    rshift_uint128(&tmp2, &E_1(src), shift);
+    add_uint128(&E1(result), &tmp1, &tmp2);
+    lshift_uint128(&E1(result), &E_1(src), shift);
+  } else if ((256 > shift) && (shift > 128)) {
+
+  } else {
+    clear_uint256(dest);
+  }
+}
 
 void rshift_uint128(uint128_t *dest, uint128_t *src, int shift) {
 
@@ -139,7 +160,7 @@ void xor_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {}
 // printf functions
 
 void print_hex_uint128(uint128_t *a) {
-  printf("%016llX  %016llX\n", E_0(a), E_1(a));
+  printf("%016llX%016llX\n", E_0(a), E_1(a));
 }
 
 void print_hex_uint256(uint256_t *a) {

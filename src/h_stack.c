@@ -1,8 +1,10 @@
 #include "h_stack.h"
+
 #include "uint256.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #define MAX_STACK_DEPTH 10

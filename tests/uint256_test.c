@@ -1,5 +1,5 @@
-#include "../uint256.c"
-#include "../uint256.h"
+#include "../src/uint256.c"
+#include "../src/uint256.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

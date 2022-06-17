@@ -3,6 +3,7 @@
 
 // Heap based stack
 
+#include "uint256.c"
 #include "uint256.h"
 
 typedef struct NodeTag {
