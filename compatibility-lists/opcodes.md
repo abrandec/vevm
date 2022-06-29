@@ -1,8 +1,5 @@
 # OPCODE Compatibility List
 
-✅ - Implemented
-❌ - Not implemented
-
 | OPCODE            |     |
 | ----------------- | --- |
 | STOP              | ✅  |
