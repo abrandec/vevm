@@ -1,8 +1,5 @@
 # EIP Compatability List
 
-✅ - Implemented
-❌ - Not implemented
-
 ## Core
 
 | EIP                                             |     |
