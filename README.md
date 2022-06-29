@@ -1,4 +1,4 @@
-# Vision EVM &nbsp; ![vision-logo](contents/images/vision.png)
+# Vision EVM
 
 # What is it?
 An experimental Ethereum Virtual Machine written in C for learning purposes.
