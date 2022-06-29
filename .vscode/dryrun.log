@@ -1,0 +1,5 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/a/Documents/github/vision_evm'
+gcc -o bin/main src/main.c -std=c11 -O2
+make: Leaving directory '/home/a/Documents/github/vision_evm'
+ 

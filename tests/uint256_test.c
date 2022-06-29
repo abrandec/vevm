@@ -8,9 +8,9 @@
 // @param dest: the destination to copy the data to
 // @param data: the data to copy
 // @return true if the copy was successful, false otherwise
-bool assert_copy_uint128(uint128_t *dest, uint128_t *data) {
+bool assert_copy_uint128(uint128_t dest, uint128_t data) {
   copy_uint128(dest, data);
-  if (E_0(dest) != E_0(data) && E_1(dest) != E_1(data)) {
+  if (E0(dest) != E0(data) && E1(dest) != E1(data)) {
     printf("copy_uint128 failed\n");
     printf("dest: ");
     print_hex_uint128(dest);
@@ -28,10 +28,10 @@ bool assert_copy_uint128(uint128_t *dest, uint128_t *data) {
 // @param dest: the destination to copy the data to
 // @param data: the data to copy
 // @return true if the copy was successful, false otherwise
-bool assert_copy_uint256(uint256_t *dest, uint256_t *data) {
+bool assert_copy_uint256(uint256_t dest, uint256_t *data) {
   copy_uint256(dest, data);
-  if (E_0(dest).e[0] != E_0(data).e[0] && E_0(dest).e[1] != E_0(data).e[1] &&
-      E_1(dest).e[0] != E_1(data).e[0] && E_1(dest).e[1] != E_1(data).e[1]) {
+  if (E0(dest).e[0] != E0(data).e[0] && E0(dest).e[1] != E0(data).e[1] &&
+      E1(dest).e[0] != E1(data).e[0] && E1(dest).e[1] != E1(data).e[1]) {
     printf("copy_uint256 failed\n");
     printf("dest: ");
     print_hex_uint256(dest);
@@ -50,7 +50,7 @@ bool assert_copy_uint256(uint256_t *dest, uint256_t *data) {
 // @return true if the uint128 is cleared to zero, false otherwise
 bool assert_clear_uint128(uint128_t *dest) {
   clear_uint128(dest);
-  if (E_0(dest) != 0 && E_1(dest) != 0) {
+  if (E0(dest) != 0 && E1(dest) != 0) {
     printf("clear_uint128 failed\n");
     printf("result: ");
     print_hex_uint128(dest);
@@ -67,8 +67,8 @@ bool assert_clear_uint128(uint128_t *dest) {
 // @return true if the uint256_t is cleared to zero, false otherwise
 bool assert_clear_uint256(uint256_t *dest) {
   clear_uint256(dest);
-  if (E_0(dest).e[0] != 0 && E_0(dest).e[1] != 0 && E_1(dest).e[0] != 0 &&
-      E_1(dest).e[1] != 0) {
+  if (E0(dest).e[0] != 0 && E0(dest).e[1] != 0 && E1(dest).e[0] != 0 &&
+      E1(dest).e[1] != 0) {
     printf("clear_uint256 failed\n");
     printf("result: ");
     print_hex_uint256(dest);
@@ -125,7 +125,7 @@ bool assert_equal_uint256(uint256_t *a, uint256_t *b) {
 // @return true if addition is correct, false otherwise
 bool assert_add_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
   add_uint128(dest, a, b);
-  if (E_0(dest) != E_0(a) + E_0(b) && E_1(dest) != E_1(a) + E_1(b)) {
+  if (E0(dest) != E0(a) + E0(b) && E1(dest) != E1(a) + E1(b)) {
     printf("add_uint128 failed\n");
     printf("dest: ");
     print_hex_uint128(dest);
@@ -149,11 +149,11 @@ bool assert_lshift_uint128(uint128_t *dest, uint128_t *a) {
   clear_uint128(a);
   clear_uint128(dest);
 
-  E_0(a) = 0xFFFFFFFFFFFFFFFF;
-  E_1(a) = 0xFFFFFFFFFFFFFFFF;
+  E0(a) = 0xFFFFFFFFFFFFFFFF;
+  E1(a) = 0xFFFFFFFFFFFFFFFF;
 
   lshift_uint128(dest, a, 1);
-  if (E_0(dest) == 0xFFFFFFFFFFFFFFFF && E_1(dest) == 0xFFFFFFFFFFFFFFFE) {
+  if (E0(dest) == 0xFFFFFFFFFFFFFFFF && E1(dest) == 0xFFFFFFFFFFFFFFFE) {
     printf("lshift_uint128 - Passed\n");
   } else {
     printf("lshift_uint128 failed\n");
@@ -170,11 +170,11 @@ bool assert_rshift_uint128(uint128_t *dest, uint128_t *a) {
   clear_uint128(a);
   clear_uint128(dest);
 
-  E_0(a) = 0xFFFFFFFFFFFFFFFF;
-  E_1(a) = 0xFFFFFFFFFFFFFFFF;
+  E0(a) = 0xFFFFFFFFFFFFFFFF;
+  E1(a) = 0xFFFFFFFFFFFFFFFF;
 
   rshift_uint128(dest, a, 1);
-  if (E_0(dest) == 0x7FFFFFFFFFFFFFFF && E_1(dest) == 0xFFFFFFFFFFFFFFFF) {
+  if (E0(dest) == 0x7FFFFFFFFFFFFFFF && E1(dest) == 0xFFFFFFFFFFFFFFFF) {
     printf("rshift_uint128 - Passed\n");
   } else {
     printf("rshift_uint128 failed\n");
@@ -186,17 +186,17 @@ bool assert_rshift_uint128(uint128_t *dest, uint128_t *a) {
 // generate a random uint128_t
 // @param dest: the destination uint128_t
 void gen_rand_uint128(uint128_t *dest) {
-  E_0(dest) = rand();
-  E_1(dest) = rand();
+  E0(dest) = rand();
+  E1(dest) = rand();
 }
 
 // generate a random uint256_t
 // @param dest: the destination uint256_t
 void gen_rand_uint256(uint256_t *dest) {
-  E_0(dest).e[0] = rand();
-  E_0(dest).e[1] = rand();
-  E_1(dest).e[0] = rand();
-  E_1(dest).e[1] = rand();
+  E0(dest).e[0] = rand();
+  E0(dest).e[1] = rand();
+  E1(dest).e[0] = rand();
+  E1(dest).e[1] = rand();
 }
 
 int main(void) {

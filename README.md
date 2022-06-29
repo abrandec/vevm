@@ -4,11 +4,16 @@
 An experimental Ethereum Virtual Machine written in C for learning purposes.
 
 # Dependencies
-A C99 compiler
+A C11 compiler
 
 # Building
 ```
 make
+```
+
+# Running
+```
+./bin/main
 ```
 
 # Testing
@@ -16,8 +21,10 @@ make
 make tests
 
 ./tests/bin/RUN_TEST
-
 ```
+# [Available opcodes](https://github.com/abrandec/vision_evm/compatibility-lists/opcodes.md)
+
+# [EIP Compatibility] (https://github.com/abrandec/vision_evm/compatibility-lists/eips.md)
 
 ## License
 

@@ -6,6 +6,13 @@
 #include "uint256.c"
 #include "uint256.h"
 
+#define MAX_STACK_DEPTH 10
+
+// get element at the last index of the stack
+// @param stack: the stack to get the last element from
+// @return the last element of the stack
+#define STACK_TOP(x) stack_length(x) - 1
+
 typedef struct NodeTag {
   uint256_t *data;
   struct NodeTag *next;
@@ -27,9 +34,11 @@ void stack_destroy(List *stack);
 
 void stack_push(List *stack, uint256_t *data);
 
+void stack_swap(List *stack, int index);
+
 void stack_pop(List *stack);
 
-uint256_t *stack_peak(List *stack, int index);
+uint256_t stack_peak(List *stack, int index);
 
 int stack_length(List *stack);
 

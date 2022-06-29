@@ -2,16 +2,15 @@
 
 #include "uint256.h"
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-
-#define MAX_STACK_DEPTH 10
 
 // create a node
 // @return a ptr to the newly created node
 Node *Node_create(void) {
+
   Node *node = malloc(sizeof(Node));
 
   assert(node != NULL);
@@ -73,53 +72,98 @@ void stack_push(List *stack, uint256_t *val) {
       node = node->next;
     }
 
-    node->data = val;
+    uint256_t *value = malloc(sizeof(uint256_t));
+
+    copy_uint256(value, val);
+
+    node->data = value;
+
     node->next = Node_create();
   }
 }
 
-// peak an e from the stack
-// @param stack: stack to peek from
-// @param index: index of the e to peek
-// @return pointer to the e on stack
-uint256_t *stack_peak(List *stack, int index) {
+void stack_swap(List *stack, int index) {
   assert(stack != NULL);
-  if (index < -1) {
-    printf("EVM - Stack address does not exist\n");
-    return NULL;
+  int i = stack_length(stack) - 1;
+  int i2 = i;
+
+  if (index < 0 || index > 15 || index > i) {
+    printf("EVM - Stack element not accessable\n");
+    exit(1);
   } else {
-    Node *node = stack->first;
-    for (int i = 0; i < index; ++i) {
-      node = node->next;
-      --index;
+    uint256_t data2swap;
+
+    Node *before = stack->first;
+    Node *after = stack->first;
+
+    while (i2 != 0) {
+      after = after->next;
+      --i2;
     }
-    return node->data;
+
+    while (i != index) {
+      before = before->next;
+      --i;
+    }
+
+    // top of stack element
+    copy_uint256(&data2swap, after->data);
+
+    // element to swap with
+    copy_uint256(after->data, before->data);
+
+    copy_uint256(before->data, &data2swap);
   }
 }
 
-// pop 1 e from top of stack
-// @param stack: stack to use
+// peak at the stack at a certain index
+// @param stack: stack to peek from
+// @param index: index of the stack to peek
+// @return stack item
+uint256_t stack_peak(List *stack, int index) {
+  uint256_t val = init_uint256(0);
+
+  if (index < -1 || index > stack_length(stack) - 1) {
+    printf("EVM - Stack address not accessable\n");
+
+    return val;
+  } else {
+    Node *node = stack->first;
+    int i;
+    for (i = 0; i < index; ++i) {
+      node = node->next;
+    }
+
+    copy_uint256(&val, node->data);
+    return val;
+  }
+}
+
+// pop the first element on the stack
+// @param stack: stack
 void stack_pop(List *stack) {
   assert(stack != NULL);
   int index = stack_length(stack) - 1;
   if (stack_length(stack) < 1) {
     printf("EVM - Stack Underflow\n");
+    exit(1);
   } else {
     if (index == 0) {
       Node *node = stack->first;
       stack->first = stack->first->next;
       uint256_t *data = node->data;
+      free(data);
       Node_destroy(node);
-
     } else {
       Node *before = stack->first;
-      while (index > 1) {
+      while (index > 0) {
         before = before->next;
         --index;
       }
       Node *node = before->next;
       before->next = before->next->next;
       uint256_t *data = node->data;
+      free(data);
       Node_destroy(node);
     }
   }
@@ -151,18 +195,27 @@ void stack_print(List *stack) {
   } else {
     Node *node = stack->first;
     int i = stack_length(stack) - 1;
-    printf("STACK\n");
-    while (node->next != NULL) {
+    printf("\n");
+    printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+           "――――――――\n");
+    printf("Stack                                                              "
+           "       |\n");
+    printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+           "――――――――\n");
 
-      printf("0x%03X 0x%016llX%016llX%016llX%016llX", i, node->data->e[0],
-             node->data->e[1], node->data->e[2], node->data->e[3]);
-      --i;
+    while (node->next != NULL) {
+      printf("0x%03X: 0x", i);
+      print_hex_uint256(node->data);
+      printf(" |\n");
       node = node->next;
+      --i;
       if (node->next != NULL) {
-        printf("\n");
+        printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+               "――――――――――――\n");
       }
     }
-    printf("\n");
+    printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+           "――――――――\n");
   }
 }
 
@@ -171,7 +224,8 @@ void stack_print(List *stack) {
 // @param index: address to print from stack
 void stack_peak_print(List *stack, int index) {
   assert(stack != NULL);
-  uint256_t *val = stack_peak(stack, index);
-  printf("STACK PEEK\n0x%03X 0x%016llX%016llX%016llX%016llX\n", index, E_0(val),
-         E_1(val), val->e[2], val->e[3]);
+
+  uint256_t val = stack_peak(stack, index);
+
+  print_hex_uint256(&val);
 }

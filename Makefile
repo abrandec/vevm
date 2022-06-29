@@ -2,12 +2,16 @@
 # Author: Abran DeCarlo
 # LICENSE: AGPL-3.0-ONLY
 
+#
+FLAGS := -std=c11 -O2
+
+# compiling
 all: main
 
 tests: h_stack_test uint256_test processor_test	
 
 main: src/main.c
-	gcc -o bin/main src/main.c
+	gcc -o bin/main src/main.c $(FLAGS)
 
 # stack stored in heap
 h_stack_test: tests/h_stack_test.c
