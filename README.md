@@ -22,9 +22,9 @@ make tests
 
 ./tests/bin/RUN_TEST
 ```
-## [Available opcodes](https://github.com/abrandec/vision_evm/compatibility-lists/opcodes.md)
+## [Available opcodes](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/opcodes.md)
 
-## [EIP Compatibility](https://github.com/abrandec/vision_evm/compatibility-lists/eips.md)
+## [EIP Compatibility](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/eips.md)
 
 ## License
 
