@@ -202,6 +202,7 @@ void _or(List *stack) {
 void _shl(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
+  
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
