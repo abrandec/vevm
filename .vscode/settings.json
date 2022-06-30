@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "inttypes.h": "c"
+        "inttypes.h": "c",
+        "h_stack.h": "c",
+        "processor.h": "c",
+        "assert.h": "c",
+        "popt.h": "c",
+        "debug.h": "c"
     }
 }

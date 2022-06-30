@@ -1,13 +1,16 @@
 
+#include "processor.h"
+#include "debug.c"
+#include "debug.h"
+#include "h_stack.c"
 #include "h_stack.h"
 #include "uint256.h"
 
-#include <assert.h>
-#include <errno.h>
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define MAX_BYTECODE_LEN                                                       \
   96 // 24.576KB/256 bits = 96 indices (EIP-170:
@@ -202,7 +205,7 @@ void _or(List *stack) {
 void _shl(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
-  
+
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
@@ -271,19 +274,19 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  // max length - 1 in bytes (999,999)
+  // (max mem length - 1) in bytes (999,999)
   uint256_t max_mem_len = init_all_uint256(0, 0, 0, 0x00000000000F423F);
 
   uint64_t index = E11(a) / 32;
   uint64_t index2 = index + 1;
   uint64_t ending_index = index;
-  uint64_t offset = (E11(a) % 32) * 8;
+  uint64_t offset = ((E11(a)) % 32) * 8;
 
   // check if the memory location >32MB
   switch (gt_uint256(&a, &max_mem_len)) {
   case true:
-    printf("MEMORY SIZE EXCEEDED (>32MB)\n");
-    exit(1);
+    char err[50] = "MEMORY SIZE EXCEEDED (>32MB)\n";
+    custom_error(err);
     break;
   default:
     break;
@@ -315,33 +318,27 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
     }
     break;
   }
- 
+
   //              bitmasking stuff            //
 
-  // shift mask for 1st index
-  lshift_uint256(&mask1, &b, (256 - offset));
+  // shift data for 1st index
+  lshift_uint256(&b, &b, offset);
+
+  lshift_uint256(&mask1, &mask1, (offset) + 8);
   // mask off bits that are going to be used while retaining the rest of the
   // data in the index
+
+  rshift_uint256(&mask2, &mask2, 256 - offset);
+
+  or_uint256(&mask1, &mask1, &mask2);
+
   and_uint256(&memory[index], &memory[index], &mask1);
 
   // shift data offset for 1st index
   lshift_uint256(&a, &b, (256 - offset));
 
-  // shift mask for 2nd index
-  rshift_uint256(&mask2, &b, offset);
-
-  // shift data offset for 1st index
-  rshift_uint256(&b, &b, offset);
-
   // add data to memory (1st index)
   or_uint256(&memory[index], &memory[index], &b);
-
-  // mask off bits that are going to be used while retaining the rest of the
-  // data in the index
-  and_uint256(&memory[index2], &memory[index2], &mask2);
-
-  // add data to memory (2nd index)
-  or_uint256(&memory[index2], &a, &memory[index2]);
 }
 
 // gas operation
@@ -458,31 +455,11 @@ void clear_buffer(uint256_t static_buffer[], int length) {
   }
 }
 
-// print functions //
-
-// prints program buffer up to given length
-// @param program: the program buffer to print
-// @param length: index to stop printing at
-void print_buffer(uint256_t buffer[], char name[], int length) {
-  int i = 0;
-  length = length - 1;
-    printf("┌───────────────────────────────────────────────────────────────"
-           "────────────┐\n");
-    printf("│ %s                                                              "
-           "      │\n", name);
-    printf("├────────────────────────────────────────────────────────────────"
-           "───────────┤\n");
-  for (; i < length; ++i) {
-    printf("│ 0x%03X: 0x", i);
-    print_hex_uint256(&buffer[i]);
-    printf(" │\n");
-  }
-  printf("└────────────────────────────────────────────────────────────────"
-               "───────────┘\n");
-}
-
 // vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom
-int vm(uint256_t program[], bool *DEBUG) {
+// for running the EVM
+// @param program[]: program to run
+// @param DEBUG: whether to print debug messages
+void vm(uint256_t program[], bool *DEBUG) {
 
   //      variables      //
 
@@ -520,9 +497,12 @@ int vm(uint256_t program[], bool *DEBUG) {
   clear_buffer(memory, MAX_MEMORY_LEN);
 
   // sample program
-  program[0] = init_all_uint256(0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+  program[0] = init_all_uint256(0x6402600251996000, 0x5100FFFFFFFFFFFF,
                                 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
-  program[1] = init_all_uint256(0xFF60085100420161, 0x3300000000000000, 0, 0);
+  program[1] = init_all_uint256(0xFE7FFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                                0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
+  program[2] = init_all_uint256(0xFFFF026002500000, 0x0000000000000000,
+                                0x0000000000000000, 0x0000000000000000);
 
   memory[0] = init_all_uint256(0x6969696969696969, 0x6969696969696969,
                                0x6969696969696969, 0x6969696969696969);
@@ -530,21 +510,27 @@ int vm(uint256_t program[], bool *DEBUG) {
                                0x6969696969696969, 0x6969696969696969);
 
   // while loop to run program //
-  while (pc < 100) {
+  while (pc < 10000) {
+    get_opcode(program, &pc, &opcode);
 
     switch (*DEBUG) {
     case false:
       break;
     default:
       system("clear");
-      printf("OPCODE %02llX \n", opcode);
+      // small box to print opcode, pc, & gas
+      printf("\033[93m▓▓\033[94m▓▓\033[92m▓▓\033[35m▓▓\033[91m▓▓\033["
+             "00m\n┌─────────────────────────────────┐\n│ OPCODE   %02llX      "
+             "     "
+             "          │\n│ PC       %06d                 │\n│ GAS      "
+             "%06llu   │\n└─────────────────────────────────┘",
+             opcode, pc, gas);
+
       stack_print(stack);
       print_buffer(memory, mem_name, 9);
-
+      sleep(1);
       break;
     }
-
-    get_opcode(program, &pc, &opcode);
 
     // printf("GAS LEFT: %lld\n", gas);
     switch (opcode) {

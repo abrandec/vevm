@@ -5,8 +5,9 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Fri Jun 24 03:19:34 2022
+# Make data base, printed on Wed Jun 29 20:01:40 2022
 
 # Variables
 
@@ -112,7 +113,7 @@ XDG_SESSION_TYPE = wayland
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
 DEVKITPPC = /opt/devkitpro/devkitPPC
-# makefile (from 'Makefile', line 6)
+# makefile (from 'Makefile', line 5)
 FLAGS := -std=c11 -O2
 # environment
 SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/798,unix/a-81cu:/tmp/.ICE-unix/798
@@ -236,6 +237,7 @@ VSCODE_CLI = 1
 ELECTRON_NO_ATTACH_CONSOLE = 1
 # environment
 KDE_SESSION_VERSION = 5
+ 
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink guile load
 # environment
@@ -251,9 +253,9 @@ LC_IDENTIFICATION = en_US.UTF-8
 
 # Directories
 
-# . (device 66306, inode 10368114): 11 files, no impossibilities.
+# . (device 66306, inode 10368114): 13 files, no impossibilities.
 
-# 11 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -276,7 +278,7 @@ tests/uint256_test.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-17 16:18:14.310046518
+#  Last modified 2022-06-29 20:01:37.356384151
 #  File has been updated.
 #  Successfully updated.
 
@@ -284,15 +286,8 @@ h_stack_test: tests/h_stack_test.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 18):
+#  recipe to execute (from 'Makefile', line 17):
 	gcc -o tests/bin/h_stack_test tests/h_stack_test.c
-
-# Not a target:
-src/main.c:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-16 12:16:10.113451967
-#  File has been updated.
-#  Successfully updated.
 
 tests: h_stack_test uint256_test processor_test
 #  Implicit rule search has not been done.
@@ -303,8 +298,15 @@ processor_test: tests/processor_test.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 24):
+#  recipe to execute (from 'Makefile', line 23):
 	gcc -o tests/bin/processor_test tests/processor_test.c
+
+# Not a target:
+sample_programs/main.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-06-29 19:32:56.289749988
+#  File has been updated.
+#  Successfully updated.
 
 # Not a target:
 .DEFAULT:
@@ -327,7 +329,7 @@ all: main
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/4=0%
 
-main: src/main.c
+main: sample_programs/main.c
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
 #  File does not exist.
@@ -338,27 +340,27 @@ main: src/main.c
 # automatic
 # * := 
 # automatic
-# < := src/main.c
+# < := sample_programs/main.c
 # automatic
-# + := src/main.c
+# + := sample_programs/main.c
 # automatic
 # % := 
 # automatic
-# ^ := src/main.c
+# ^ := sample_programs/main.c
 # automatic
-# ? := src/main.c
+# ? := sample_programs/main.c
 # automatic
 # | := 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=1/12=8%
-#  recipe to execute (from 'Makefile', line 14):
-	gcc -o bin/main src/main.c $(FLAGS)
+#  recipe to execute (from 'Makefile', line 13):
+	gcc -o bin/main sample_programs/main.c $(FLAGS)
 
 uint256_test: tests/uint256_test.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 21):
+#  recipe to execute (from 'Makefile', line 20):
 	gcc -o tests/bin/uint256_test tests/uint256_test.c
 
 # Not a target:
@@ -375,12 +377,13 @@ uint256_test: tests/uint256_test.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 24 / storage = 247 B / avg = 10 B
-# current buf: size = 8162 B / used = 247 B / count = 24 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 295 B / avg = 11 B
+# current buf: size = 8162 B / used = 295 B / count = 26 / avg = 11 B
 
-# strcache performance: lookups = 41 / hit rate = 41%
+# strcache performance: lookups = 43 / hit rate = 39%
 # hash-table stats:
-# Load=24/8192=0%, Rehash=0, Collisions=0/41=0%
-# Finished Make data base on Fri Jun 24 03:19:34 2022
+ 
+# Load=26/8192=0%, Rehash=0, Collisions=0/43=0%
+# Finished Make data base on Wed Jun 29 20:01:40 2022
 
  
