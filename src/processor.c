@@ -87,6 +87,7 @@ void _sub(List *stack) {
 }
 
 // Less than operation
+// @param stack: the stack
 void _lt(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
@@ -149,6 +150,8 @@ void _eq(List *stack) {
   stack_push(stack, &a);
 }
 
+// iszero operation
+// @param stack: the stack
 void _iszero(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
@@ -193,8 +196,6 @@ void _or(List *stack) {
 }
 
 // xor
-
-//
 
 // Left shift operation
 // @param stack: the stack
@@ -251,8 +252,10 @@ void _gaslimit(List *stack) {
 
 // mstore operation
 // @param stack: the stack
-// @param mem: the memory
+// @param memory[]: the memory
 // @param mem_end: ending index of current memory usage
+// @param mem_expanded: initial memory expansion check
+// @param gas: gas left
 void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
              bool *mem_expanded, uint64_t *gas) {
   // mask for 1st & 2nd index
@@ -285,11 +288,11 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
     break;
   }
 
-  // gas cost stuff //
+  //              gas cost stuff              //
+
   *gas -= 3;
 
-  // check if memory has ever been expanded
-  // and if true -3 gas
+  // check if memory has been expanded before
   switch (*mem_expanded) {
   case false:
     *mem_expanded = true;
@@ -311,6 +314,8 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
     }
     break;
   }
+ 
+  //              bitmasking stuff            //
 
   // shift mask for 1st index
   lshift_uint256(&mask1, &b, (256 - offset));
