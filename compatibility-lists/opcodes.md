@@ -1,14 +1,11 @@
 # OPCODE Compatibility List
 
-✅ - Implemented
-❌ - Not implemented
-
 | OPCODE            |     |
 | ----------------- | --- |
 | STOP              | ✅  |
 | ADD               | ✅  |
 | MUL               | ❌  |
-| SUB               | ❌  |
+| SUB               | ✅  |
 | DIV               | ❌  |
 | SDIV              | ❌  |
 | MOD               | ❌  |
@@ -59,7 +56,7 @@
 | BASEFEE           | ❌  |
 | POP               | ✅  |
 | MLOAD             | ❌  |
-| MSTORE            | ❌  |
+| MSTORE            | ✅  |
 | MSTORE8           | ❌  |
 | SLOAD             | ❌  |
 | SSTORE            | ❌  |

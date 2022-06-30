@@ -124,7 +124,7 @@ uint256_t stack_peak(List *stack, int index) {
   uint256_t val = init_uint256(0);
 
   if (index < -1 || index > stack_length(stack) - 1) {
-    printf("EVM - Stack address not accessable\n");
+    printf("EVM - Stack element is not accessable\n");
 
     return val;
   } else {
@@ -184,7 +184,7 @@ int stack_length(List *stack) {
   return length;
 }
 
-// printf functions
+// printf functions //
 
 // printfs the entire stack
 // @param stack: the stack to print
@@ -195,27 +195,29 @@ void stack_print(List *stack) {
   } else {
     Node *node = stack->first;
     int i = stack_length(stack) - 1;
+    int i2 = 0;
     printf("\n");
-    printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
-           "――――――――\n");
-    printf("Stack                                                              "
-           "       |\n");
-    printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
-           "――――――――\n");
+    printf("┌───────────────────────────────────────────────────────────────"
+           "────────────┐\n");
+    printf("│ STACK                                                              "
+           "       │\n");
+    printf("├────────────────────────────────────────────────────────────────"
+           "───────────┤\n");
 
     while (node->next != NULL) {
-      printf("0x%03X: 0x", i);
+      printf("│ 0x%03X: 0x", i2);
       print_hex_uint256(node->data);
-      printf(" |\n");
+      printf(" │\n");
       node = node->next;
       --i;
+      ++i2;
       if (node->next != NULL) {
-        printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
-               "――――――――――――\n");
+        printf("├────────────────────────────────────────────────────────────────"
+               "───────────┤\n");
       }
     }
-    printf("―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
-           "――――――――\n");
+    printf("└────────────────────────────────────────────────────────────────"
+               "───────────┘\n");
   }
 }
 

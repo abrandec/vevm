@@ -3,14 +3,14 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-uint128_t set_uint128(uint64_t a, uint64_t b) {
+uint128_t init_all_uint128(uint64_t a, uint64_t b) {
   uint128_t result;
   E0(result) = a;
   E1(result) = b;
   return result;
 }
 
-uint256_t set_uint256(uint64_t a, uint64_t b, uint64_t c, uint64_t d) {
+uint256_t init_all_uint256(uint64_t a, uint64_t b, uint64_t c, uint64_t d) {
   uint256_t result;
 
   E00(result) = a;
@@ -35,6 +35,18 @@ uint256_t init_uint256(uint64_t a) {
   E10(result) = a;
   E11(result) = a;
   return result;
+}
+
+void change_uint128(uint128_t *dest, uint64_t a, uint64_t b) {
+  E_0(dest) = a;
+  E_1(dest) = b;
+}
+
+void change_uint256( uint256_t *dest, uint64_t a, uint64_t b, uint64_t c, uint64_t d) {  
+  E_0_0(dest) = a;
+  E_0_1(dest) = b;
+  E_1_0(dest) = c;
+  E_1_1(dest) = d;
 }
 
 void copy_uint128(uint128_t *dest, uint128_t *src) {
@@ -78,7 +90,7 @@ bool lt_uint128(uint128_t *a, uint128_t *b) {
 }
 
 bool lt_uint256(uint256_t *a, uint256_t *b) {
-  if(equal_uint128(&E_0(a), &E_0(b))) {
+  if (equal_uint128(&E_0(a), &E_0(b))) {
     return lt_uint128(&E_1(a), &E_1(b));
   }
   return lt_uint128(&E_0(a), &E_0(b));
@@ -225,14 +237,12 @@ void sub_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
   E_1(dest) = E_1(a) - E_1(b);
 }
 
-// DOES NOT WORK CORRECTLY
 void sub_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   uint128_t tmp;
 
   sub_uint128(&E_0(dest), &E_0(a), &E_0(b));
   sub_uint128(&tmp, &E_1(a), &E_1(b));
-
-  if (gt_uint128(&E_1(a), &tmp)) {
+  if (gt_uint128(&tmp, &E_1(a))) {
     uint128_t one;
     E0(one) = 0;
     E1(one) = 1;
@@ -272,7 +282,7 @@ void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
 // printf functions //
 
 void print_hex_uint128(uint128_t *a) {
-  printf("%016llX%016llX\n", E_0(a), E_1(a));
+  printf("%016llX%016llX", E_0(a), E_1(a));
 }
 
 void print_hex_uint256(uint256_t *a) {

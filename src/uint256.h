@@ -57,7 +57,7 @@ uint256_t init_uint256(uint64_t a);
 // @param a: the 1st element to change (uint128_t.uint64_t[0])
 // @param b: the 2nd element to change (uint128_t.uint64_t[1])
 // @return the newly created uint128_t
-uint128_t set_uint128(uint64_t a, uint64_t b);
+uint128_t init_all_uint128(uint64_t a, uint64_t b);
 
 // set elements in a uint256_t
 // @param a: the 1st element to set (uint256_t.uint128_t[0].uint64_t[0])
@@ -65,7 +65,21 @@ uint128_t set_uint128(uint64_t a, uint64_t b);
 // @param c: the 3rd element to set (uint256_t.uint128_t[1].uint64_t[0])
 // @param d: the 4th element to set (uint256_t.uint128_t[1].uint64_t[1])
 // @return a newly created uint256_t
-uint256_t set_uint256(uint64_t a, uint64_t b, uint64_t c, uint64_t d);
+uint256_t init_all_uint256(uint64_t a, uint64_t b, uint64_t c, uint64_t d);
+
+// change elements in an already initialized uint128_t
+// @param dest: the uint128_t to change
+// @param a: the 1st element to change (uint128_t.uint64_t[0])
+// @param b: the 2nd element to change (uint128_t.uint64_t[1])
+void change_uint128(uint128_t *dest, uint64_t a, uint64_t b);
+
+// change elements in an already initialized uint256_t
+// @param dest: the uint256_t to change
+// @param a: the 1st element to change (uint256_t.uint128_t[0].uint64_t[0])
+// @param b: the 2nd element to change (uint256_t.uint128_t[0].uint64_t[1])
+// @param c: the 3rd element to change (uint256_t.uint128_t[1].uint64_t[0])
+// @param d: the 4th element to change (uint256_t.uint128_t[1].uint64_t[1])
+void change_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c, uint64_t d);
 
 // copy uint128_t into another uint128_t
 // @param dest: the destination uint128_t to copy src into
