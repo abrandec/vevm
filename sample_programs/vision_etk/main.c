@@ -70,8 +70,6 @@ void write2_prog_buff(uint256_t program[]) {
   uint256_t t = init_all_uint256(0x0100000000000000, 0x0000000000000000,
                                  0x0000000000000000, 0x0000000000000000);
 
-  printf("index %d\n", index);
-
   // writing this buffer sucks so I just do this for now
   program[uint256_index] =
       init_all_uint256(0x60ff600052606460, 0x1F52606460305260,
