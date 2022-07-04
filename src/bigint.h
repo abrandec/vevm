@@ -252,9 +252,9 @@ void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to OR
 void or_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-/////////
-// XOR //
-/////////
+///////////
+/// XOR ///
+///////////
 
 // XOR two uint128_ts
 // @param dest: where to store the sum of a and b
