@@ -72,38 +72,10 @@ void write2_prog_buff(uint256_t program[]) {
 
   printf("index %d\n", index);
 
-  for (i = 0; i < index + 1; ++i) {
-    switch (i % 4) {
-    case 0:
-
-      program[uint256_index] =
-          init_all_uint256(0x60ff600052606460, 0x1F52606460305260,
-                           0x69602F5200000000, 0x0000000000000000);
-      digits64 = hex_length(&E00(program[uint256_index]));
-
-      break;
-      /* case 1:
-        E01(program[uint256_index]) = strtoull(pEnd, &pEnd, 16);
-        Digits128 = hex_length(&E01(program[uint256_index]));
-        printf("LENGTH %d\n", Digits128);
-        break;
-      case 2:
-        E10(program[uint256_index]) = strtoull(pEnd, &pEnd, 16);
-        Digits128 = hex_length(&E10(program[uint256_index]));
-        printf("LENGTH %d\n", Digits128);
-        break;
-      case 3:
-        E11(program[uint256_index]) = strtoull(pEnd, &pEnd, 16);
-        Digits128 = hex_length(&E11(program[uint256_index]));
-        printf("LENGTH %d\n", Digits128);
-        break; */
-    }
-  }
-
-  printf("\n");
-  print_hex_uint256(&program[0]);
-
-  printf("\n");
+  // writing this buffer sucks so I just do this for now
+  program[uint256_index] =
+      init_all_uint256(0x60ff600052606460, 0x1F52606460305260,
+                       0x69602F5200000000, 0x0000000000000000);
 }
 
 int main(int argc, char *argv[]) {
@@ -136,8 +108,9 @@ int main(int argc, char *argv[]) {
       exit(0);
     }
   }
+
   clear_buffer(program, MAX_BYTECODE_LEN);
-  
+
   program[0] = init_uint256(0);
 
   // read_bytecode(program);

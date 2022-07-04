@@ -225,23 +225,17 @@ void lshift_uint512(uint512_t *dest, uint512_t *src, int shift) {
 }
 
 void rshift_uint128(uint128_t *dest, uint128_t *src, int shift) {
-
   if (shift >= 128) {
     clear_uint128(dest);
   } else if (shift == 64) {
     E_0(dest) = 0;
     E_1(dest) = E_0(src);
-
   } else if (shift == 0) {
     copy_uint128(dest, src);
   } else if (shift < 64) {
-
     E_0(dest) = E_0(src) >> shift;
-
     E_1(dest) = (E_0(src) << (64 - shift)) + (E_1(src) >> shift);
-
   } else if ((128 > shift) && (shift > 64)) {
-
     E_0(dest) = 0;
     E_1(dest) = E_0(src) >> (shift - 64);
   } else {
@@ -366,19 +360,19 @@ void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   E_1_1(dest) = E_1_1(a) | E_1_1(b);
 }
 
-uint64_t get_uint256(uint256_t *src, int *index_256, int *index_64) {
-  switch (*index_64) {
+uint64_t get_uint64(uint256_t *src, int *index) {
+  switch (*index) {
   case 0:
-    return E00(src[*index_256]);
+    return E_0_0(src);
     break;
   case 1:
-    return E01(src[*index_256]);
+    return E_0_1(src);
     break;
   case 2:
-    return E10(src[*index_256]);
+    return E_1_0(src);
     break;
   case 3:
-    return E11(src[*index_256]);
+    return E_1_1(src);
     break;
   default:
     return 0;

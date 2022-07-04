@@ -237,7 +237,11 @@ bool equal_uint128(uint128_t *a, uint128_t *b);
 // @return true if a == b, false otherwise
 bool equal_uint256(uint256_t *a, uint256_t *b);
 
-uint64_t get_uint256(uint256_t a[], int *index_256, int *index_64);
+// get a uint64_t from a uint256_t
+// @param src: the uint256_t to get the uint64_t from
+// @param index: the index of the uint64_t to get
+// @return the uint64_t at index
+uint64_t get_uint64(uint256_t *src, int *index);
 
 ///                                                      ///
 ///                       Printing                       ///
