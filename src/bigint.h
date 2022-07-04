@@ -161,6 +161,21 @@ void clear_uint256(uint256_t *dest);
 // @param dest: the uint512_t to set to 0
 void clear_uint512(uint512_t *dest);
 
+// check if a uint128_t is 0
+// @param src: the uint128_t to check
+// @return true if the uint128_t is 0, false otherwise
+bool zero_uint128(uint128_t *src);
+
+// check if a uint256_t is 0
+// @param src: the uint256_t to check
+// @return true if the uint256_t is 0, false otherwise
+bool zero_uint256(uint256_t *src);
+
+// check if a uint512_t is 0
+// @param src: the uint512_t to check
+// @return true if the uint512_t is 0, false otherwise
+bool zero_uint512(uint512_t *src);
+
 ///                                                       ///
 ///                       Bit stuff                       ///
 
@@ -273,6 +288,25 @@ void xor_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param a: the first uint512_t to XOR
 // @param b: the second uint512_t to XOR
 void xor_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
+
+///////////
+/// NOT ///
+///////////
+
+// NOT a uint128_t
+// @param dest: where to store the result
+// @param src: the uint128_t to NOT
+void not_uint128(uint128_t *dest, uint128_t *src);
+
+// NOT a uint256_t
+// @param dest: where to store the result
+// @param src: the uint256_t to NOT
+void not_uint256(uint256_t *dest, uint256_t *src);
+
+// NOT a uint512_t
+// @param dest: where to store the result
+// @param src: the uint512_t to NOT
+void not_uint512(uint512_t *dest, uint512_t *src);
 
 //////////
 /// LT ///
@@ -409,6 +443,72 @@ void sub_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to subtract
 void sub_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
+///////////
+/// MUL ///
+///////////
+
+// multiply two uint128_ts
+// @param dest: where to store the product of a and b
+// @param a: the first uint128_t to multiply
+// @param b: the second uint128_t to multiply
+void mul_uint128(uint128_t *dest, uint128_t *a, uint128_t *b);
+
+// multiply two uint256_ts
+// @param dest: where to store the product of a and b
+// @param a: the first uint256_t to multiply
+// @param b: the second uint256_t to multiply
+void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
+
+// multiply two uint512_ts
+// @param dest: where to store the product of a and b
+// @param a: the first uint512_t to multiply
+// @param b: the second uint512_t to multiply
+void mul_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
+
+///////////
+/// DIV ///
+///////////
+
+// divide two uint128_ts
+// @param dest: where to store the quotient of a and b
+// @param a: the first uint128_t to divide
+// @param b: the second uint128_t to divide
+void div_uint128(uint128_t *dest, uint128_t *a, uint128_t *b);
+
+// divide two uint256_ts
+// @param dest: where to store the quotient of a and b
+// @param a: the first uint256_t to divide
+// @param b: the second uint256_t to divide
+void div_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
+
+// divide two uint512_ts
+// @param dest: where to store the quotient of a and b
+// @param a: the first uint512_t to divide
+// @param b: the second uint512_t to divide
+void div_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
+
+///////////
+/// EXP ///
+///////////
+
+// exponentiate two uint128_ts
+// @param dest: where to store the result of a^b
+// @param a: the first uint128_t to exponentiate
+// @param b: the second uint128_t to exponentiate
+void exp_uint128(uint128_t *dest, uint128_t *a, uint128_t *b);
+
+// exponentiate two uint256_ts
+// @param dest: where to store the result of a^b
+// @param a: the first uint256_t to exponentiate
+// @param b: the second uint256_t to exponentiate
+void exp_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
+
+// exponentiate two uint512_ts
+// @param dest: where to store the result of a^b
+// @param a: the first uint512_t to exponentiate
+// @param b: the second uint512_t to exponentiate
+void exp_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
+
 /////////////
 /// EQUAL ///
 /////////////
@@ -482,6 +582,6 @@ int hex_length_uint512(uint512_t *src);
 // @param src: the uint256_t to get the uint64_t from
 // @param index: the index of the uint64_t to get
 // @return the uint64_t at index
-uint64_t get_uint64(uint256_t *src, int *index);
+uint64_t get_uint64(uint256_t *src, int index);
 
 #endif

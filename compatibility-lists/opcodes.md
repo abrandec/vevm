@@ -22,7 +22,7 @@
 | ISZERO            | ✅  |
 | AND               | ✅  |
 | OR                | ✅  |
-| XOR               | ❌  |
+| XOR               | ✅  |
 | NOT               | ❌  |
 | BYTE              | ❌  |
 | SHL               | ✅  |

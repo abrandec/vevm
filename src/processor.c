@@ -68,6 +68,19 @@ void _add(List *stack) {
   stack_push(stack, &a);
 }
 
+// multiplication operation
+// @param stack: the stack
+void _mul(List *stack) {
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  mul_uint256(&a, &a, &b);
+  stack_push(stack, &a);
+}
+
 // Subtract operation
 // @param stack: the stack
 void _sub(List *stack) {
@@ -176,7 +189,27 @@ void _or(List *stack) {
   stack_push(stack, &a);
 }
 
-// xor
+// XOR operation
+void _xor(List *stack) {
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  xor_uint256(&a, &a, &b);
+  stack_push(stack, &a);
+}
+
+// NOT operation
+void _not(List *stack) {
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  not_uint256(&a, &a);
+
+  stack_push(stack, &a);
+}
 
 // Left shift operation
 // @param stack: the stack
@@ -471,7 +504,13 @@ void vm(uint256_t program[], bool *DEBUG) {
       _add(stack);
       break;
 
-    case 0x02: // SUB
+    case 0x02: // MUL
+      gas -= 5;
+      pc += 1;
+
+      _mul(stack);
+      break;
+    case 0x03: // SUB
       gas -= 3;
       pc += 1;
       _sub(stack);
@@ -510,6 +549,18 @@ void vm(uint256_t program[], bool *DEBUG) {
       gas -= 3;
       pc += 1;
       _or(stack);
+      break;
+
+    case 0x18: // XOR
+      gas -= 3;
+      pc += 1;
+      _xor(stack);
+      break;
+
+    case 0x19: // NOT
+      gas -= 3;
+      pc += 1;
+      _not(stack);
       break;
 
     case 0x1B: // SHL
@@ -635,10 +686,13 @@ void vm(uint256_t program[], bool *DEBUG) {
       break;
 
     case 0xFE: // INVALID
-
-    default:
       pc = MAX_PC + 1;
       custom_error(invalid_op_err);
+      break;
+
+    case 0xFF: // SELFDESTRUCT
+      stack_destroy(stack);
+      exit(1);
       break;
     }
   }

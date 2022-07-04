@@ -68,9 +68,13 @@ void write2_prog_buff(uint256_t program[]) {
   int digits64;
 
   // writing this buffer sucks so I just do this for now
-  program[uint256_index] =
-      init_all_uint256(0x60ff600052606460, 0x1F52606460305260,
-                       0x69602F5200000000, 0x0000000000000000);
+  program[0] =
+      init_all_uint256(0x600019001800FFFF, UINT64_MAX, UINT64_MAX, UINT64_MAX);
+  program[1] =
+      init_all_uint256(0xFF60020200FFFFFF, UINT64_MAX, UINT64_MAX, UINT64_MAX);
+
+  program[2] =
+      init_all_uint256(0xFFFE0200FFFFFFFF, UINT64_MAX, UINT64_MAX, UINT64_MAX);
 }
 
 int main(int argc, char *argv[]) {
@@ -103,6 +107,7 @@ int main(int argc, char *argv[]) {
       exit(0);
     }
   }
+
 
   clear_buffer(program, MAX_BYTECODE_LEN);
 
