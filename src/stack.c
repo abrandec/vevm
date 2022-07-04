@@ -1,6 +1,7 @@
 #include "stack.h"
-#include "debug.h"
 #include "bigint.h"
+#include "config.h"
+#include "debug.h"
 
 #include <assert.h>
 #include <stdbool.h>

@@ -5,8 +5,6 @@
 
 #include "bigint.h"
 
-#define MAX_STACK_DEPTH 1024 - 1
-
 // get element at the last index of the stack
 // @param stack: the stack to get the last element from
 // @return the last element of the stack
@@ -40,6 +38,5 @@ void stack_pop(List *stack);
 uint256_t stack_peak(List *stack, int index);
 
 int stack_length(List *stack);
-
 
 #endif

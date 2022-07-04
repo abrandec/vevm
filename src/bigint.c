@@ -1,4 +1,5 @@
 #include "bigint.h"
+#include "config.h"
 
 #include <errno.h>
 #include <inttypes.h>

@@ -1,13 +1,14 @@
 #include "../../src/bigint.h"
-#include "../../src/stack.h"
+#include "../../src/config.h"
 #include "../../src/processor.h"
+#include "../../src/stack.h"
 
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 // buffer for reading bytecode
 #define CHAR_BUFF_LEN 49248
@@ -64,7 +65,7 @@ void write2_prog_buff(uint256_t program[]) {
   int index = size / 32;
 
   int uint256_index = index / 4;
-  int digits64, Digits128, Digits256;
+  int digits64;
   uint64_t temp;
   uint256_t t = init_all_uint256(0x0100000000000000, 0x0000000000000000,
                                  0x0000000000000000, 0x0000000000000000);
@@ -76,14 +77,10 @@ void write2_prog_buff(uint256_t program[]) {
     case 0:
 
       program[uint256_index] =
-          init_all_uint256(0x60ff600052606460, 0x2052606460305260,
+          init_all_uint256(0x60ff600052606460, 0x1F52606460305260,
                            0x69602F5200000000, 0x0000000000000000);
       digits64 = hex_length(&E00(program[uint256_index]));
-      Digits128 = hex_length_uint128(&E0(program[uint256_index]));
-      Digits256 = hex_length_uint256(&program[uint256_index]);
-      printf("LENGTH64 %d\n", digits64);
-      printf("LENGTH128 %d\n", Digits128);
-      printf("LENGTH256 %d\n", Digits256);
+
       break;
       /* case 1:
         E01(program[uint256_index]) = strtoull(pEnd, &pEnd, 16);
@@ -139,7 +136,8 @@ int main(int argc, char *argv[]) {
       exit(0);
     }
   }
-
+  clear_buffer(program, MAX_BYTECODE_LEN);
+  
   program[0] = init_uint256(0);
 
   // read_bytecode(program);

@@ -1,6 +1,7 @@
 #include "debug.h"
 #include "bigint.h"
 #include "stack.h"
+#include "utils/opcode_names.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -12,7 +13,7 @@ void custom_error(char err_msg[]) {
   exit(1);
 }
 
-void print_buffer(uint256_t buffer[], char buff_name[], int length) {
+void print_buffer(uint256_t buffer[], const char buff_name[], int length) {
   int i = 0;
 
   printf("┌───────────────────────────────────────────────────────────────"
@@ -31,6 +32,25 @@ void print_buffer(uint256_t buffer[], char buff_name[], int length) {
 
   printf("└────────────────────────────────────────────────────────────────"
          "───────────┘\n");
+}
+
+void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
+                 uint64_t *opcode) {
+  const char prog_name[8] = "PROGRAM";
+  const char mem_name[8] = "MEMORY ";
+
+  system("clear");
+
+  printf("\033[93m▓▓\033[94m▓▓\033[92m▓▓\033[35m▓▓\033[91m▓▓\033["
+         "00m\n┌─────────────────────────────────┐\n│ OPCODE   %02lX          "
+         "           │ %s\n│ PC       %06d                 │\n│ GAS      "
+         "%06lu   │\n└─────────────────────────────────┘",
+         *opcode, arrow_glacier_names[*opcode], *pc, *gas);
+  stack_print(stack);
+
+  print_buffer(memory, mem_name, 9);
+
+  sleep(1);
 }
 
 /* Stack debugging */

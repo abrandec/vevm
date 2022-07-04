@@ -1,5 +1,5 @@
-#ifndef _BIG_INT_H_
-#define _BIG_INT_H_
+#ifndef BIG_INT_H
+#define BIG_INT_H
 
 #include <inttypes.h>
 #include <stdbool.h>

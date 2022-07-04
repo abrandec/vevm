@@ -1,8 +1,8 @@
 
 #include "processor.h"
+#include "bigint.h"
 #include "debug.h"
 #include "stack.h"
-#include "bigint.h"
 #include "utils/opcode_names.h"
 
 #include <inttypes.h>
@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 
 // Get opcode from program buffer
 // @param program[]: program buffer
@@ -62,7 +61,7 @@ void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
 void _add(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
-  
+
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
@@ -284,16 +283,20 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
 
   //              bitmasking stuff            //
 
-  uint512_t temperino = init_uint512(0);
-  E0(temperino) = b;
-  print_hex_uint256(&E0(temperino));
-  printf("\n");
-  rshift_uint512(&temperino, &temperino, offset);
-  printf("\n");
-  print_hex_uint256(&E1(temperino));
-  memory[index] = E0(temperino);
-  memory[index + 1] = E1(temperino);
+  uint512_t temp = init_uint512(0);
 
+  E0(temp) = b;
+
+  rshift_uint512(&temp, &temp, offset);
+
+  lshift_uint256(&mask1, &mask1, 256 - offset);
+  rshift_uint256(&mask2, &mask2, offset);
+
+  and_uint256(&memory[index], &memory[index], &mask1);
+  and_uint256(&memory[index2], &memory[index2], &mask2);
+
+  or_uint256(&memory[index], &memory[index], &E0(temp));
+  or_uint256(&memory[index2], &memory[index2], &E1(temp));
 }
 
 // gas operation
@@ -399,14 +402,14 @@ void _swap(List *stack, uint64_t *opcode) {
 }
 
 // set a buffer to zero
-// @param static_buffer: the buffer to initialize to zero
+// @param buffer: the buffer to initialize to zero
 // @param length: the length of the buffer
-void clear_buffer(uint256_t static_buffer[], int length) {
+void clear_buffer(uint256_t buffer[], int length) {
   int i = 0;
   length = length - 1;
 
   for (; i < length; ++i) {
-    clear_uint256(&static_buffer[i]);
+    clear_uint256(&buffer[i]);
   }
 }
 
@@ -418,13 +421,8 @@ void vm(uint256_t program[], bool *DEBUG) {
 
   //      variables      //
 
-  // program name
-  char prog_name[8] = "PROGRAM";
-
   // EVM memory
   static uint256_t memory[MAX_MEMORY_LEN];
-
-  char mem_name[8] = "MEMORY ";
 
   char invalid_op_err[50] = "EVM - INVALID OPCODE\n";
 
@@ -436,7 +434,7 @@ void vm(uint256_t program[], bool *DEBUG) {
 
   // initialize program counter
   int pc = 0;
-  
+
   uint64_t gas = GAS - 21000;
 
   // initialize stack
@@ -451,33 +449,14 @@ void vm(uint256_t program[], bool *DEBUG) {
   //      the action      //
 
   // clear all bits in buffers
-  // clear_buffer(program, MAX_BYTECODE_LEN);
   clear_buffer(memory, MAX_MEMORY_LEN);
-
-  /*
-      memory[0] = init_all_uint256(0x6969696969696969, 0x6969696969696969,
-                                   0x6969696969696969, 0x6969696969696969);
-      memory[1] = init_all_uint256(0x6969696969696969, 0x6969696969696969,
-                                   0x6969696969696969, 0x6969696969696969); */
 
   // while loop to run program //
   while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
 
     if (*DEBUG) {
-
-      system("clear");
-
-      // small box to print opcode, pc, & gas
-      printf(
-          "\033[93m▓▓\033[94m▓▓\033[92m▓▓\033[35m▓▓\033[91m▓▓\033["
-          "00m\n┌─────────────────────────────────┐\n│ OPCODE   %02lX          "
-          "           │ %s\n│ PC       %06d                 │\n│ GAS      "
-          "%06lu   │\n└─────────────────────────────────┘",
-          opcode, arrow_glacier_names[opcode], pc, gas);
-      stack_print(stack);
-      print_buffer(memory, mem_name, 9);
-      sleep(1);
+      print_debug(stack, memory, &pc, &gas, &opcode);
     }
 
     // printf("GAS LEFT: %lld\n", gas);

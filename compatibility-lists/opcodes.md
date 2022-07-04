@@ -56,7 +56,7 @@
 | BASEFEE           | ❌  |
 | POP               | ✅  |
 | MLOAD             | ❌  |
-| MSTORE            | ❌  |
+| MSTORE            | ✅  |
 | MSTORE8           | ❌  |
 | SLOAD             | ❌  |
 | SSTORE            | ❌  |
