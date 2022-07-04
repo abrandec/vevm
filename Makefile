@@ -5,11 +5,12 @@
 CC = clang
 FLAGS = -Oz
 LIBS = -lm
+
 EVM = src/processor.c src/stack.c src/bigint.c src/debug.c
 
 all: vetk
 
-tests: h_stack_test uint256_test processor_test	
+tests: stack_test bigint_test processor_test	
 
 #############################
 #		  Compiling			#
@@ -24,11 +25,11 @@ vetk: sample_programs/vision_etk/main.c
 #############################
 
 # stack stored in heap
-h_stack_test: tests/h_stack_test.c
-	$(CC) -o tests/bin/h_stack_test tests/h_stack_test.c $(FLAGS) $(LIBS)
+stack_test: tests/h_stack_test.c
+	$(CC) -o tests/bin/h_stack_test src/bigint.c tests/h_stack_test.c $(FLAGS) $(LIBS)
 
-uint256_test: tests/uint256_test.c
+bigint_test: tests/uint256_test.c
 	$(CC) -o tests/bin/uint256_test tests/uint256_test.c $(FLAGS) $(LIBS)
 
 processor_test: tests/processor_test.c
-	$(CC) -o tests/bin/processor_test tests/processor_test.c $(FLAGS) $(LIBS)
+	$(CC) -o tests/bin/processor_test $(EVM) tests/processor_test.c $(FLAGS) $(LIBS)

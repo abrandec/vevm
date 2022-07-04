@@ -2,6 +2,7 @@
 #define PROCESSOR_H_
 
 #include "bigint.h"
+
 #include <inttypes.h>
 #include <stdbool.h>
 

@@ -1,4 +1,4 @@
-#include "../src/processor.c"
+#include "../src/processor.h"
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -1,5 +1,7 @@
-#include "../src/uint256.c"
-#include "../src/uint256.h"
+#include "../src/bigint.h"
+
+#include <inttypes.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

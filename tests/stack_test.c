@@ -1,7 +1,6 @@
-#include "../src/h_stack.c"
-#include "../src/h_stack.h"
-#include "../src/uint256.c"
-#include "../src/uint256.h"
+#include "../src/bigint.h"
+#include "../src/stack.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
