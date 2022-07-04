@@ -214,15 +214,21 @@ void rshift_uint512(uint512_t *dest, uint512_t *src, int shift);
 
 // AND two uint128_ts
 // @param dest: where to store the sum of a and b
-// @param a: the first uint128_t to and
-// @param b: the second uint128_t to and
+// @param a: the first uint128_t to AND
+// @param b: the second uint128_t to AND
 void and_uint128(uint128_t *dest, uint128_t *a, uint128_t *b);
 
 // AND two uint256_ts
 // @param dest: where to store the sum of a and b
-// @param a: the first uint256_t to and
-// @param b: the second uint256_t to and
+// @param a: the first uint256_t to AND
+// @param b: the second uint256_t to AND
 void and_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
+
+// AND two uint512_ts
+// @param dest: where to store the sum of a and b
+// @param a: the first uint512_t to AND
+// @param b: the second uint512_t to AND
+void and_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
 //////////
 /// OR ///
@@ -230,15 +236,21 @@ void and_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 
 // OR two uint128_ts
 // @param dest: where to store the sum of a and b
-// @param a: the first uint128_t to or
-// @param b: the second uint128_t to or
+// @param a: the first uint128_t to OR
+// @param b: the second uint128_t to OR
 void or_uint128(uint128_t *dest, uint128_t *a, uint128_t *b);
 
 // OR two uint256_ts
 // @param dest: where to store the sum of a and b
-// @param a: the first uint256_t to or
-// @param b: the second uint256_t to or
+// @param a: the first uint256_t to OR
+// @param b: the second uint256_t to OR
 void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
+
+// OR two uint512_ts
+// @param dest: where to store the sum of a and b
+// @param a: the first uint512_t to OR
+// @param b: the second uint512_t to OR
+void or_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
 /////////
 // XOR //
@@ -246,20 +258,20 @@ void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 
 // XOR two uint128_ts
 // @param dest: where to store the sum of a and b
-// @param a: the first uint128_t to xor
-// @param b: the second uint128_t to xor
+// @param a: the first uint128_t to XOR
+// @param b: the second uint128_t to XOR
 void xor_uint128(uint128_t *dest, uint128_t *a, uint128_t *b);
 
 // XOR two uint256_ts
 // @param dest: where to store the sum of a and b
-// @param a: the first uint256_t to xor
-// @param b: the second uint256_t to xor
+// @param a: the first uint256_t to XOR
+// @param b: the second uint256_t to XOR
 void xor_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 
 // XOR two uint512_ts
 // @param dest: where to store the sum of a and b
-// @param a: the first uint512_t to xor
-// @param b: the second uint512_t to xor
+// @param a: the first uint512_t to XOR
+// @param b: the second uint512_t to XOR
 void xor_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
 //////////
