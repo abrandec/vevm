@@ -66,9 +66,6 @@ void write2_prog_buff(uint256_t program[]) {
 
   int uint256_index = index / 4;
   int digits64;
-  uint64_t temp;
-  uint256_t t = init_all_uint256(0x0100000000000000, 0x0000000000000000,
-                                 0x0000000000000000, 0x0000000000000000);
 
   // writing this buffer sucks so I just do this for now
   program[uint256_index] =
@@ -108,8 +105,6 @@ int main(int argc, char *argv[]) {
   }
 
   clear_buffer(program, MAX_BYTECODE_LEN);
-
-  program[0] = init_uint256(0);
 
   // read_bytecode(program);
 

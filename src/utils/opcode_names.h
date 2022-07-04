@@ -1,5 +1,5 @@
-#ifndef _opcode_names_H_
-#define _opcode_names_H_
+#ifndef OPCODE_NAMES_H
+#define OPCODE_NAMES_H
 
 #define NULL 0
 

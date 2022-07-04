@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int stack_len = 0;
+
 // create a node
 // @return a ptr to the newly created node
 Node *Node_create(void) {
@@ -71,7 +73,6 @@ void stack_destroy(List *stack) {
 // @param stack: the stack to push onto
 // @param data: the data to push onto the stack
 void stack_push(List *stack, uint256_t *val) {
-
   if (stack_length(stack) > MAX_STACK_DEPTH - 1) {
     char err_msg[50] = "EVM - Stack Overflow\n";
     custom_error(err_msg);
@@ -135,6 +136,7 @@ uint256_t stack_peak(List *stack, int index) {
     // slightly unhelpful error message!
     char err[50] = "EVM - Stack element is not accessable\n";
     custom_error(err);
+    return val;
   } else {
     Node *node = stack->first;
     int i;
