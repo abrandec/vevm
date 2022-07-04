@@ -1,9 +1,10 @@
-#include "h_stack.h"
+#include "stack.h"
 #include "debug.h"
-#include "uint256.h"
+#include "bigint.h"
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,17 +27,20 @@ Node *Node_create(void) {
 // destroy a node
 // @param node: the node to destroy
 void Node_destroy(Node *node) {
-  assert(node != NULL);
-  free(node);
+  if (node == NULL) {
+    char err_msg[50] = "Node_destroy: node is NULL\n";
+    custom_error(err_msg);
+  } else {
+    free(node);
+  }
 }
 
 // create a new stack
 // @returns a new stack
 List *stack_create(void) {
   List *stack = malloc(sizeof(List));
-  assert(stack != NULL);
-
   Node *node = Node_create();
+
   stack->first = node;
 
   return stack;
@@ -45,27 +49,34 @@ List *stack_create(void) {
 // destroy the stack
 // @param stack: the stack to destroy
 void stack_destroy(List *stack) {
-  assert(stack != NULL);
+  if (stack == NULL) {
+    char err_msg[50] = "stack_destroy: stack is NULL\n";
+    custom_error(err_msg);
+  } else {
+    Node *node = stack->first;
+    Node *next;
 
-  Node *node = stack->first;
-  Node *next;
-  while (node != NULL) {
-    next = node->next;
-    free(node);
-    node = next;
+    while (node != NULL) {
+      next = node->next;
+      free(node);
+      node = next;
+    }
+
+    free(stack);
   }
-
-  free(stack);
 }
 
 // push a new e onto the top of the stack
 // @param stack: the stack to push onto
 // @param data: the data to push onto the stack
 void stack_push(List *stack, uint256_t *val) {
-  assert(stack != NULL);
+
   if (stack_length(stack) > MAX_STACK_DEPTH - 1) {
-    char err[50] = "EVM - Stack Overflow\n";
-    custom_error(err);
+    char err_msg[50] = "EVM - Stack Overflow\n";
+    custom_error(err_msg);
+  } else if (stack == NULL) {
+    char err_msg[50] = "stack_push: stack is NULL\n";
+    custom_error(err_msg);
   } else {
 
     Node *node = stack->first;
@@ -84,21 +95,21 @@ void stack_push(List *stack, uint256_t *val) {
 }
 
 void stack_swap(List *stack, int index) {
-  assert(stack != NULL);
-  int i = stack_length(stack) - 1;
 
-  if (index < 0 || index > 15 || index > i) {
-    char err[50] = "EVM - Stack element not accessable\n";
-    custom_error(err);
+  int stack_len = stack_length(stack) - 1;
+
+  if (stack == NULL || index == 0 || index > 15 || index > stack_len) {
+    char err_msg[50] = "EVM - Stack element not accessable\n";
+    custom_error(err_msg);
   } else {
     uint256_t data2swap;
 
     Node *before = stack->first;
     Node *after = stack->first;
 
-    while (i != index) {
+    while (stack_len != index) {
       before = before->next;
-      --i;
+      --stack_len;
     }
 
     // top of stack element
@@ -110,7 +121,6 @@ void stack_swap(List *stack, int index) {
     copy_uint256(before->data, &data2swap);
   }
 }
-
 // peak at the stack at a certain index
 // @param stack: stack to peek from
 // @param index: index of the stack to peek
@@ -118,13 +128,16 @@ void stack_swap(List *stack, int index) {
 uint256_t stack_peak(List *stack, int index) {
   uint256_t val = init_uint256(0);
 
-  if (index < -1 || index > stack_length(stack) - 1) {
+  int stack_len = stack_length(stack);
+
+  if (stack == NULL || stack_len == 0 || index > stack_len - 1 || index < -1) {
+    // slightly unhelpful error message!
     char err[50] = "EVM - Stack element is not accessable\n";
     custom_error(err);
-    return val;
   } else {
     Node *node = stack->first;
     int i;
+
     for (i = 0; i < index; ++i) {
       node = node->next;
     }
@@ -137,12 +150,13 @@ uint256_t stack_peak(List *stack, int index) {
 // pop the first element on the stack
 // @param stack: stack
 void stack_pop(List *stack) {
-  assert(stack != NULL);
-  int index = stack_length(stack) - 1;
-  if (stack_length(stack) < 1) {
-    char err[50] = "EVM - Stack Underflow\n";
-    custom_error(err);
+
+  if (stack_length(stack) == 0) {
+    char err_msg[50] = "EVM - Stack Underflow\n";
+    custom_error(err_msg);
   } else {
+    int index = stack_length(stack) - 1;
+
     if (index == 0) {
       Node *node = stack->first;
       stack->first = stack->first->next;
@@ -168,13 +182,17 @@ void stack_pop(List *stack) {
 // @param stack: stack to get length of
 // @return length of stack
 int stack_length(List *stack) {
-  assert(stack != NULL);
-  Node *node = stack->first;
-  int length = 0;
-  while (node->next != NULL) {
-    ++length;
-    node = node->next;
+  if (stack == NULL) {
+    char err_msg[50] = "stack_length - Stack is NULL\n";
+    custom_error(err_msg);
+    return 0;
+  } else {
+    Node *node = stack->first;
+    int length = 0;
+    while (node != NULL) {
+      ++length;
+      node = node->next;
+    }
+    return length - 1;
   }
-
-  return length;
 }

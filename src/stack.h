@@ -1,12 +1,11 @@
-#ifndef h_stack_H_
-#define h_stack_H_
+#ifndef STACK_H
+#define STACK_H
 
 // Heap based stack
 
-#include "uint256.c"
-#include "uint256.h"
+#include "bigint.h"
 
-#define MAX_STACK_DEPTH 10
+#define MAX_STACK_DEPTH 1024 - 1
 
 // get element at the last index of the stack
 // @param stack: the stack to get the last element from
@@ -42,10 +41,5 @@ uint256_t stack_peak(List *stack, int index);
 
 int stack_length(List *stack);
 
-// printf functions
-
-void stack_print(List *stack);
-
-void stack_peak_print(List *stack, int index);
 
 #endif

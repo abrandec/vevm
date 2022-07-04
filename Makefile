@@ -2,22 +2,33 @@
 # Author: Abran DeCarlo
 # LICENSE: AGPL-3.0-ONLY
 
-FLAGS := -std=c11 -O2
+CC = clang
+FLAGS = -Oz
+LIBS = -lm
+EVM = src/processor.c src/stack.c src/bigint.c src/debug.c
 
-# compiling
-all: main
+all: vetk
 
 tests: h_stack_test uint256_test processor_test	
 
-main: sample_programs/main.c
-	gcc -o bin/main sample_programs/main.c $(FLAGS)
+#############################
+#		  Compiling			#
+#############################
+
+# vision evm + etk (eas compiler)
+vetk: sample_programs/vision_etk/main.c
+	$(CC) -o bin/vetk/vetk $(EVM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+
+#############################
+# 			Tests 			#
+#############################
 
 # stack stored in heap
 h_stack_test: tests/h_stack_test.c
-	gcc -o tests/bin/h_stack_test tests/h_stack_test.c
+	$(CC) -o tests/bin/h_stack_test tests/h_stack_test.c $(FLAGS) $(LIBS)
 
 uint256_test: tests/uint256_test.c
-	gcc -o tests/bin/uint256_test tests/uint256_test.c
+	$(CC) -o tests/bin/uint256_test tests/uint256_test.c $(FLAGS) $(LIBS)
 
 processor_test: tests/processor_test.c
-	gcc -o tests/bin/processor_test tests/processor_test.c
+	$(CC) -o tests/bin/processor_test tests/processor_test.c $(FLAGS) $(LIBS)

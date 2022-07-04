@@ -1,5 +1,5 @@
 make --dry-run --keep-going --print-directory
 make: Entering directory '/home/a/Documents/github/vision_evm'
-gcc -o bin/main sample_programs/main.c -std=c11 -O2
+clang -o bin/vetk/vetk src/processor.c src/stack.c src/bigint.c src/debug.c sample_programs/vision_etk/main.c -Oz -lm
 make: Leaving directory '/home/a/Documents/github/vision_evm'
  

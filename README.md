@@ -4,7 +4,7 @@
 An experimental Ethereum Virtual Machine written in C for learning purposes.
 
 # Dependencies
-A C11 compiler
+Clang && LLVM
 
 # Building
 ```

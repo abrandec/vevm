@@ -1,7 +1,33 @@
-#include "uint256.h"
+#include "bigint.h"
+
+#include <errno.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
+
+uint128_t init_uint128(uint64_t a) {
+  uint128_t result;
+  E0(result) = a;
+  E1(result) = a;
+  return result;
+}
+
+uint256_t init_uint256(uint64_t a) {
+  uint256_t result;
+  E00(result) = a;
+  E01(result) = a;
+  E10(result) = a;
+  E11(result) = a;
+  return result;
+}
+
+uint512_t init_uint512(uint64_t a) {
+  uint512_t result;
+  E0(result) = init_uint256(a);
+  E1(result) = init_uint256(a);
+  return result;
+}
 
 uint128_t init_all_uint128(uint64_t a, uint64_t b) {
   uint128_t result;
@@ -21,19 +47,13 @@ uint256_t init_all_uint256(uint64_t a, uint64_t b, uint64_t c, uint64_t d) {
   return result;
 }
 
-uint128_t init_uint128(uint64_t a) {
-  uint128_t result;
-  E0(result) = a;
-  E1(result) = a;
-  return result;
-}
+uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
+                           uint64_t e, uint64_t f, uint64_t g, uint64_t h) {
+  uint512_t result;
 
-uint256_t init_uint256(uint64_t a) {
-  uint256_t result;
-  E00(result) = a;
-  E01(result) = a;
-  E10(result) = a;
-  E11(result) = a;
+  E0(result) = init_all_uint256(a, b, c, d);
+  E1(result) = init_all_uint256(e, f, g, h);
+
   return result;
 }
 
@@ -42,11 +62,21 @@ void change_uint128(uint128_t *dest, uint64_t a, uint64_t b) {
   E_1(dest) = b;
 }
 
-void change_uint256( uint256_t *dest, uint64_t a, uint64_t b, uint64_t c, uint64_t d) {  
+void change_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                    uint64_t d) {
   E_0_0(dest) = a;
   E_0_1(dest) = b;
   E_1_0(dest) = c;
   E_1_1(dest) = d;
+}
+
+void change_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                    uint64_t d, uint64_t e, uint64_t f, uint64_t g,
+                    uint64_t h) {
+  uint256_t temp = init_all_uint256(a, b, c, d);
+  E_0(dest) = temp;
+  temp = init_all_uint256(e, f, g, h);
+  E_1(dest) = temp;
 }
 
 void copy_uint128(uint128_t *dest, uint128_t *src) {
@@ -59,18 +89,24 @@ void copy_uint256(uint256_t *dest, uint256_t *src) {
   E_1(dest) = E_1(src);
 }
 
+void copy_uint512(uint512_t *dest, uint512_t *src) {
+  E_0(dest) = E_0(src);
+  E_1(dest) = E_1(src);
+}
+
 void clear_uint128(uint128_t *dest) {
   E_0(dest) = 0;
   E_1(dest) = 0;
 }
 
 void clear_uint256(uint256_t *dest) {
-  uint128_t x;
+  clear_uint128(&E_0(dest));
+  clear_uint128(&E_1(dest));
+}
 
-  clear_uint128(&x);
-
-  E_0(dest) = x;
-  E_1(dest) = x;
+void clear_uint512(uint512_t *dest) {
+  clear_uint256(&E_0(dest));
+  clear_uint256(&E_1(dest));
 }
 
 bool equal_uint128(uint128_t *a, uint128_t *b) {
@@ -162,6 +198,31 @@ void lshift_uint256(uint256_t *dest, uint256_t *src, int shift) {
   }
 }
 
+void lshift_uint512(uint512_t *dest, uint512_t *src, int shift) {
+  if (shift >= 512) {
+    clear_uint512(dest);
+  } else if (shift == 256) {
+    copy_uint256(&E_0(dest), &E_1(src));
+    clear_uint256(&E_1(dest));
+  } else if (shift == 0) {
+    copy_uint512(dest, src);
+  } else if (shift < 256) {
+    uint256_t tmp1;
+    uint256_t tmp2;
+    uint512_t result;
+    lshift_uint256(&tmp1, &E_0(src), shift);
+    rshift_uint256(&tmp2, &E_1(src), (256 - shift));
+    add_uint256(&E0(result), &tmp1, &tmp2);
+    lshift_uint256(&E1(result), &E_1(src), shift);
+    copy_uint512(dest, &result);
+  } else if ((512 > shift) && (shift > 256)) {
+    lshift_uint256(&E_0(dest), &E_1(src), (shift - 256));
+    clear_uint256(&E_1(dest));
+  } else {
+    clear_uint512(dest);
+  }
+}
+
 void rshift_uint128(uint128_t *dest, uint128_t *src, int shift) {
 
   if (shift >= 128) {
@@ -212,6 +273,31 @@ void rshift_uint256(uint256_t *dest, uint256_t *src, int shift) {
   }
 }
 
+void rshift_uint512(uint512_t *dest, uint512_t *src, int shift) {
+  if (shift >= 512) {
+    clear_uint512(dest);
+  } else if (shift == 256) {
+    copy_uint256(&E_1(dest), &E_0(src));
+    clear_uint256(&E_0(dest));
+  } else if (shift == 0) {
+    copy_uint512(dest, src);
+  } else if (shift < 256) {
+    uint256_t tmp1;
+    uint256_t tmp2;
+    uint512_t result;
+
+    rshift_uint256(&E0(result), &E_0(src), shift);
+    rshift_uint256(&tmp1, &E_1(src), shift);
+    lshift_uint256(&tmp2, &E_0(src), (256 - shift));
+    add_uint256(&E1(result), &tmp1, &tmp2);
+    copy_uint512(dest, &result);
+  } else if ((512 > shift) && (shift > 256)) {
+    rshift_uint256(&E_1(dest), &E_0(src), (shift - 256));
+    clear_uint256(&E_0(dest));
+  } else {
+    clear_uint512(dest);
+  }
+}
 void add_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
   E_0(dest) = E_0(a) + E_0(b) + ((E_1(a) + E_1(b)) < E_1(a));
   E_1(dest) = E_1(a) + E_1(b);
@@ -279,7 +365,28 @@ void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   E_1_1(dest) = E_1_1(a) | E_1_1(b);
 }
 
-// printf functions //
+uint64_t get_uint256(uint256_t *src, int *index_256, int *index_64) {
+  switch (*index_64) {
+  case 0:
+    return E00(src[*index_256]);
+    break;
+  case 1:
+    return E01(src[*index_256]);
+    break;
+  case 2:
+    return E10(src[*index_256]);
+    break;
+  case 3:
+    return E11(src[*index_256]);
+    break;
+  default:
+    return 0;
+    break;
+  }
+}
+
+///                                                      ///
+///                       Printing                       ///
 
 void print_hex_uint128(uint128_t *a) {
   printf("%016llX%016llX", E_0(a), E_1(a));
@@ -287,4 +394,29 @@ void print_hex_uint128(uint128_t *a) {
 
 void print_hex_uint256(uint256_t *a) {
   printf("%016llX%016llX%016llX%016llX", E_0(a), E_1(a));
+}
+
+///                                                          ///
+///                           Misc                           ///
+
+int hex_length(uint64_t *src) {
+  // get length of src in base 16
+  int x = ceil(log(*src + 1) / log(16));
+  // if length is odd, add one else return x
+  // accounts for bytes that start at 0 (e.g. 01...0F)
+  x % 2 ? x += 1 : x;
+  // only care about whole bytes, not individual digits
+  return x / 2;
+}
+
+int hex_length_uint128(uint128_t *src) {
+  int x = hex_length(&E_0(src));
+  // if the first uint64 is 0, then return the length of the second uint128
+  // else add the length of the first uint128 & add 8
+  return x == 0 ? hex_length(&E_1(src)) : x + 8;
+}
+
+int hex_length_uint256(uint256_t *src) {
+  int x = hex_length_uint128(&E_0(src));
+  return x == 0 ? hex_length_uint128(&E_1(src)) : x + 16;
 }

@@ -5,6 +5,17 @@
         "processor.h": "c",
         "assert.h": "c",
         "popt.h": "c",
-        "debug.h": "c"
+        "debug.h": "c",
+        "opcodes.h": "c",
+        "opcode_names.h": "c",
+        "ansidecl.h": "c",
+        "safe-ctype.h": "c",
+        "stdbool.h": "c",
+        "stdlib.h": "c",
+        "unistd.h": "c",
+        "stdio.h": "c",
+        "bigint.h": "c",
+        "stack.h": "c",
+        "stat.h": "c"
     }
 }

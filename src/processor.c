@@ -1,10 +1,9 @@
 
 #include "processor.h"
-#include "debug.c"
 #include "debug.h"
-#include "h_stack.c"
-#include "h_stack.h"
-#include "uint256.h"
+#include "stack.h"
+#include "bigint.h"
+#include "utils/opcode_names.h"
 
 #include <inttypes.h>
 #include <stdbool.h>
@@ -12,11 +11,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define MAX_BYTECODE_LEN                                                       \
-  96 // 24.576KB/256 bits = 96 indices (EIP-170:
-     // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-170.md)
-#define MAX_MEMORY_LEN 1000000 // 32 MB/256 bits = 1,000,000 indices
-#define GAS 0xFFFFFFFFFFFFFFFF //
 
 // Get opcode from program buffer
 // @param program[]: program buffer
@@ -68,7 +62,7 @@ void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
 void _add(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
-
+  
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
@@ -98,13 +92,10 @@ void _lt(List *stack) {
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  switch (lt_uint256(&a, &b)) {
-  case true:
+  if (lt_uint256(&a, &b)) {
     change_uint256(&a, 0, 0, 0, 1);
-    break;
-  case false:
+  } else {
     change_uint256(&a, 0, 0, 0, 0);
-    break;
   }
 
   stack_push(stack, &a);
@@ -119,13 +110,10 @@ void _gt(List *stack) {
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  switch (gt_uint256(&a, &b)) {
-  case true:
+  if (gt_uint256(&a, &b)) {
     change_uint256(&a, 0, 0, 0, 1);
-    break;
-  case false:
+  } else {
     change_uint256(&a, 0, 0, 0, 0);
-    break;
   }
 
   stack_push(stack, &a);
@@ -140,14 +128,10 @@ void _eq(List *stack) {
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  switch (equal_uint256(&a, &b)) {
-  case true:
+  if (equal_uint256(&a, &b)) {
     change_uint256(&a, 0, 0, 0, 1);
-
-    break;
-  case false:
+  } else {
     change_uint256(&a, 0, 0, 0, 0);
-    break;
   }
 
   stack_push(stack, &a);
@@ -161,12 +145,8 @@ void _iszero(List *stack) {
 
   uint256_t b = init_uint256(0);
 
-  switch (equal_uint256(&a, &b)) {
-  case true:
+  if (equal_uint256(&a, &b)) {
     change_uint256(&b, 0, 0, 0, 1);
-    break;
-  default:
-    break;
   }
 
   stack_push(stack, &b);
@@ -211,14 +191,10 @@ void _shl(List *stack) {
 
   uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
 
-  switch (gt_uint256(&a, &c)) {
-
-  case true:
+  if (gt_uint256(&a, &c)) {
     change_uint256(&c, 0, 0, 0, 0);
-    break;
-  case false:
+  } else {
     lshift_uint256(&c, &b, E11(a));
-    break;
   }
 
   stack_push(stack, &c);
@@ -234,14 +210,10 @@ void _shr(List *stack) {
 
   uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
 
-  switch (gt_uint256(&a, &c)) {
-
-  case true:
+  if (gt_uint256(&a, &c)) {
     change_uint256(&c, 0, 0, 0, 0);
-    break;
-  case false:
+  } else {
     rshift_uint256(&c, &b, E11(a));
-    break;
   }
 
   stack_push(stack, &c);
@@ -283,13 +255,9 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint64_t offset = ((E11(a)) % 32) * 8;
 
   // check if the memory location >32MB
-  switch (gt_uint256(&a, &max_mem_len)) {
-  case true:
+  if (gt_uint256(&a, &max_mem_len)) {
     char err[50] = "MEMORY SIZE EXCEEDED (>32MB)\n";
     custom_error(err);
-    break;
-  default:
-    break;
   }
 
   //              gas cost stuff              //
@@ -297,18 +265,13 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   *gas -= 3;
 
   // check if memory has been expanded before
-  switch (*mem_expanded) {
-  case false:
+  if (*mem_expanded) {
     *mem_expanded = true;
     *gas -= 3;
-    break;
-  default:
-    break;
   }
 
   switch (offset) {
   case 0:
-
     break;
   default:
     ending_index += 1;
@@ -321,24 +284,16 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
 
   //              bitmasking stuff            //
 
-  // shift data for 1st index
-  lshift_uint256(&b, &b, offset);
+  uint512_t temperino = init_uint512(0);
+  E0(temperino) = b;
+  print_hex_uint256(&E0(temperino));
+  printf("\n");
+  rshift_uint512(&temperino, &temperino, offset);
+  printf("\n");
+  print_hex_uint256(&E1(temperino));
+  memory[index] = E0(temperino);
+  memory[index + 1] = E1(temperino);
 
-  lshift_uint256(&mask1, &mask1, (offset) + 8);
-  // mask off bits that are going to be used while retaining the rest of the
-  // data in the index
-
-  rshift_uint256(&mask2, &mask2, 256 - offset);
-
-  or_uint256(&mask1, &mask1, &mask2);
-
-  and_uint256(&memory[index], &memory[index], &mask1);
-
-  // shift data offset for 1st index
-  lshift_uint256(&a, &b, (256 - offset));
-
-  // add data to memory (1st index)
-  or_uint256(&memory[index], &memory[index], &b);
 }
 
 // gas operation
@@ -464,11 +419,14 @@ void vm(uint256_t program[], bool *DEBUG) {
   //      variables      //
 
   // program name
-  char prog_name[9] = "PROGRAM";
+  char prog_name[8] = "PROGRAM";
 
   // EVM memory
   static uint256_t memory[MAX_MEMORY_LEN];
-  char mem_name[8] = "MEMORY";
+
+  char mem_name[8] = "MEMORY ";
+
+  char invalid_op_err[50] = "EVM - INVALID OPCODE\n";
 
   // for keeping track memory expansion costs
   uint64_t mem_end = 0;
@@ -478,7 +436,7 @@ void vm(uint256_t program[], bool *DEBUG) {
 
   // initialize program counter
   int pc = 0;
-
+  
   uint64_t gas = GAS - 21000;
 
   // initialize stack
@@ -493,43 +451,33 @@ void vm(uint256_t program[], bool *DEBUG) {
   //      the action      //
 
   // clear all bits in buffers
-  clear_buffer(program, MAX_BYTECODE_LEN);
+  // clear_buffer(program, MAX_BYTECODE_LEN);
   clear_buffer(memory, MAX_MEMORY_LEN);
 
-  // sample program
-  program[0] = init_all_uint256(0x6402600251996000, 0x5100FFFFFFFFFFFF,
-                                0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
-  program[1] = init_all_uint256(0xFE7FFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
-                                0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
-  program[2] = init_all_uint256(0xFFFF026002500000, 0x0000000000000000,
-                                0x0000000000000000, 0x0000000000000000);
-
-  memory[0] = init_all_uint256(0x6969696969696969, 0x6969696969696969,
-                               0x6969696969696969, 0x6969696969696969);
-  memory[1] = init_all_uint256(0x6969696969696969, 0x6969696969696969,
-                               0x6969696969696969, 0x6969696969696969);
+  /*
+      memory[0] = init_all_uint256(0x6969696969696969, 0x6969696969696969,
+                                   0x6969696969696969, 0x6969696969696969);
+      memory[1] = init_all_uint256(0x6969696969696969, 0x6969696969696969,
+                                   0x6969696969696969, 0x6969696969696969); */
 
   // while loop to run program //
-  while (pc < 10000) {
+  while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
 
-    switch (*DEBUG) {
-    case false:
-      break;
-    default:
-      system("clear");
-      // small box to print opcode, pc, & gas
-      printf("\033[93m▓▓\033[94m▓▓\033[92m▓▓\033[35m▓▓\033[91m▓▓\033["
-             "00m\n┌─────────────────────────────────┐\n│ OPCODE   %02llX      "
-             "     "
-             "          │\n│ PC       %06d                 │\n│ GAS      "
-             "%06llu   │\n└─────────────────────────────────┘",
-             opcode, pc, gas);
+    if (*DEBUG) {
 
+      system("clear");
+
+      // small box to print opcode, pc, & gas
+      printf(
+          "\033[93m▓▓\033[94m▓▓\033[92m▓▓\033[35m▓▓\033[91m▓▓\033["
+          "00m\n┌─────────────────────────────────┐\n│ OPCODE   %02lX          "
+          "           │ %s\n│ PC       %06d                 │\n│ GAS      "
+          "%06lu   │\n└─────────────────────────────────┘",
+          opcode, arrow_glacier_names[opcode], pc, gas);
       stack_print(stack);
       print_buffer(memory, mem_name, 9);
       sleep(1);
-      break;
     }
 
     // printf("GAS LEFT: %lld\n", gas);
@@ -610,7 +558,7 @@ void vm(uint256_t program[], bool *DEBUG) {
       stack_pop(stack);
       break;
 
-    case 0x51: // MSTORE
+    case 0x52: // MSTORE
       pc += 1;
       // gas calculated in _mstore
       _mstore(stack, memory, &mem_end, &mem_expanded, &gas);
@@ -709,15 +657,10 @@ void vm(uint256_t program[], bool *DEBUG) {
       break;
 
     case 0xFE: // INVALID
-      printf("INVALID\n");
-      stack_destroy(stack);
-      exit(1);
-      break;
 
     default:
-      printf("UNKNOWN OPCODE\n");
-      stack_destroy(stack);
-      exit(1);
+      pc = MAX_PC + 1;
+      custom_error(invalid_op_err);
       break;
     }
   }
