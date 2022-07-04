@@ -313,10 +313,14 @@ void and_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
 
 // 256
 void and_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
-  E_0_0(dest) = E_0_0(a) & E_0_0(b);
-  E_0_1(dest) = E_0_1(a) & E_0_1(b);
-  E_1_0(dest) = E_1_0(a) & E_1_0(b);
-  E_1_1(dest) = E_1_1(a) & E_1_1(b);
+  and_uint128(&E_0(dest), &E_0(a), &E_0(b));
+  and_uint128(&E_1(dest), &E_1(a), &E_1(b));
+}
+
+// 512
+void and_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
+  and_uint256(&E_0(dest), &E_0(a), &E_0(b));
+  and_uint256(&E_1(dest), &E_1(a), &E_1(b));
 }
 
 //////////
@@ -331,10 +335,14 @@ void or_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
 
 // 256
 void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
-  E_0_0(dest) = E_0_0(a) | E_0_0(b);
-  E_0_1(dest) = E_0_1(a) | E_0_1(b);
-  E_1_0(dest) = E_1_0(a) | E_1_0(b);
-  E_1_1(dest) = E_1_1(a) | E_1_1(b);
+  or_uint128(&E_0(dest), &E_0(a), &E_0(b));
+  or_uint128(&E_1(dest), &E_1(a), &E_1(b));
+}
+
+// 512
+void or_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
+  or_uint256(&E_0(dest), &E_0(a), &E_0(b));
+  or_uint256(&E_1(dest), &E_1(a), &E_1(b));
 }
 
 /////////
@@ -489,9 +497,9 @@ void add_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
   }
 }
 
-/////////
-// SUB //
-/////////
+///////////
+/// SUB ///
+///////////
 
 // 128
 void sub_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {

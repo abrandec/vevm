@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// for keeping track of stack length
 static int stack_len = 0;
 
 // create a node
@@ -58,6 +59,8 @@ void stack_destroy(List *stack) {
   } else {
     Node *node = stack->first;
     Node *next;
+    
+    stack_len = 0;
 
     while (node != NULL) {
       next = node->next;
@@ -80,7 +83,7 @@ void stack_push(List *stack, uint256_t *val) {
     char err_msg[50] = "stack_push: stack is NULL\n";
     custom_error(err_msg);
   } else {
-
+    ++stack_len;
     Node *node = stack->first;
     while (node->next != NULL) {
       node = node->next;
@@ -97,8 +100,7 @@ void stack_push(List *stack, uint256_t *val) {
 }
 
 void stack_swap(List *stack, int index) {
-
-  int stack_len = stack_length(stack) - 1;
+  int stack_l = stack_length(stack) - 1;
 
   if (stack == NULL || index == 0 || index > 15 || index > stack_len) {
     char err_msg[50] = "EVM - Stack element not accessable\n";
@@ -109,9 +111,9 @@ void stack_swap(List *stack, int index) {
     Node *before = stack->first;
     Node *after = stack->first;
 
-    while (stack_len != index) {
+    while (stack_l != index) {
       before = before->next;
-      --stack_len;
+      --stack_l;
     }
 
     // top of stack element
@@ -130,9 +132,9 @@ void stack_swap(List *stack, int index) {
 uint256_t stack_peak(List *stack, int index) {
   uint256_t val = init_uint256(0);
 
-  int stack_len = stack_length(stack);
+  int stack_l = stack_length(stack);
 
-  if (stack == NULL || stack_len == 0 || index > stack_len - 1 || index < -1) {
+  if (stack == NULL || stack_l == 0 || index > stack_l - 1 || index < -1) {
     // slightly unhelpful error message!
     char err[50] = "EVM - Stack element is not accessable\n";
     custom_error(err);
@@ -159,7 +161,7 @@ void stack_pop(List *stack) {
     custom_error(err_msg);
   } else {
     int index = stack_length(stack) - 1;
-
+    --stack_len;
     if (index == 0) {
       Node *node = stack->first;
       stack->first = stack->first->next;
@@ -191,11 +193,6 @@ int stack_length(List *stack) {
     return 0;
   } else {
     Node *node = stack->first;
-    int length = 0;
-    while (node != NULL) {
-      ++length;
-      node = node->next;
-    }
-    return length - 1;
+    return stack_len;
   }
 }
