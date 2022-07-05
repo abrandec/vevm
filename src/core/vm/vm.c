@@ -398,8 +398,7 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
 
   // check if the memory location >32MB
   if (gt_uint256(&a, &max_mem_len)) {
-    char err[50] = "MEMORY SIZE EXCEEDED (>32MB)\n";
-    custom_error(err);
+    custom_error(memory_size_exceeded_err);
   }
 
   //              gas cost stuff              //
@@ -647,8 +646,6 @@ void _vm(uint256_t program[]) {
 
   // EVM memory
   static uint256_t memory[MAX_MEMORY_LEN];
-
-  char invalid_op_err[50] = "EVM - INVALID OPCODE\n";
 
   // for keeping track memory expansion costs
   uint64_t mem_end = 0;

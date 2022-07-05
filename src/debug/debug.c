@@ -32,8 +32,8 @@ void print_buffer(uint256_t buffer[], const char buff_name[], int length) {
 
 void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
                  uint64_t *opcode) {
-  const char prog_name[8] = "PROGRAM";
-  const char mem_name[8] = "MEMORY ";
+  static const char prog_name[8] = "PROGRAM";
+  static const char mem_name[8] = "MEMORY ";
 
   system("clear");
 

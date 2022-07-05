@@ -53,8 +53,7 @@ Node *Node_create(void) {
 
 void Node_destroy(Node *node) {
   if (node == NULL) {
-    char err_msg[50] = "Node_destroy: node is NULL\n";
-    custom_error(err_msg);
+    custom_error(stack_null_err);
   } else {
     free(node);
   }
@@ -91,8 +90,7 @@ List *stack_create(void) {
 
 void stack_destroy(List *stack) {
   if (stack == NULL) {
-    char err_msg[50] = "stack_destroy: stack is NULL\n";
-    custom_error(err_msg);
+    custom_error(stack_null_err);
   } else {
     Node *node = stack->first;
     Node *next;
@@ -117,11 +115,9 @@ void stack_destroy(List *stack) {
 
 void stack_push(List *stack, uint256_t *val) {
   if (stack_length(stack) > MAX_STACK_DEPTH - 1) {
-    char err_msg[50] = "EVM - Stack Overflow\n";
-    custom_error(err_msg);
+    custom_error(stack_overflow_err);
   } else if (stack == NULL) {
-    char err_msg[50] = "stack_push: stack is NULL\n";
-    custom_error(err_msg);
+    custom_error(stack_null_err);
   } else {
     ++stack_len;
     Node *node = stack->first;
@@ -148,8 +144,7 @@ void stack_push(List *stack, uint256_t *val) {
 void stack_pop(List *stack) {
 
   if (stack_length(stack) == 0) {
-    char err_msg[50] = "EVM - Stack Underflow\n";
-    custom_error(err_msg);
+    custom_error(stack_underflow_err);
   } else {
     int index = stack_length(stack) - 1;
     --stack_len;
@@ -184,8 +179,7 @@ void stack_swap(List *stack, int index) {
   int stack_l = stack_length(stack) - 1;
 
   if (stack == NULL || index == 0 || index > 15 || index > stack_len) {
-    char err_msg[50] = "EVM - Stack element not accessable\n";
-    custom_error(err_msg);
+    custom_error(inaccessable_element_err);
   } else {
     uint256_t data2swap;
 
@@ -220,8 +214,7 @@ uint256_t stack_peak(List *stack, int index) {
 
   if (stack == NULL || stack_l == 0 || index > stack_l - 1 || index < -1) {
     // slightly unhelpful error message!
-    char err[50] = "EVM - Stack element is not accessable\n";
-    custom_error(err);
+    custom_error(inaccessable_element_err);
     return val;
   } else {
     Node *node = stack->first;
@@ -244,8 +237,7 @@ uint256_t stack_peak(List *stack, int index) {
 
 int stack_length(List *stack) {
   if (stack == NULL) {
-    char err_msg[50] = "stack_length - Stack is NULL\n";
-    custom_error(err_msg);
+    custom_error(stack_null_err);
     return 0;
   } else {
     Node *node = stack->first;

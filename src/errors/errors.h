@@ -11,6 +11,6 @@
 
 // custom error handling
 // @param err_msg: error message
-void custom_error(char err_msg[]);
+void custom_error(const char err_msg[]);
 
 #endif

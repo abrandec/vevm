@@ -7,6 +7,14 @@
 #include <inttypes.h>
 
 /*
+  ┌───────────────────────────────┐
+  │   ERRORS                      │
+  └───────────────────────────────┘
+ */
+
+static const char invalid_op_err[21] = "EVM - INVALID OPCODE\n";
+static const char memory_size_exceeded_err[21] = "MEMORY SIZE EXCEEDED\n";
+/*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
   │   FUNCTIONS                                                                │
