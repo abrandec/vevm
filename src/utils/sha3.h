@@ -63,6 +63,26 @@ void sha3_Update(void *priv, void const *bufIn, size_t len);
 
 void const *sha3_Finalize(void *priv);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Single-call hashing */
 sha3_return_t sha3_HashBuffer( 
     unsigned bitSize,   /* 256, 384, 512 */

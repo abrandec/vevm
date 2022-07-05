@@ -1,7 +1,7 @@
-#include "../../src/bigint.h"
+#include "../../src//bigint/bigint.h"
 #include "../../src/config.h"
-#include "../../src/processor.h"
-#include "../../src/stack.h"
+#include "../../src/processor/processor.h"
+#include "../../src/stack/stack.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -17,7 +17,7 @@ static const char *filename = "output_hex/output.hex";
 
 // load bytecode from file & write to program buffer using write_bytecode
 // @prog_buf: buffer to write to
-int read_bytecode(uint256_t prog_buf[], char ch[]) {
+void read_bytecode(uint256_t prog_buf[], char ch[]) {
 
   FILE *fp = fopen(filename, "r");
 
@@ -49,8 +49,6 @@ int read_bytecode(uint256_t prog_buf[], char ch[]) {
 
   // close the file
   fclose(fp);
-
-  return i - 4;
 }
 
 // write to program buffer
@@ -58,18 +56,16 @@ void write2_prog_buff(uint256_t program[]) {
   char char_bytecode[CHAR_BUFF_LEN];
   char *pEnd;
 
-  // number of characters in file
-  int size = read_bytecode(program, char_bytecode);
+  read_bytecode(program, char_bytecode);
 
   int i;
-  int index = size / 32;
 
-  int uint256_index = index / 4;
   int digits64;
 
   // writing this buffer sucks so I just do this for now
   program[0] =
       init_all_uint256(0x600019001800FFFF, UINT64_MAX, UINT64_MAX, UINT64_MAX);
+
   program[1] =
       init_all_uint256(0xFF60020200FFFFFF, UINT64_MAX, UINT64_MAX, UINT64_MAX);
 
@@ -80,21 +76,21 @@ void write2_prog_buff(uint256_t program[]) {
 int main(int argc, char *argv[]) {
   static uint256_t program[MAX_BYTECODE_LEN];
 
-  bool DEBUG = false;
   int i;
 
   for (i = 0; i < argc; ++i) {
-
+#ifdef DEBUG
     // debug flag
     if (strcmp(argv[i], "-DEBUG") == 0 || strcmp(argv[i], "-debug") == 0 ||
         strcmp(argv[i], "-D") == 0 || strcmp(argv[i], "-d") == 0) {
-      DEBUG = true;
 
       // help flag
-    } else if (strncmp(argv[i], "-HELP", 1) == 0 ||
-               strncmp(argv[i], "-help", 1) == 0 ||
-               strncmp(argv[i], "-H", 1) == 0 ||
-               strncmp(argv[i], "-h", 1) == 0) {
+
+    } else
+#endif
+        if (strncmp(argv[i], "-HELP", 1) == 0 ||
+            strncmp(argv[i], "-help", 1) == 0 ||
+            strncmp(argv[i], "-H", 1) == 0 || strncmp(argv[i], "-h", 1) == 0) {
 
       // Title + logo
       printf("Vision EVM Options      "
@@ -108,13 +104,12 @@ int main(int argc, char *argv[]) {
     }
   }
 
-
   clear_buffer(program, MAX_BYTECODE_LEN);
 
   // read_bytecode(program);
 
   write2_prog_buff(program);
 
-  vm(program, &DEBUG);
+  vm(program);
   return 0;
 }

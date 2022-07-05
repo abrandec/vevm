@@ -1,14 +1,22 @@
 #include "processor.h"
-#include "bigint.h"
-#include "debug.h"
-#include "stack.h"
-#include "utils/opcode_names.h"
+#include "../bigint/bigint.h"
+#include "../config.h"
+#include "../errors/errors.h"
+
+#include "../opcodes/gas_table.h"
+#include "../stack/stack.h"
 
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+// debug options
+#ifdef DEBUG
+#include "../debug/debug.h"
+static bool debug_mode = false;
+#endif
 
 // Get opcode from program buffer
 // @param program[]: program buffer
@@ -293,8 +301,6 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
 
   //              gas cost stuff              //
 
-  *gas -= 3;
-
   // check if memory has been expanded before
   if (*mem_expanded) {
     *mem_expanded = true;
@@ -331,6 +337,28 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   or_uint256(&memory[index2], &memory[index2], &E1(temp));
 }
 
+void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
+              bool *mem_expanded, uint64_t *gas) {}
+
+// void sload(List *stack, uint256_t memory[], uint64_t mem_end, *gas) {}
+
+// pc operation
+// @param stack: the stack
+// @param pc: the program counter
+void _pc(List *stack, uint64_t *pc) {
+  uint256_t a = init_all_uint256(0, 0, 0, *pc - 1);
+  stack_push(stack, &a);
+}
+
+// msize operation
+// @param stack: the stack
+// @param mem_end: ending index of current memory usage
+void _msize(List *stack, uint64_t *mem_end) {
+  uint256_t a = init_all_uint256(0, 0, 0, *mem_end * 8);
+
+  stack_push(stack, &a);
+}
+
 // gas operation
 // @param stack: the stack
 // @param gas: gas left
@@ -346,7 +374,7 @@ void _gas(List *stack, uint64_t *gas) {
 // @param opcode: the push(x) opcode
 // @param pc: the program counter
 // @return bytes from program[] to push onto the stack
-void push_bytes(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
+void _push(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
 
   // masks for getting data from program[] to push
   uint256_t mask256_1 = init_uint256(0xFFFFFFFFFFFFFFFF);
@@ -360,7 +388,7 @@ void push_bytes(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
   int num_bytes2push = *opcode - 95;
 
   // keep track of where to start pushing bytes from in program[]
-  int prev_pc = *pc + 1;
+  int prev_pc = *pc;
 
   // increment program counter to next instruction
   *pc = prev_pc + num_bytes2push;
@@ -445,12 +473,14 @@ void clear_buffer(uint256_t buffer[], int length) {
   }
 }
 
+void consume_gas(int *opcode, uint64_t *gas) {}
+
 // vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom
 // for running the EVM
 // @param program[]: program to run
 // @param DEBUG: whether to print debug messages
-void vm(uint256_t program[], bool *DEBUG) {
-
+void vm(uint256_t program[]) {
+  // printf("%d\n", GAS_TABLE[0]);
   //      variables      //
 
   // EVM memory
@@ -478,134 +508,85 @@ void vm(uint256_t program[], bool *DEBUG) {
   // for storing data to push onto stack
   uint256_t push_data;
 
-  //      the action      //
-
-  // clear all bits in buffers
+  // clear all bits in memory
   clear_buffer(memory, MAX_MEMORY_LEN);
 
   // while loop to run program //
   while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
 
-    if (*DEBUG) {
+#ifdef DEBUG
+    // DEBUG mode //
+    if (debug_mode) {
       print_debug(stack, memory, &pc, &gas, &opcode);
     }
+#endif
 
-    // printf("GAS LEFT: %lld\n", gas);
+    consume_gas(&opcode, &gas);
+    pc += 1;
+
     switch (opcode) {
     case 0x00: // STOP
       stack_destroy(stack);
       exit(1);
       break;
-
     case 0x01: // ADD
-      gas -= 3;
-      pc += 1;
       _add(stack);
       break;
-
     case 0x02: // MUL
-      gas -= 5;
-      pc += 1;
-
       _mul(stack);
       break;
     case 0x03: // SUB
-      gas -= 3;
-      pc += 1;
       _sub(stack);
       break;
-
     case 0x10: // LT
-      gas -= 3;
-      pc += 1;
       _lt(stack);
       break;
     case 0x11: // GT
-      gas -= 3;
-      pc += 1;
       _gt(stack);
       break;
-
     case 0x14: // EQ
-      gas -= 3;
-      pc += 1;
       _eq(stack);
       break;
-
     case 0x15: // ISZERO
-      gas -= 3;
-      pc += 1;
       _iszero(stack);
       break;
-
     case 0x16: // AND
-      gas -= 3;
-      pc += 1;
       _and(stack);
       break;
-
     case 0x17: // OR
-      gas -= 3;
-      pc += 1;
       _or(stack);
       break;
-
     case 0x18: // XOR
-      gas -= 3;
-      pc += 1;
       _xor(stack);
       break;
-
     case 0x19: // NOT
-      gas -= 3;
-      pc += 1;
       _not(stack);
       break;
-
     case 0x1B: // SHL
-      gas -= 3;
-      pc += 1;
       _shl(stack);
       break;
-
     case 0x1C: // SHR
-      gas -= 3;
-      pc += 1;
       _shr(stack);
       break;
-
     case 0x45: // GASLIMIT
-      gas -= 2;
-      pc += 1;
       _gaslimit(stack);
       break;
-
     case 0x50: // POP
-      gas -= 2;
-      pc += 1;
       stack_pop(stack);
       break;
-
     case 0x52: // MSTORE
-      pc += 1;
-      // gas calculated in _mstore
       _mstore(stack, memory, &mem_end, &mem_expanded, &gas);
       break;
-
-    case 0x58: // PC
-      gas -= 2;
-      uint256_t prev_pc = init_all_uint256(0, 0, 0, pc);
-      stack_push(stack, &prev_pc);
-      pc += 1;
+    case 0x59: // MSIZE
+      _msize(stack, &mem_end);
       break;
-
+    case 0x58: // PC
+      _pc(stack, &pc);
+      break;
     case 0x5A: // GAS
-      gas -= 2;
-      pc += 1;
       _gas(stack, &gas);
       break;
-
     case 0x60: // PUSH1
     case 0x61: // PUSH2
     case 0x62: // PUSH3
@@ -638,11 +619,8 @@ void vm(uint256_t program[], bool *DEBUG) {
     case 0x7D: // PUSH30
     case 0x7E: // PUSH31
     case 0x7F: // PUSH32
-      gas -= 3;
-      // pc updated in push_bytes()
-      push_bytes(stack, program, &opcode, &pc);
+      _push(stack, program, &opcode, &pc);
       break;
-
     case 0x80: // DUP1
     case 0x81: // DUP2
     case 0x82: // DUP3
@@ -659,11 +637,8 @@ void vm(uint256_t program[], bool *DEBUG) {
     case 0x8D: // DUP14
     case 0x8E: // DUP15
     case 0x8F: // DUP16
-      gas -= 3;
-      pc += 1;
       _dup(stack, &opcode);
       break;
-
     case 0x90: // SWAP1
     case 0x91: // SWAP2
     case 0x92: // SWAP3
@@ -680,19 +655,16 @@ void vm(uint256_t program[], bool *DEBUG) {
     case 0x9D: // SWAP14
     case 0x9E: // SWAP15
     case 0x9F: // SWAP16
-      gas -= 3;
-      pc += 1;
       _swap(stack, &opcode);
       break;
-
     case 0xFE: // INVALID
-      pc = MAX_PC + 1;
       custom_error(invalid_op_err);
       break;
-
     case 0xFF: // SELFDESTRUCT
-      stack_destroy(stack);
       exit(1);
+      break;
+    default:
+      custom_error(invalid_op_err);
       break;
     }
   }

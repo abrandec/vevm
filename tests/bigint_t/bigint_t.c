@@ -1,4 +1,4 @@
-#include "../src/bigint.h"
+#include "../../src/bigint/bigint.h"
 
 #include <inttypes.h>
 #include <stdbool.h>
@@ -10,7 +10,8 @@
 // @param dest: the destination to copy the data to
 // @param data: the data to copy
 // @return true if the copy was successful, false otherwise
-bool assert_copy_uint128(uint128_t dest, uint128_t data) {
+bool assert_copy_uint128(void) {
+  
   copy_uint128(dest, data);
   if (E0(dest) != E0(data) && E1(dest) != E1(data)) {
     printf("copy_uint128 failed\n");

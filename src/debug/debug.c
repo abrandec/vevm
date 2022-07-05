@@ -1,17 +1,12 @@
 #include "debug.h"
-#include "bigint.h"
-#include "stack.h"
-#include "utils/opcode_names.h"
+#include "../bigint/bigint.h"
+#include "../opcodes/op_names.h"
+#include "../stack/stack.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-void custom_error(char err_msg[]) {
-  printf("%s\n", err_msg);
-  exit(1);
-}
 
 void print_buffer(uint256_t buffer[], const char buff_name[], int length) {
   int i = 0;
@@ -45,7 +40,7 @@ void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
          "00m\n┌─────────────────────────────────┐\n│ OPCODE   %02lX          "
          "           │ %s\n│ PC       %06d                 │\n│ GAS      "
          "%06lu   │\n└─────────────────────────────────┘",
-         *opcode, arrow_glacier_names[*opcode], *pc, *gas);
+         *opcode, OP_NAME[*opcode], *pc, *gas);
   stack_print(stack);
 
   print_buffer(memory, mem_name, 9);

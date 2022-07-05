@@ -16,6 +16,7 @@
         "stdio.h": "c",
         "bigint.h": "c",
         "stack.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "compare": "c"
     }
 }

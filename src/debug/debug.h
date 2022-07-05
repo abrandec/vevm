@@ -1,12 +1,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include "bigint.h"
-#include "stack.h"
-
-// custom error handling
-// @param err_msg: error message
-void custom_error(char err_msg[]);
+#include "../bigint/bigint.h"
+#include "../stack/stack.h"
 
 // print a given buffer
 // @param buffer: the buffer to print
@@ -20,7 +16,8 @@ void print_buffer(uint256_t buffer[], const char buff_name[], int length);
 // @param pc: program counter
 // @param gas: gas remaining
 // @param opcode: opcode
-void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas, uint64_t *opcode);
+void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
+                 uint64_t *opcode);
 
 /* Stack debugging */
 

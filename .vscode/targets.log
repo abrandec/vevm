@@ -6,12 +6,13 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul  4 04:47:00 2022
+# Make data base, printed on Tue Jul  5 01:54:13 2022
 
 # Variables
 
 # environment
 GDK_BACKEND = x11
+ 
 # environment
 LC_ALL = C
 # environment
@@ -27,7 +28,7 @@ LC_NUMERIC = en_US.UTF-8
 # environment
 VSCODE_CWD = /home/a
 # makefile (from 'Makefile', line 7)
-LIBS = -lm
+LIBS := -lm
 # environment
 LC_ADDRESS = en_US.UTF-8
 # default
@@ -96,6 +97,8 @@ WAYLAND_DISPLAY = wayland-0
 XDG_CONFIG_DIRS = /home/a/.config/kdedefaults:/etc/xdg
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
+# makefile (from 'Makefile', line 39)
+EVM_FLAGS = -DMAINNET -DARROW_GLACIER
 # environment
 XCURSOR_THEME = breeze_cursors
 # environment
@@ -104,6 +107,8 @@ XDG_SESSION_DESKTOP = KDE
 MAKEFILE_LIST := Makefile
 # automatic
 @F = $(notdir $@)
+# makefile (from 'Makefile', line 18)
+CHAIN := mainnet
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
@@ -114,8 +119,8 @@ XDG_SESSION_TYPE = wayland
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
 DEVKITPPC = /opt/devkitpro/devkitPPC
-# makefile (from 'Makefile', line 6)
-FLAGS = -Oz
+# makefile (from 'Makefile', line 45)
+FLAGS := -Oz -DDEBUG
 # environment
 SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/798,unix/a-81cu:/tmp/.ICE-unix/798
 # automatic
@@ -150,18 +155,20 @@ LC_MONETARY = en_US.UTF-8
 MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
-# makefile (from 'Makefile', line 9)
-EVM = src/processor.c src/stack.c src/bigint.c src/debug.c
 # environment
 KCRASH_AUTO_RESTARTED = 1
 # environment
 LC_TIME = en_US.UTF-8
 # environment
 VSCODE_LOG_NATIVE = false
+# makefile (from 'Makefile', line 46)
+CPU = src/processor/processor.c src/stack/stack.c src/bigint/bigint.c src/errors/errors.c src/debug/debug.c
 # environment
 LC_TELEPHONE = en_US.UTF-8
 # environment
 GDK_SCALE = 1
+# makefile (from 'Makefile', line 19)
+FORK := arrowglacier
 # automatic
 ?F = $(notdir $?)
 # environment
@@ -191,6 +198,7 @@ XDG_VTNR = 2
 # environment
 SYSTEMD_EXEC_PID = 658
 # environment
+ 
 DISPLAY = :1
 # environment
 USER = a
@@ -200,6 +208,8 @@ MAKE_VERSION := 4.3
 KDE_SESSION_UID = 1000
 # environment
 QT_WAYLAND_FORCE_DPI = 96
+# makefile (from 'Makefile', line 29)
+TEST_BIN = bin/tests
 # environment
 LC_MEASUREMENT = en_US.UTF-8
 # environment
@@ -218,6 +228,8 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 GTK2_RC_FILES = /etc/gtk-2.0/gtkrc:/home/a/.gtkrc-2.0:/home/a/.config/gtkrc-2.0
 # environment
 HOME = /home/a
+# makefile (from 'Makefile', line 22)
+DEBUG_MODE := 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
@@ -242,14 +254,14 @@ ELECTRON_NO_ATTACH_CONSOLE = 1
 KDE_SESSION_VERSION = 5
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink guile load
-# makefile (from 'Makefile', line 5)
-CC = clang
+# makefile (from 'Makefile', line 6)
+CC := clang
 # environment
 KDE_FULL_SESSION = true
 # environment
 LC_IDENTIFICATION = en_US.UTF-8
 # variable set hash-table stats:
-# Load=119/1024=12%, Rehash=0, Collisions=4/156=3%
+# Load=124/1024=12%, Rehash=0, Collisions=4/171=2%
 
 # Pattern-specific Variable Values
 
@@ -267,28 +279,21 @@ LC_IDENTIFICATION = en_US.UTF-8
 
 # Files
 
-stack_test: tests/h_stack_test.c
+# Not a target:
+tests/bigint_t/bigint_t.c:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 29):
-	$(CC) -o tests/bin/h_stack_test src/bigint.c tests/h_stack_test.c $(FLAGS) $(LIBS)
-
-bigint_test: tests/uint256_test.c
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 32):
-	$(CC) -o tests/bin/uint256_test tests/uint256_test.c $(FLAGS) $(LIBS)
 
 # Not a target:
-tests/h_stack_test.c:
+tests/processor_t/processor_t.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
 # Not a target:
-tests/uint256_test.c:
+tests/stack_t/stack_t.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -296,38 +301,37 @@ tests/uint256_test.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
- 
-#  Last modified 2022-07-04 04:46:57.643078586
+#  Last modified 2022-07-05 01:54:00.546497869
 #  File has been updated.
 #  Successfully updated.
 
 # Not a target:
 sample_programs/vision_etk/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 04:39:51.4897533
+#  Last modified 2022-07-05 01:28:22.219860264
 #  File has been updated.
 #  Successfully updated.
 
-tests: stack_test bigint_test processor_test
+tests: stack_t bigint_t processor_t
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-processor_test: tests/processor_test.c
+processor_test: tests/processor_t/processor_t.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 35):
-	$(CC) -o tests/bin/processor_test $(EVM) tests/processor_test.c $(FLAGS) $(LIBS)
+#  recipe to execute (from 'Makefile', line 76):
+	$(CC) -o $(TEST_BIN)/processor_t $(EVM) tests/processor_t/processor_test.c $(FLAGS) $(LIBS)
+
+# Not a target:
+processor_t:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 .DEFAULT:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-tests/processor_test.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -339,7 +343,8 @@ all: vetk
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/7=0%
+ 
+# Load=0/32=0%, Rehash=0, Collisions=0/8=0%
 
 vetk: sample_programs/vision_etk/main.c
 #  Implicit rule search has not been done.
@@ -364,9 +369,16 @@ vetk: sample_programs/vision_etk/main.c
 # automatic
 # | := 
 # variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=5/15=33%
-#  recipe to execute (from 'Makefile', line 21):
-	$(CC) -o bin/vetk/vetk $(EVM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+# Load=8/32=25%, Rehash=0, Collisions=5/16=31%
+#  recipe to execute (from 'Makefile', line 63):
+	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(CPU) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+
+bigint_t: tests/bigint_t/bigint_t.c
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 70):
+	$(CC) -o $(TEST_BIN)/bigint_t tests/binint_t/binint_t.c $(FLAGS) $(LIBS)
 
 # Not a target:
 .SUFFIXES:
@@ -374,20 +386,28 @@ vetk: sample_programs/vision_etk/main.c
 #  Modification time never checked.
 #  File has not been updated.
 
+stack_t: tests/stack_t/stack_t.c
+#  Implicit rule search has not been done.
+ 
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 73):
+	$(CC) -o $(TEST_BIN)/stack_t tests/stack_t/stack_t.c $(FLAGS) $(LIBS)
+
 # files hash-table stats:
-# Load=13/1024=1%, Rehash=0, Collisions=0/37=0%
+# Load=14/1024=1%, Rehash=0, Collisions=0/37=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 26 / storage = 303 B / avg = 11 B
-# current buf: size = 8162 B / used = 303 B / count = 26 / avg = 11 B
+# strcache buffers: 1 (0) / strings = 27 / storage = 326 B / avg = 12 B
+# current buf: size = 8162 B / used = 326 B / count = 27 / avg = 12 B
 
-# strcache performance: lookups = 43 / hit rate = 39%
+# strcache performance: lookups = 43 / hit rate = 37%
 # hash-table stats:
-# Load=26/8192=0%, Rehash=0, Collisions=0/43=0%
-# Finished Make data base on Mon Jul  4 04:47:00 2022
+# Load=27/8192=0%, Rehash=0, Collisions=0/43=0%
+# Finished Make data base on Tue Jul  5 01:54:13 2022
 
  

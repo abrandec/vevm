@@ -3,7 +3,7 @@
 
 // Heap based stack
 
-#include "bigint.h"
+#include "../bigint/bigint.h"
 
 // get element at the last index of the stack
 // @param stack: the stack to get the last element from

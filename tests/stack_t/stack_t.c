@@ -1,5 +1,5 @@
-#include "../src/bigint.h"
-#include "../src/stack.h"
+#include "../../src/bigint/bigint.h"
+#include "../../src/stack/stack.h"
 
 #include <stdbool.h>
 #include <stdio.h>

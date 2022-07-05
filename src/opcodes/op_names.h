@@ -1,10 +1,13 @@
-#ifndef OPCODE_NAMES_H
-#define OPCODE_NAMES_H
+#ifndef OP_NAMES_H
+#define OP_NAMES_H
+
+#include "../config.h"
 
 #define NULL 0
 
-// opcode names
-static const char* arrow_glacier_names[256] = {
+#ifdef MAINNET
+#ifdef ARROW_GLACIER
+static const char *arrow_glacier_op_names[256] = {
     /* 0x00 */ "STOP",
     /* 0x01 */ "ADD",
     /* 0x02 */ "MUL",
@@ -263,4 +266,8 @@ static const char* arrow_glacier_names[256] = {
     /* 0xff */ "SELFDESTRUCT",
 };
 
+#define OP_NAME arrow_glacier_op_names
+
+#endif
+#endif
 #endif

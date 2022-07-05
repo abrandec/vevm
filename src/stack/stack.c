@@ -1,7 +1,7 @@
 #include "stack.h"
-#include "bigint.h"
-#include "config.h"
-#include "debug.h"
+#include "../bigint/bigint.h"
+#include "../config.h"
+#include "../errors/errors.h"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef DEBUG
+#include "../debug/debug.h"
+#endif
 
 // for keeping track of stack length
 static int stack_len = 0;
@@ -59,7 +63,7 @@ void stack_destroy(List *stack) {
   } else {
     Node *node = stack->first;
     Node *next;
-    
+
     stack_len = 0;
 
     while (node != NULL) {
