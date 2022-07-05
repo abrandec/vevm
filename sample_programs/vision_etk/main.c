@@ -1,7 +1,7 @@
-#include "../../src//bigint/bigint.h"
-#include "../../src/config.h"
-#include "../../src/processor/processor.h"
-#include "../../src/stack/stack.h"
+#include "../../src/common/math/bigint/bigint.h"
+#include "../../src/core/config.h"
+#include "../../src/core/vm/vm.h"
+#include "../../src/core/stack/stack.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -110,6 +110,6 @@ int main(int argc, char *argv[]) {
 
   write2_prog_buff(program);
 
-  vm(program);
+  _vm(program);
   return 0;
 }

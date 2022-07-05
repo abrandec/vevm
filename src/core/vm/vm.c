@@ -1,10 +1,10 @@
-#include "processor.h"
-#include "../bigint/bigint.h"
+#include "../../common/math/bigint/bigint.h"
+#include "../../errors/errors.h"
 #include "../config.h"
-#include "../errors/errors.h"
-
 #include "../opcodes/gas_table.h"
 #include "../stack/stack.h"
+
+#include "vm.h"
 
 #include <inttypes.h>
 #include <stdbool.h>
@@ -12,11 +12,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// debug options
 #ifdef DEBUG
-#include "../debug/debug.h"
-static bool debug_mode = false;
+#include "../../debug/debug.h"
 #endif
+
+/*
+  ┌───────────────────────────────┐
+  │   GET OPCODE                  │
+  └───────────────────────────────┘
+ */
 
 // Get opcode from program buffer
 // @param program[]: program buffer
@@ -25,13 +29,10 @@ static bool debug_mode = false;
 void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
   // opcode mask
   uint64_t op_mask = 0xFF00000000000000;
-
   // get uint256_t index by dividing by 32 (32 bytes in a uint256_t)
   int index = *pc / 32;
-
   // get location of opcode within the uint256_t
   int offset = *pc % 32;
-
   // amount to shift the mask by to get the opcode
   int op_mask_mv = ((offset % 8) * 8);
 
@@ -63,6 +64,20 @@ void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
   *opcode = (*opcode & op_mask) >> (56 - op_mask_mv);
 }
 
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   OPCODES                                                                  │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
+
+/*
+  ┌───────────────────────────────┐
+  │   ADD                         │
+  └───────────────────────────────┘
+ */
+
 // Add operation
 // @param stack: the stack
 void _add(List *stack) {
@@ -75,6 +90,12 @@ void _add(List *stack) {
   add_uint256(&a, &a, &b);
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   MUL                         │
+  └───────────────────────────────┘
+ */
 
 // multiplication operation
 // @param stack: the stack
@@ -89,6 +110,12 @@ void _mul(List *stack) {
   stack_push(stack, &a);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   SUB                         │
+  └───────────────────────────────┘
+ */
+
 // Subtract operation
 // @param stack: the stack
 void _sub(List *stack) {
@@ -101,6 +128,12 @@ void _sub(List *stack) {
   sub_uint256(&a, &a, &b);
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   LT                          │
+  └───────────────────────────────┘
+ */
 
 // Less than operation
 // @param stack: the stack
@@ -120,6 +153,12 @@ void _lt(List *stack) {
   stack_push(stack, &a);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   GT                          │
+  └───────────────────────────────┘
+ */
+
 // Greater than operation
 // @param stack: the stack
 void _gt(List *stack) {
@@ -137,6 +176,12 @@ void _gt(List *stack) {
 
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   EQ                          │
+  └───────────────────────────────┘
+ */
 
 // Equal operation
 // @param stack: the stack
@@ -156,6 +201,12 @@ void _eq(List *stack) {
   stack_push(stack, &a);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   ISZERO                      │
+  └───────────────────────────────┘
+ */
+
 // iszero operation
 // @param stack: the stack
 void _iszero(List *stack) {
@@ -171,6 +222,12 @@ void _iszero(List *stack) {
   stack_push(stack, &b);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   AND                         │
+  └───────────────────────────────┘
+ */
+
 // AND operation
 // @param stack: the stack
 void _and(List *stack) {
@@ -183,6 +240,12 @@ void _and(List *stack) {
   and_uint256(&a, &a, &b);
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   OR                          │
+  └───────────────────────────────┘
+ */
 
 // OR operation
 // @param stack: the stack
@@ -197,7 +260,14 @@ void _or(List *stack) {
   stack_push(stack, &a);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   XOR                         │
+  └───────────────────────────────┘
+ */
+
 // XOR operation
+// @param stack: the stack
 void _xor(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
@@ -209,7 +279,14 @@ void _xor(List *stack) {
   stack_push(stack, &a);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   NOT                         │
+  └───────────────────────────────┘
+ */
+
 // NOT operation
+// @param stack: the stack
 void _not(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
@@ -218,6 +295,12 @@ void _not(List *stack) {
 
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   SHL                         │
+  └───────────────────────────────┘
+ */
 
 // Left shift operation
 // @param stack: the stack
@@ -239,6 +322,12 @@ void _shl(List *stack) {
   stack_push(stack, &c);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   SHR                         │
+  └───────────────────────────────┘
+ */
+
 // Right shift operation
 // @param stack: the stack
 void _shr(List *stack) {
@@ -258,12 +347,24 @@ void _shr(List *stack) {
   stack_push(stack, &c);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   Gas Limit                   │
+  └───────────────────────────────┘
+ */
+
 // gaslimit operation
 // @param stack: the stack
 void _gaslimit(List *stack) {
   uint256_t a = init_all_uint256(0, 0, 0, GAS);
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   MSTORE                      │
+  └───────────────────────────────┘
+ */
 
 // mstore operation
 // @param stack: the stack
@@ -276,6 +377,8 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   // mask for 1st & 2nd index
   uint256_t mask1 = init_uint256(0xFFFFFFFFFFFFFFFF);
   uint256_t mask2 = init_uint256(0xFFFFFFFFFFFFFFFF);
+
+  // POP and temporarily store values
 
   // data to push
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -337,18 +440,40 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   or_uint256(&memory[index2], &memory[index2], &E1(temp));
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   MSTORE8                     │
+  └───────────────────────────────┘
+ */
+
+// mstore8 operation
+// @param stack: the stack
+// @param memory[]: the memory
+// @param mem_end: ending index of current memory usage
+// @param mem_expanded: initial memory expansion check
+// @param gas: gas left
 void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
               bool *mem_expanded, uint64_t *gas) {}
 
-// void sload(List *stack, uint256_t memory[], uint64_t mem_end, *gas) {}
+/*
+  ┌───────────────────────────────┐
+  │   PC                          │
+  └───────────────────────────────┘
+ */
 
 // pc operation
 // @param stack: the stack
 // @param pc: the program counter
-void _pc(List *stack, uint64_t *pc) {
+void _pc(List *stack, int *pc) {
   uint256_t a = init_all_uint256(0, 0, 0, *pc - 1);
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   MSIZE                       │
+  └───────────────────────────────┘
+ */
 
 // msize operation
 // @param stack: the stack
@@ -359,6 +484,12 @@ void _msize(List *stack, uint64_t *mem_end) {
   stack_push(stack, &a);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   Gas                         │
+  └───────────────────────────────┘
+ */
+
 // gas operation
 // @param stack: the stack
 // @param gas: gas left
@@ -367,6 +498,12 @@ void _gas(List *stack, uint64_t *gas) {
 
   stack_push(stack, &a);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   PUSH                        │
+  └───────────────────────────────┘
+ */
 
 // get bytes from program[] to push onto the stack
 // @param stack: the stack
@@ -439,6 +576,12 @@ void _push(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
   stack_push(stack, &data1);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   DUP                         │
+  └───────────────────────────────┘
+ */
+
 // duplicate elements on the stack
 // @param stack: the stack
 // @param opcode: the dup(x) opcode
@@ -451,6 +594,12 @@ void _dup(List *stack, uint64_t *opcode) {
   stack_push(stack, &a);
 }
 
+/*
+  ┌───────────────────────────────┐
+  │   SWAP                        │
+  └───────────────────────────────┘
+ */
+
 // swap two elements from the stack
 // @param stack: the stack
 // @param opcode: the swap(x) opcode
@@ -460,6 +609,14 @@ void _swap(List *stack, uint64_t *opcode) {
 
   stack_swap(stack, swap_index);
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   MISC                        │
+  └───────────────────────────────┘
+ */
+
+void consume_gas(int *opcode, uint64_t *gas) {}
 
 // set a buffer to zero
 // @param buffer: the buffer to initialize to zero
@@ -473,13 +630,18 @@ void clear_buffer(uint256_t buffer[], int length) {
   }
 }
 
-void consume_gas(int *opcode, uint64_t *gas) {}
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   MAIN                                                                     │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-// vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom vroom
-// for running the EVM
+// Entry point for EVM
 // @param program[]: program to run
 // @param DEBUG: whether to print debug messages
-void vm(uint256_t program[]) {
+void _vm(uint256_t program[]) {
   // printf("%d\n", GAS_TABLE[0]);
   //      variables      //
 
@@ -515,6 +677,11 @@ void vm(uint256_t program[]) {
   while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
 
+/*
+┌────────────────────┐
+│   OPTIONAL DEBUG   │
+└────────────────────┘
+*/
 #ifdef DEBUG
     // DEBUG mode //
     if (debug_mode) {
@@ -522,7 +689,7 @@ void vm(uint256_t program[]) {
     }
 #endif
 
-    consume_gas(&opcode, &gas);
+    // consume_gas(&opcode, &gas);
     pc += 1;
 
     switch (opcode) {

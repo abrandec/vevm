@@ -17,6 +17,11 @@
         "bigint.h": "c",
         "stack.h": "c",
         "stat.h": "c",
-        "compare": "c"
+        "compare": "c",
+        "stack_t.h": "c",
+        "gas_table.h": "c",
+        "errors.h": "c",
+        "uint128_t.h": "c",
+        "uint256_t.h": "c"
     }
 }

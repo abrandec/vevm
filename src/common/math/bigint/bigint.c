@@ -1,14 +1,15 @@
 #include "bigint.h"
 
-#include <errno.h>
 #include <inttypes.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-////////////
-/// INIT ///
-////////////
+/*
+  ┌───────────────────────────────┐
+  │   INIT                        │
+  └───────────────────────────────┘
+ */
 
 // 128
 uint128_t init_uint128(uint64_t a) {
@@ -36,9 +37,11 @@ uint512_t init_uint512(uint64_t a) {
   return result;
 }
 
-////////////////
-/// INIT ALL ///
-////////////////
+/*
+  ┌───────────────────────────────┐
+  │   INIT ALL VALUES             │
+  └───────────────────────────────┘
+ */
 
 // 128
 uint128_t init_all_uint128(uint64_t a, uint64_t b) {
@@ -71,9 +74,11 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
   return result;
 }
 
-/////////////////////
-/// CHANGE VALUES ///
-/////////////////////
+/*
+  ┌───────────────────────────────┐
+  │   CHANGE VALUES               │
+  └───────────────────────────────┘
+ */
 
 // 128
 void change_uint128(uint128_t *dest, uint64_t a, uint64_t b) {
@@ -100,9 +105,11 @@ void change_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
   E_1(dest) = temp;
 }
 
-////////////
-/// COPY ///
-////////////
+/*
+  ┌───────────────────────────────┐
+  │   COPY                        │
+  └───────────────────────────────┘
+ */
 
 // 128
 void copy_uint128(uint128_t *dest, uint128_t *src) {
@@ -122,9 +129,11 @@ void copy_uint512(uint512_t *dest, uint512_t *src) {
   E_1(dest) = E_1(src);
 }
 
-//////////////////
-/// CLEAR UINT ///
-//////////////////
+/*
+  ┌───────────────────────────────┐
+  │   CLEAR UINT                  │
+  └───────────────────────────────┘
+ */
 
 // 128
 void clear_uint128(uint128_t *dest) {
@@ -144,9 +153,11 @@ void clear_uint512(uint512_t *dest) {
   clear_uint256(&E_1(dest));
 }
 
-//////////////////
-/// ZERO CHECK ///
-//////////////////
+/*
+  ┌───────────────────────────────┐
+  │   ZERO CHECK                  │
+  └───────────────────────────────┘
+ */
 
 // 128
 bool zero_uint128(uint128_t *src) { return (E_0(src) == 0 && E_1(src) == 0); }
@@ -161,12 +172,19 @@ bool zero_uint512(uint512_t *src) {
   return (zero_uint256(&E_0(src)) && zero_uint256(&E_1(src)));
 }
 
-///                                                       ///
-///                       Bit stuff                       ///
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   BIT STUFF                                                                │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-///////////
-/// SHL ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   SHL                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void lshift_uint128(uint128_t *dest, uint128_t *src, int shift) {
@@ -240,9 +258,11 @@ void lshift_uint512(uint512_t *dest, uint512_t *src, int shift) {
   }
 }
 
-/////////
-// SHR //
-/////////
+/*
+  ┌───────────────────────────────┐
+  │   SHR                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void rshift_uint128(uint128_t *dest, uint128_t *src, int shift) {
@@ -317,9 +337,11 @@ void rshift_uint512(uint512_t *dest, uint512_t *src, int shift) {
   }
 }
 
-/////////
-// AND //
-/////////
+/*
+  ┌───────────────────────────────┐
+  │   AND                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void and_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
@@ -339,9 +361,11 @@ void and_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
   and_uint256(&E_1(dest), &E_1(a), &E_1(b));
 }
 
-//////////
-/// OR ///
-//////////
+/*
+  ┌───────────────────────────────┐
+  │   OR                          │
+  └───────────────────────────────┘
+ */
 
 // 128
 void or_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
@@ -361,9 +385,11 @@ void or_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
   or_uint256(&E_1(dest), &E_1(a), &E_1(b));
 }
 
-/////////
-// XOR //
-/////////
+/*
+  ┌───────────────────────────────┐
+  │   XOR                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void xor_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
@@ -383,9 +409,11 @@ void xor_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
   xor_uint256(&E_1(dest), &E_1(a), &E_1(b));
 }
 
-///////////
-/// NOT ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   NOT                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void not_uint128(uint128_t *dest, uint128_t *src) {
@@ -405,9 +433,11 @@ void not_uint512(uint512_t *dest, uint512_t *src) {
   not_uint256(&E_1(dest), &E_1(src));
 }
 
-//////////
-/// LT ///
-//////////
+/*
+  ┌───────────────────────────────┐
+  │   LT                          │
+  └───────────────────────────────┘
+ */
 
 // 128
 bool lt_uint128(uint128_t *a, uint128_t *b) {
@@ -433,9 +463,11 @@ bool lt_uint512(uint512_t *a, uint512_t *b) {
   return lt_uint256(&E_0(a), &E_0(b));
 }
 
-//////////
-/// GT ///
-//////////
+/*
+  ┌───────────────────────────────┐
+  │   GT                          │
+  └───────────────────────────────┘
+ */
 
 // 128
 bool gt_uint128(uint128_t *a, uint128_t *b) {
@@ -461,9 +493,11 @@ bool gt_uint512(uint512_t *a, uint512_t *b) {
   return gt_uint256(&E_0(a), &E_0(b));
 }
 
-///////////
-/// LTE ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   LTE                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 bool lte_uint128(uint128_t *a, uint128_t *b) {
@@ -480,9 +514,11 @@ bool lte_uint512(uint512_t *a, uint512_t *b) {
   return lt_uint512(a, b) || equal_uint512(a, b);
 }
 
-/////////
-// GTE //
-/////////
+/*
+  ┌───────────────────────────────┐
+  │   GTE                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 bool gte_uint128(uint128_t *a, uint128_t *b) {
@@ -499,12 +535,19 @@ bool gte_uint512(uint512_t *a, uint512_t *b) {
   return gt_uint512(a, b) || equal_uint512(a, b);
 }
 
-///                                                        ///
-///                       Arithmetic                       ///
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   Arithmetic                                                               │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-/////////
-// ADD //
-/////////
+/*
+  ┌───────────────────────────────┐
+  │   ADD                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void add_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
@@ -517,8 +560,10 @@ void add_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   uint128_t tmp;
   add_uint128(&E_0(dest), &E_0(a), &E_0(b));
   add_uint128(&tmp, &E_1(a), &E_1(b));
+
   if (gt_uint128(&E_1(a), &tmp)) {
     uint128_t one;
+
     E0(one) = 0;
     E1(one) = 1;
 
@@ -544,9 +589,11 @@ void add_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
   }
 }
 
-///////////
-/// SUB ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   SUB                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void sub_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
@@ -588,9 +635,11 @@ void sub_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
   }
 }
 
-///////////
-/// MUL ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   MUL                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void mul_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
@@ -626,9 +675,11 @@ void mul_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {
   E0(tmp2) = third32 >> 32;
   E1(tmp2) = third32 << 32;
   add_uint128(dest, &tmp, &tmp2);
+
   E0(tmp) = second32;
   E1(tmp) = 0;
   add_uint128(&tmp2, &tmp, dest);
+
   E0(tmp) = 0;
   E1(tmp) = fourth32;
   add_uint128(dest, &tmp, &tmp2);
@@ -641,6 +692,7 @@ void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   uint128_t products[4][4];
   uint128_t tmp, tmp2, fourth64, third64, second64, first64;
   uint256_t target1, target2;
+
   E0(top[0]) = 0;
   E1(top[0]) = E0(E_0(a));
   E0(top[1]) = 0;
@@ -673,11 +725,13 @@ void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   E0(tmp2) = 0;
   E1(tmp2) = E0(products[0][3]);
   add_uint128(&third64, &tmp, &tmp2);
+
   E0(tmp) = 0;
   E1(tmp) = E1(products[0][1]);
   E0(tmp2) = 0;
   E1(tmp2) = E0(products[0][2]);
   add_uint128(&second64, &tmp, &tmp2);
+
   E0(tmp) = 0;
   E1(tmp) = E1(products[0][0]);
   E0(tmp2) = 0;
@@ -688,15 +742,19 @@ void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   E1(tmp) = E1(products[1][3]);
   add_uint128(&tmp2, &tmp, &third64);
   copy_uint128(&third64, &tmp2);
+
   E0(tmp) = 0;
   E1(tmp) = E1(products[1][2]);
   add_uint128(&tmp2, &tmp, &second64);
+
   E0(tmp) = 0;
   E1(tmp) = E0(products[1][3]);
   add_uint128(&second64, &tmp, &tmp2);
+
   E0(tmp) = 0;
   E1(tmp) = E1(products[1][1]);
   add_uint128(&tmp2, &tmp, &first64);
+
   E0(tmp) = 0;
   E1(tmp) = E0(products[1][2]);
   add_uint128(&first64, &tmp, &tmp2);
@@ -705,9 +763,11 @@ void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   E1(tmp) = E1(products[2][3]);
   add_uint128(&tmp2, &tmp, &second64);
   copy_uint128(&second64, &tmp2);
+
   E0(tmp) = 0;
   E1(tmp) = E1(products[2][2]);
   add_uint128(&tmp2, &tmp, &first64);
+
   E0(tmp) = 0;
   E1(tmp) = E0(products[2][3]);
   add_uint128(&first64, &tmp, &tmp2);
@@ -733,9 +793,12 @@ void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
 
 // 512
 void mul_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {}
-///////////
-/// DIV ///
-///////////
+
+/*
+  ┌───────────────────────────────┐
+  │   DIV                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void div_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {}
@@ -746,21 +809,11 @@ void div_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {}
 // 512
 void div_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {}
 
-//////////////
-/// DIVMOD ///
-//////////////
-
-// 128
-void divmod_uint128(uint128_t *retDiv, uint128_t *retMod, uint128_t *l,
-                    uint128_t *r) {}
-
-// 256
-
-// 512
-
-///////////
-/// EXP ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   EXP                         │
+  └───────────────────────────────┘
+ */
 
 // 128
 void exp_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {}
@@ -770,9 +823,11 @@ void exp_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {}
 // 512
 void exp_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {}
 
-/////////////
-/// EQUAL ///
-/////////////
+/*
+  ┌───────────────────────────────┐
+  │   EQUAL                       │
+  └───────────────────────────────┘
+ */
 
 // 128
 bool equal_uint128(uint128_t *a, uint128_t *b) {
@@ -790,12 +845,19 @@ bool equal_uint512(uint512_t *a, uint512_t *b) {
   return equal_uint256(&E_0(a), &E_0(b)) && equal_uint256(&E_1(a), &E_1(b));
 }
 
-///                                                          ///
-///                           Misc                           ///
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   MISC                                                                     │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-////////////////
-/// PRINTING ///
-////////////////
+/*
+  ┌───────────────────────────────┐
+  │   PRINTING                    │
+  └───────────────────────────────┘
+ */
 
 // 128
 void print_hex_uint128(uint128_t *a) {
@@ -813,9 +875,11 @@ void print_hex_uint512(uint512_t *a) {
          E_1(a));
 }
 
-//////////////////
-/// HEX LENGTH ///
-//////////////////
+/*
+  ┌───────────────────────────────┐
+  │   HEX LENGTH                  │
+  └───────────────────────────────┘
+ */
 
 // <=64
 int hex_length(uint64_t *src) {
@@ -846,29 +910,4 @@ int hex_length_uint256(uint256_t *src) {
 int hex_length_uint512(uint512_t *src) {
   int x = hex_length_uint256(&E_0(src));
   return x == 0 ? hex_length_uint256(&E_1(src)) : x + 32;
-}
-
-////////////////
-/// GET UINT ///
-////////////////
-
-// 256
-uint64_t get_uint64(uint256_t *src, int index) {
-  switch (index) {
-  case 0:
-    return E_0_0(src);
-    break;
-  case 1:
-    return E_0_1(src);
-    break;
-  case 2:
-    return E_1_0(src);
-    break;
-  case 3:
-    return E_1_1(src);
-    break;
-  default:
-    return 0;
-    break;
-  }
 }

@@ -1,17 +1,15 @@
-#ifndef PROCESSOR_H
-#define PROCESSOR_H
+#ifndef VM_H
+#define VM_H
 
-#include "../bigint/bigint.h"
+#include "../../common/math/bigint/bigint.h"
 #include "../config.h"
 
 #include <inttypes.h>
 
-
-
-// for running the EVM
+// Entry point for EVM
 // @param program[]: program to run
 // @param DEBUG: whether to print debug messages
-void vm(uint256_t program[]);
+void _vm(uint256_t program[]);
 
 // set a buffer to zero
 // @param buffer: the buffer to initialize to zero

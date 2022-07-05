@@ -6,13 +6,12 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jul  5 01:54:13 2022
+# Make data base, printed on Tue Jul  5 05:04:50 2022
 
 # Variables
 
 # environment
 GDK_BACKEND = x11
- 
 # environment
 LC_ALL = C
 # environment
@@ -33,6 +32,8 @@ LIBS := -lm
 LC_ADDRESS = en_US.UTF-8
 # default
 MAKE_COMMAND := make
+# makefile (from 'Makefile', line 46)
+VM := src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c src/debug/debug.c
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
@@ -70,6 +71,7 @@ XAUTHORITY = /run/user/1000/xauth_kBCaCf
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # makefile
+ 
 MAKEFLAGS = pqrR
 # environment
 PLASMA_USE_QT_SCALING = 1
@@ -161,8 +163,6 @@ KCRASH_AUTO_RESTARTED = 1
 LC_TIME = en_US.UTF-8
 # environment
 VSCODE_LOG_NATIVE = false
-# makefile (from 'Makefile', line 46)
-CPU = src/processor/processor.c src/stack/stack.c src/bigint/bigint.c src/errors/errors.c src/debug/debug.c
 # environment
 LC_TELEPHONE = en_US.UTF-8
 # environment
@@ -198,7 +198,6 @@ XDG_VTNR = 2
 # environment
 SYSTEMD_EXEC_PID = 658
 # environment
- 
 DISPLAY = :1
 # environment
 USER = a
@@ -280,20 +279,7 @@ LC_IDENTIFICATION = en_US.UTF-8
 # Files
 
 # Not a target:
-tests/bigint_t/bigint_t.c:
-#  Implicit rule search has not been done.
- 
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-tests/processor_t/processor_t.c:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-tests/stack_t/stack_t.c:
+tests/core_t/stack_t/stack_t.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -301,34 +287,29 @@ tests/stack_t/stack_t.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-05 01:54:00.546497869
+#  Last modified 2022-07-05 05:04:25.566280129
 #  File has been updated.
 #  Successfully updated.
+ 
 
 # Not a target:
 sample_programs/vision_etk/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-05 01:28:22.219860264
+#  Last modified 2022-07-05 04:54:17.86962514
 #  File has been updated.
 #  Successfully updated.
 
-tests: stack_t bigint_t processor_t
+tests: main_t
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-processor_test: tests/processor_t/processor_t.c
+main_t: tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 76):
-	$(CC) -o $(TEST_BIN)/processor_t $(EVM) tests/processor_t/processor_test.c $(FLAGS) $(LIBS)
-
-# Not a target:
-processor_t:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 70):
+	$(CC) $(EVM_FLAGS) -o $(TEST_BIN)/main_t $(VM) tests/main_t.c $(FLAGS) $(LIBS)
 
 # Not a target:
 .DEFAULT:
@@ -343,7 +324,6 @@ all: vetk
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
- 
 # Load=0/32=0%, Rehash=0, Collisions=0/8=0%
 
 vetk: sample_programs/vision_etk/main.c
@@ -371,14 +351,13 @@ vetk: sample_programs/vision_etk/main.c
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=5/16=31%
 #  recipe to execute (from 'Makefile', line 63):
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(CPU) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
 
-bigint_t: tests/bigint_t/bigint_t.c
+# Not a target:
+tests/core_t/vm_t/vm_t.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 70):
-	$(CC) -o $(TEST_BIN)/bigint_t tests/binint_t/binint_t.c $(FLAGS) $(LIBS)
 
 # Not a target:
 .SUFFIXES:
@@ -386,28 +365,26 @@ bigint_t: tests/bigint_t/bigint_t.c
 #  Modification time never checked.
 #  File has not been updated.
 
-stack_t: tests/stack_t/stack_t.c
+# Not a target:
+tests/common_t/math_t/bigint_t/bigint_t.c:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 73):
-	$(CC) -o $(TEST_BIN)/stack_t tests/stack_t/stack_t.c $(FLAGS) $(LIBS)
 
 # files hash-table stats:
-# Load=14/1024=1%, Rehash=0, Collisions=0/37=0%
+# Load=11/1024=1%, Rehash=0, Collisions=0/31=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 27 / storage = 326 B / avg = 12 B
-# current buf: size = 8162 B / used = 326 B / count = 27 / avg = 12 B
+# strcache buffers: 1 (0) / strings = 24 / storage = 305 B / avg = 12 B
+# current buf: size = 8162 B / used = 305 B / count = 24 / avg = 12 B
 
-# strcache performance: lookups = 43 / hit rate = 37%
+# strcache performance: lookups = 37 / hit rate = 35%
 # hash-table stats:
-# Load=27/8192=0%, Rehash=0, Collisions=0/43=0%
-# Finished Make data base on Tue Jul  5 01:54:13 2022
+# Load=24/8192=0%, Rehash=0, Collisions=0/37=0%
+# Finished Make data base on Tue Jul  5 05:04:50 2022
 
  

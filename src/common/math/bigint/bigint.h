@@ -4,9 +4,11 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-////////////////////////
-/// TYPE DEFINITIONS ///
-////////////////////////
+/*
+  ┌───────────────────────────────┐
+  │   UINT TYPE DEFINITIONS       │
+  └───────────────────────────────┘
+ */
 
 // uint128_t by packing 2 uint64_ts into a single struct
 typedef struct uint128_t {
@@ -22,21 +24,29 @@ typedef struct uint512_t {
   uint256_t e[2]; // element
 } uint512_t;
 
-//                                                      //
-//                        MACROS                        //
-//                                                      //
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   MACROS                                                                   │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-/////////////////////////////////////////
-/// MAXMIMUM VALUES OF EACH UINT TYPE ///
-/////////////////////////////////////////
+/*
+  ┌───────────────────────────────┐
+  │   MAX VALS OF EACH UINT TYPE  │
+  └───────────────────────────────┘
+ */
 
 #define UINT128_MAX ((uint128_t){.e = {UINT64_MAX, UINT64_MAX}})
 #define UINT256_MAX ((uint256_t){.e = {UINT128_MAX, UINT128_MAX}})
 #define UINT512_MAX ((uint512_t){.e = {UINT256_MAX, UINT256_MAX}})
 
-////////////////////////////////
-/// ELEMENT ACCESSING MACROS ///
-////////////////////////////////
+/*
+  ┌───────────────────────────────┐
+  │   ELEMENT ACCESSING MACROS    │
+  └───────────────────────────────┘
+ */
 
 //    accessing uint64_t elements in uint128_t    //
 // or accessing uint128_t elements in a uint256_t //
@@ -59,13 +69,19 @@ typedef struct uint512_t {
 #define E10(x) x.e[1].e[0]
 #define E11(x) x.e[1].e[1]
 
-//                                                         //
-//                        FUNCTIONS                        //
-//                                                         //
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   FUNCTIONS                                                                │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-////////////
-/// INIT ///
-////////////
+/*
+  ┌───────────────────────────────┐
+  │   INIT                        │
+  └───────────────────────────────┘
+ */
 
 // create a uint128_t initialized with a uint64_t
 // @param: the uint64_t to initialize each uint64_t element of the uint128_t to
@@ -81,9 +97,11 @@ uint256_t init_uint256(uint64_t a);
 // @return the initted uint512_t
 uint512_t init_uint512(uint64_t a);
 
-////////////////
-/// INIT ALL ///
-////////////////
+/*
+  ┌───────────────────────────────┐
+  │   INIT ALL VALUES             │
+  └───────────────────────────────┘
+ */
 
 // set elements in a uint128_t
 // @param a: the 1st element to change (uint128_t.uint64_t[0])
@@ -103,9 +121,11 @@ uint256_t init_all_uint256(uint64_t a, uint64_t b, uint64_t c, uint64_t d);
 uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
                            uint64_t e, uint64_t f, uint64_t g, uint64_t h);
 
-/////////////////////
-/// CHANGE VALUES ///
-/////////////////////
+/*
+  ┌───────────────────────────────┐
+  │   CHANGE VALUES               │
+  └───────────────────────────────┘
+ */
 
 // change elements in an already initialized uint128_t
 // @param dest: the uint128_t to change
@@ -126,9 +146,11 @@ void change_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
 void change_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
                     uint64_t d, uint64_t e, uint64_t f, uint64_t g, uint64_t h);
 
-////////////
-/// COPY ///
-////////////
+/*
+  ┌───────────────────────────────┐
+  │   COPY                        │
+  └───────────────────────────────┘
+ */
 
 // copy a uint128_t into another uint128_t
 // @param dest: the destination uint128_t to copy src into
@@ -145,9 +167,11 @@ void copy_uint256(uint256_t *dest, uint256_t *src);
 // @param src: the source uint512_t to copy into dest
 void copy_uint512(uint512_t *dest, uint512_t *src);
 
-//////////////////
-/// CLEAR UINT ///
-//////////////////
+/*
+  ┌───────────────────────────────┐
+  │   CLEAR UINT                  │
+  └───────────────────────────────┘
+ */
 
 // set a uint128_t to 0
 // @param dest: the uint128_t to set to 0
@@ -160,6 +184,12 @@ void clear_uint256(uint256_t *dest);
 // set a uint512_t to 0
 // @param dest: the uint512_t to set to 0
 void clear_uint512(uint512_t *dest);
+
+/*
+  ┌───────────────────────────────┐
+  │   ZERO CHECK                  │
+  └───────────────────────────────┘
+ */
 
 // check if a uint128_t is 0
 // @param src: the uint128_t to check
@@ -176,12 +206,19 @@ bool zero_uint256(uint256_t *src);
 // @return true if the uint512_t is 0, false otherwise
 bool zero_uint512(uint512_t *src);
 
-///                                                       ///
-///                       Bit stuff                       ///
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   BIT STUFF                                                                │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-///////////
-/// SHL ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   SHL                         │
+  └───────────────────────────────┘
+ */
 
 // shift a uint128_t left by n bits
 // @param dest: where to store the shifted uint128_t
@@ -201,9 +238,11 @@ void lshift_uint256(uint256_t *dest, uint256_t *src, int shift);
 // @param shift: the number of bits to shift
 void lshift_uint512(uint512_t *dest, uint512_t *src, int shift);
 
-///////////
-/// SHR ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   SHR                         │
+  └───────────────────────────────┘
+ */
 
 // shift a uint128_t right by n bits
 // @param dest: where to store the shifted uint128_t
@@ -223,9 +262,11 @@ void rshift_uint256(uint256_t *dest, uint256_t *src, int shift);
 // @param shift: the number of bits to shift
 void rshift_uint512(uint512_t *dest, uint512_t *src, int shift);
 
-///////////
-/// AND ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   AND                         │
+  └───────────────────────────────┘
+ */
 
 // AND two uint128_ts
 // @param dest: where to store the sum of a and b
@@ -245,9 +286,11 @@ void and_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to AND
 void and_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-//////////
-/// OR ///
-//////////
+/*
+  ┌───────────────────────────────┐
+  │   OR                          │
+  └───────────────────────────────┘
+ */
 
 // OR two uint128_ts
 // @param dest: where to store the sum of a and b
@@ -267,9 +310,11 @@ void or_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to OR
 void or_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-///////////
-/// XOR ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   XOR                         │
+  └───────────────────────────────┘
+ */
 
 // XOR two uint128_ts
 // @param dest: where to store the sum of a and b
@@ -289,9 +334,11 @@ void xor_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to XOR
 void xor_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-///////////
-/// NOT ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   NOT                         │
+  └───────────────────────────────┘
+ */
 
 // NOT a uint128_t
 // @param dest: where to store the result
@@ -308,9 +355,11 @@ void not_uint256(uint256_t *dest, uint256_t *src);
 // @param src: the uint512_t to NOT
 void not_uint512(uint512_t *dest, uint512_t *src);
 
-//////////
-/// LT ///
-//////////
+/*
+  ┌───────────────────────────────┐
+  │   LT                          │
+  └───────────────────────────────┘
+ */
 
 // less than comparison for uint128_ts
 // @param a: the first uint128_t to compare
@@ -330,9 +379,11 @@ bool lt_uint256(uint256_t *a, uint256_t *b);
 // @return true if a < b, false otherwise
 bool lt_uint512(uint512_t *a, uint512_t *b);
 
-//////////
-/// GT ///
-//////////
+/*
+  ┌───────────────────────────────┐
+  │   GT                          │
+  └───────────────────────────────┘
+ */
 
 // greater than comparison for uint128_ts
 // @param a: the first uint128_t to compare
@@ -352,9 +403,11 @@ bool gt_uint256(uint256_t *a, uint256_t *b);
 // @return true if a > b, false otherwise
 bool gt_uint512(uint512_t *a, uint512_t *b);
 
-///////////
-/// LTE ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   LTE                         │
+  └───────────────────────────────┘
+ */
 
 // less than or equal comparison for uint128_ts
 // @param a: the first uint128_t to compare
@@ -374,9 +427,11 @@ bool lte_uint256(uint256_t *a, uint256_t *b);
 // @return true if a <= b, false otherwise
 bool lte_uint512(uint512_t *a, uint512_t *b);
 
-///////////
-/// GTE ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   GTE                         │
+  └───────────────────────────────┘
+ */
 
 // greater than or equal comparison for uint128_ts
 // @param a: the first uint128_t to compare
@@ -396,12 +451,19 @@ bool gte_uint256(uint256_t *a, uint256_t *b);
 // @return true if a >= b, false otherwise
 bool gte_uint512(uint512_t *a, uint512_t *b);
 
-///                                                        ///
-///                       Arithmetic                       ///
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   Arithmetic                                                               │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-///////////
-/// ADD ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   ADD                         │
+  └───────────────────────────────┘
+ */
 
 // add two uint128_t
 // @param dest: where to store the sum of a and b
@@ -421,9 +483,11 @@ void add_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to add
 void add_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-///////////
-/// SUB ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   SUB                         │
+  └───────────────────────────────┘
+ */
 
 // subtract two uint128_ts
 // @param dest: where to store the difference of a and b
@@ -443,9 +507,11 @@ void sub_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to subtract
 void sub_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-///////////
-/// MUL ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   MUL                         │
+  └───────────────────────────────┘
+ */
 
 // multiply two uint128_ts
 // @param dest: where to store the product of a and b
@@ -465,9 +531,11 @@ void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to multiply
 void mul_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-///////////
-/// DIV ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   DIV                         │
+  └───────────────────────────────┘
+ */
 
 // divide two uint128_ts
 // @param dest: where to store the quotient of a and b
@@ -487,9 +555,11 @@ void div_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to divide
 void div_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-///////////
-/// EXP ///
-///////////
+/*
+  ┌───────────────────────────────┐
+  │   EXP                         │
+  └───────────────────────────────┘
+ */
 
 // exponentiate two uint128_ts
 // @param dest: where to store the result of a^b
@@ -509,9 +579,11 @@ void exp_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
 // @param b: the second uint512_t to exponentiate
 void exp_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
 
-/////////////
-/// EQUAL ///
-/////////////
+/*
+  ┌───────────────────────────────┐
+  │   EQUAL                       │
+  └───────────────────────────────┘
+ */
 
 // check if two uint128_ts are equal
 // @param a: the first uint128_t to compare
@@ -531,12 +603,19 @@ bool equal_uint256(uint256_t *a, uint256_t *b);
 // @return true if a == b, false otherwise
 bool equal_uint512(uint512_t *a, uint512_t *b);
 
-///                                                          ///
-///                           Misc                           ///
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   MISC                                                                     │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
-////////////////
-/// PRINTING ///
-////////////////
+/*
+  ┌───────────────────────────────┐
+  │   PRINTING                    │
+  └───────────────────────────────┘
+ */
 
 // printf a uint128_t in hexadecimal
 // @param src: the uint128_t to print
@@ -550,9 +629,11 @@ void print_hex_uint256(uint256_t *a);
 // @param src: the uint512_t to print
 void print_hex_uint512(uint512_t *a);
 
-//////////////////
-/// HEX LENGTH ///
-//////////////////
+/*
+  ┌───────────────────────────────┐
+  │   HEX LENGTH                  │
+  └───────────────────────────────┘
+ */
 
 // get byte length of a uint in base 16
 // @param src: uint64_t to get length of
@@ -573,15 +654,5 @@ int hex_length_uint256(uint256_t *src);
 // @param src: uint512 to get length of
 // @return byte length of src rounded up
 int hex_length_uint512(uint512_t *src);
-
-////////////////
-/// GET UINT ///
-////////////////
-
-// get a uint64_t from a uint256_t
-// @param src: the uint256_t to get the uint64_t from
-// @param index: the index of the uint64_t to get
-// @return the uint64_t at index
-uint64_t get_uint64(uint256_t *src, int index);
 
 #endif

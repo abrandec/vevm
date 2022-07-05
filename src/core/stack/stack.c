@@ -1,7 +1,8 @@
-#include "stack.h"
-#include "../bigint/bigint.h"
+#include "../../common/math/bigint/bigint.h"
 #include "../config.h"
-#include "../errors/errors.h"
+#include "../../errors/errors.h"
+
+#include "stack.h"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -11,14 +12,18 @@
 #include <string.h>
 
 #ifdef DEBUG
-#include "../debug/debug.h"
+#include "../../debug/debug.h"
 #endif
 
 // for keeping track of stack length
 static int stack_len = 0;
 
-// create a node
-// @return a ptr to the newly created node
+/*
+  ┌───────────────────────────────┐
+  │   NODE CREATE                 │
+  └───────────────────────────────┘
+ */
+
 Node *Node_create(void) {
 
   Node *node = malloc(sizeof(Node));
@@ -32,8 +37,12 @@ Node *Node_create(void) {
   return node;
 }
 
-// destroy a node
-// @param node: the node to destroy
+/*
+  ┌───────────────────────────────┐
+  │   NODE DESTROY                │
+  └───────────────────────────────┘
+ */
+
 void Node_destroy(Node *node) {
   if (node == NULL) {
     char err_msg[50] = "Node_destroy: node is NULL\n";
@@ -43,8 +52,12 @@ void Node_destroy(Node *node) {
   }
 }
 
-// create a new stack
-// @returns a new stack
+/*
+  ┌───────────────────────────────┐
+  │   STACK CREATE                │
+  └───────────────────────────────┘
+ */
+
 List *stack_create(void) {
   List *stack = malloc(sizeof(List));
   Node *node = Node_create();
@@ -54,8 +67,12 @@ List *stack_create(void) {
   return stack;
 }
 
-// destroy the stack
-// @param stack: the stack to destroy
+/*
+  ┌───────────────────────────────┐
+  │   STACK DESTROY               │
+  └───────────────────────────────┘
+ */
+
 void stack_destroy(List *stack) {
   if (stack == NULL) {
     char err_msg[50] = "stack_destroy: stack is NULL\n";
@@ -76,9 +93,12 @@ void stack_destroy(List *stack) {
   }
 }
 
-// push a new e onto the top of the stack
-// @param stack: the stack to push onto
-// @param data: the data to push onto the stack
+/*
+  ┌───────────────────────────────┐
+  │   STACK PUSH                  │
+  └───────────────────────────────┘
+ */
+
 void stack_push(List *stack, uint256_t *val) {
   if (stack_length(stack) > MAX_STACK_DEPTH - 1) {
     char err_msg[50] = "EVM - Stack Overflow\n";
@@ -102,6 +122,12 @@ void stack_push(List *stack, uint256_t *val) {
     node->next = Node_create();
   }
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   STACK SWAP                  │
+  └───────────────────────────────┘
+ */
 
 void stack_swap(List *stack, int index) {
   int stack_l = stack_length(stack) - 1;
@@ -129,35 +155,15 @@ void stack_swap(List *stack, int index) {
     copy_uint256(before->data, &data2swap);
   }
 }
-// peak at the stack at a certain index
-// @param stack: stack to peek from
-// @param index: index of the stack to peek
-// @return stack item
-uint256_t stack_peak(List *stack, int index) {
-  uint256_t val = init_uint256(0);
 
-  int stack_l = stack_length(stack);
 
-  if (stack == NULL || stack_l == 0 || index > stack_l - 1 || index < -1) {
-    // slightly unhelpful error message!
-    char err[50] = "EVM - Stack element is not accessable\n";
-    custom_error(err);
-    return val;
-  } else {
-    Node *node = stack->first;
-    int i;
 
-    for (i = 0; i < index; ++i) {
-      node = node->next;
-    }
+/*
+  ┌───────────────────────────────┐
+  │   STACK POP                   │
+  └───────────────────────────────┘
+ */
 
-    copy_uint256(&val, node->data);
-    return val;
-  }
-}
-
-// pop the first element on the stack
-// @param stack: stack
 void stack_pop(List *stack) {
 
   if (stack_length(stack) == 0) {
@@ -187,9 +193,41 @@ void stack_pop(List *stack) {
   }
 }
 
-// gets length of stack
-// @param stack: stack to get length of
-// @return length of stack
+/*
+  ┌───────────────────────────────┐
+  │   STACK PEAK                  │
+  └───────────────────────────────┘
+ */
+
+uint256_t stack_peak(List *stack, int index) {
+  uint256_t val = init_uint256(0);
+
+  int stack_l = stack_length(stack);
+
+  if (stack == NULL || stack_l == 0 || index > stack_l - 1 || index < -1) {
+    // slightly unhelpful error message!
+    char err[50] = "EVM - Stack element is not accessable\n";
+    custom_error(err);
+    return val;
+  } else {
+    Node *node = stack->first;
+    int i;
+
+    for (i = 0; i < index; ++i) {
+      node = node->next;
+    }
+
+    copy_uint256(&val, node->data);
+    return val;
+  }
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   STACK LENGTH                │
+  └───────────────────────────────┘
+ */
+
 int stack_length(List *stack) {
   if (stack == NULL) {
     char err_msg[50] = "stack_length - Stack is NULL\n";

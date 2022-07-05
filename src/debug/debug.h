@@ -1,8 +1,15 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include "../bigint/bigint.h"
-#include "../stack/stack.h"
+#include "../common/math/bigint/bigint.h"
+#include "../core/stack/stack.h"
+
+
+#ifdef DEBUG
+    static bool debug_mode = true;
+    #else
+    static bool debug_mode = false;
+#endif
 
 // print a given buffer
 // @param buffer: the buffer to print

@@ -1,7 +1,8 @@
+#include "../common/math/bigint/bigint.h"
+#include "../core/opcodes/op_names.h"
+#include "../core/stack/stack.h"
+
 #include "debug.h"
-#include "../bigint/bigint.h"
-#include "../opcodes/op_names.h"
-#include "../stack/stack.h"
 
 #include <assert.h>
 #include <stdio.h>

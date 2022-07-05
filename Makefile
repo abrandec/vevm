@@ -7,12 +7,12 @@ CC := clang
 LIBS := -lm
 FLAGS := -Oz
 
-#####################
+#					#
 # 		FLAGS 		#
-#####################
+#					#
 
-# Assemble CPU
-CPU = src/processor/processor.c src/stack/stack.c src/bigint/bigint.c src/errors/errors.c
+# Assemble VM
+VM := src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c
 
 # EVM FLAGS
 CHAIN := mainnet
@@ -21,16 +21,16 @@ FORK := arrowglacier
 # DEBUG FLAG
 DEBUG_MODE := 1
 
-#####################
+#					#
 # 		MISC 		#
-#####################
+#					#
 
 # Output dir for tests
 TEST_BIN = bin/tests
 
-#####################################################
+#													#
 #				Conditional Compilation				#
-#####################################################
+#													#		
 
 # Compilation flags for opcodes & gas table
 ifeq ($(CHAIN), mainnet)
@@ -43,34 +43,28 @@ endif
 # Compilation flags for debugging
 ifeq ($(DEBUG_MODE), 1)
 	FLAGS += -DDEBUG
-	CPU += src/debug/debug.c
+	VM += src/debug/debug.c
 endif
 
-#########################################################
+#  														#
 #						Compiling						#
-#########################################################
+#														#
 
 all: vetk
 
-tests: stack_t bigint_t processor_t	
+tests: main_t	
 
-###################################
+#								  #
 #		  Sample Programs		  #
-###################################
+#								  #
 
 # VETK (Vision ETK)
-vetk: sample_programs/vision_etk/main.c
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(CPU) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+vetk: sample_programs/vision_etk/main.c 
+	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
 
-#############################
+#   						#
 # 			Tests 			#
-#############################
+#							#		
 
-bigint_t: tests/bigint_t/bigint_t.c
-	$(CC) -o $(TEST_BIN)/bigint_t tests/binint_t/binint_t.c $(FLAGS) $(LIBS)
-
-stack_t: tests/stack_t/stack_t.c
-	$(CC) -o $(TEST_BIN)/stack_t tests/stack_t/stack_t.c $(FLAGS) $(LIBS)
-
-processor_test: tests/processor_t/processor_t.c
-	$(CC) -o $(TEST_BIN)/processor_t $(EVM) tests/processor_t/processor_test.c $(FLAGS) $(LIBS)
+main_t: tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c
+	$(CC) $(EVM_FLAGS) -o $(TEST_BIN)/main_t $(VM) tests/main_t.c $(FLAGS) $(LIBS)
