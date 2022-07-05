@@ -1,6 +1,6 @@
 #include "../../common/math/bigint/bigint.h"
-#include "../config.h"
 #include "../../errors/errors.h"
+#include "../config.h"
 
 #include "stack.h"
 
@@ -17,6 +17,14 @@
 
 // for keeping track of stack length
 static int stack_len = 0;
+
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   NODE FUNCTIONS                                                           │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
 /*
   ┌───────────────────────────────┐
@@ -51,6 +59,14 @@ void Node_destroy(Node *node) {
     free(node);
   }
 }
+
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   STACK FUNCTIONS                                                          │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
 /*
   ┌───────────────────────────────┐
@@ -125,41 +141,6 @@ void stack_push(List *stack, uint256_t *val) {
 
 /*
   ┌───────────────────────────────┐
-  │   STACK SWAP                  │
-  └───────────────────────────────┘
- */
-
-void stack_swap(List *stack, int index) {
-  int stack_l = stack_length(stack) - 1;
-
-  if (stack == NULL || index == 0 || index > 15 || index > stack_len) {
-    char err_msg[50] = "EVM - Stack element not accessable\n";
-    custom_error(err_msg);
-  } else {
-    uint256_t data2swap;
-
-    Node *before = stack->first;
-    Node *after = stack->first;
-
-    while (stack_l != index) {
-      before = before->next;
-      --stack_l;
-    }
-
-    // top of stack element
-    copy_uint256(&data2swap, after->data);
-
-    // element to swap with
-    copy_uint256(after->data, before->data);
-
-    copy_uint256(before->data, &data2swap);
-  }
-}
-
-
-
-/*
-  ┌───────────────────────────────┐
   │   STACK POP                   │
   └───────────────────────────────┘
  */
@@ -190,6 +171,39 @@ void stack_pop(List *stack) {
       free(data);
       Node_destroy(node);
     }
+  }
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   STACK SWAP                  │
+  └───────────────────────────────┘
+ */
+
+void stack_swap(List *stack, int index) {
+  int stack_l = stack_length(stack) - 1;
+
+  if (stack == NULL || index == 0 || index > 15 || index > stack_len) {
+    char err_msg[50] = "EVM - Stack element not accessable\n";
+    custom_error(err_msg);
+  } else {
+    uint256_t data2swap;
+
+    Node *before = stack->first;
+    Node *after = stack->first;
+
+    while (stack_l != index) {
+      before = before->next;
+      --stack_l;
+    }
+
+    // top of stack element
+    copy_uint256(&data2swap, after->data);
+
+    // element to swap with
+    copy_uint256(after->data, before->data);
+
+    copy_uint256(before->data, &data2swap);
   }
 }
 

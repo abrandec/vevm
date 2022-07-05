@@ -19,17 +19,6 @@ typedef struct ListTag {
 } List;
 
 /*
-  ┌───────────────────────────────┐
-  │   MACROS                      │
-  └───────────────────────────────┘
- */
-
-// get element at the last index of the stack
-// @param stack: the stack to get the last element from
-// @return the last element of the stack
-#define STACK_TOP(x) stack_length(x) - 1
-
-/*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
   │   NODE FUNCTIONS                                                           │
@@ -97,6 +86,16 @@ void stack_push(List *stack, uint256_t *data);
 
 /*
   ┌───────────────────────────────┐
+  │   STACK POP                   │
+  └───────────────────────────────┘
+ */
+
+// pop the top element on the stack
+// @param stack: the stack to pop the top element from
+void stack_pop(List *stack);
+
+/*
+  ┌───────────────────────────────┐
   │   STACK SWAP                  │
   └───────────────────────────────┘
  */
@@ -105,16 +104,6 @@ void stack_push(List *stack, uint256_t *data);
 // @param stack: the stack to swap the top element of
 // @param index: the index of the element to swap with
 void stack_swap(List *stack, int index);
-
-/*
-  ┌───────────────────────────────┐
-  │   STACK POP                   │
-  └───────────────────────────────┘
- */
-
-// pop the top element on the stack
-// @param stack: the stack to pop the top element from
-void stack_pop(List *stack);
 
 /*
   ┌───────────────────────────────┐

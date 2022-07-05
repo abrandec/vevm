@@ -44,7 +44,7 @@ void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
          *opcode, OP_NAME[*opcode], *pc, *gas);
   stack_print(stack);
 
-  print_buffer(memory, mem_name, 9);
+  print_buffer(memory, mem_name, PRINT_LENGTH);
 
   sleep(1);
 }

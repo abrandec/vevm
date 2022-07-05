@@ -6,6 +6,14 @@
 
 #include <inttypes.h>
 
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   FUNCTIONS                                                                │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
+
 // Entry point for EVM
 // @param program[]: program to run
 // @param DEBUG: whether to print debug messages
