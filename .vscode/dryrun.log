@@ -1,5 +1,5 @@
 make --dry-run --keep-going --print-directory
 make: Entering directory '/home/a/Documents/github/vision_evm'
-clang -DMAINNET -DARROW_GLACIER -o bin/vetk/vetk src/common/io/io.c src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c src/debug/debug.c sample_programs/vision_etk/main.c -Oz -DDEBUG -lm
+clang -DMAINNET -DARROW_GLACIER -o bin/vetk/vetk src/common/io/io.c src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c src/debug/debug.c sample_programs/vision_etk/main.c -Oz -DDEBUG -lm
 make: Leaving directory '/home/a/Documents/github/vision_evm'
  

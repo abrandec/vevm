@@ -452,6 +452,22 @@ bool gte_uint256(uint256_t *a, uint256_t *b);
 bool gte_uint512(uint512_t *a, uint512_t *b);
 
 /*
+  ┌───────────────────────────────┐
+  │   BITS                        │
+  └───────────────────────────────┘
+ */
+
+//
+// @param number:
+// @return
+uint32_t bits_uint128(uint128_t *number);
+
+//
+// @param number:
+// @return
+uint32_t bits_uint256(uint256_t *number);
+
+/*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
   │   Arithmetic                                                               │
@@ -537,23 +553,29 @@ void mul_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
   └───────────────────────────────┘
  */
 
-// divide two uint128_ts
-// @param dest: where to store the quotient of a and b
-// @param a: the first uint128_t to divide
-// @param b: the second uint128_t to divide
-void div_uint128(uint128_t *dest, uint128_t *a, uint128_t *b);
+// divide + mod two uint128_ts
+// @param destDiv: where to store the quotient of a and b
+// @param destMod: where to store the remainder of a and b
+// @param a: the uint128_t to divide
+// @param b: the uint128_t to divide with
+void divmod_uint128(uint128_t *destDiv, uint128_t *destMod, uint128_t *a,
+                    uint128_t *b);
 
-// divide two uint256_ts
-// @param dest: where to store the quotient of a and b
-// @param a: the first uint256_t to divide
-// @param b: the second uint256_t to divide
-void div_uint256(uint256_t *dest, uint256_t *a, uint256_t *b);
+// divide + mod two uint256_ts
+// @param destDiv: where to store the quotient of a and b
+// @param destMod: where to store the remainder of a and b
+// @param a: the  uint256_t to divide
+// @param b: the uint256_t to divide with
+void divmod_uint256(uint256_t *destDiv, uint256_t *destMod, uint256_t *a,
+                 uint256_t *b);
 
-// divide two uint512_ts
-// @param dest: where to store the quotient of a and b
-// @param a: the first uint512_t to divide
-// @param b: the second uint512_t to divide
-void div_uint512(uint512_t *dest, uint512_t *a, uint512_t *b);
+// divide + mod two uint512_ts
+// @param destDiv: where to store the quotient of a and b
+// @param destMod: where to store the remainder of a and b
+// @param a: the  uint512_t to divide with
+// @param b: the  uint512_t to divide with
+void divmod_uint512(uint512_t *destDiv, uint256_t *destMod, uint512_t *a,
+                    uint512_t *b);
 
 /*
   ┌───────────────────────────────┐
@@ -613,46 +635,44 @@ bool equal_uint512(uint512_t *a, uint512_t *b);
 
 /*
   ┌───────────────────────────────┐
-  │   PRINTING                    │
+  │   PRINT DECIMAL               │
+  └───────────────────────────────┘
+ */
+
+// print a uint128_t in decimal
+// @param a: the uint128_t to print
+// @param newline: optional newline
+void print_uint128(uint128_t *a, bool newline);
+
+// print a uint256_t in decimal
+// @param a: the uint256_t to print
+// @param newline: optional newline
+void print_uint256(uint256_t *a, bool newline);
+
+// print a uint512_t in decimal
+// @param a: the uint512_t to print
+// @param newline: optional newline
+void print_uint512(uint512_t *a, bool newline);
+
+/*
+  ┌───────────────────────────────┐
+  │   PRINT HEX                   │
   └───────────────────────────────┘
  */
 
 // printf a uint128_t in hexadecimal
 // @param src: the uint128_t to print
-void print_hex_uint128(uint128_t *a);
+// @param newline: optional newline
+void print_hex_uint128(uint128_t *src, bool newline);
 
 // printf a uint256_t in hexadecimal
 // @param src: the uint256_t to print
-void print_hex_uint256(uint256_t *a);
+// @param newline: optional newline
+void print_hex_uint256(uint256_t *src, bool newline);
 
 // printf a uint512_t in decimal
 // @param src: the uint512_t to print
-void print_hex_uint512(uint512_t *a);
-
-/*
-  ┌───────────────────────────────┐
-  │   HEX LENGTH                  │
-  └───────────────────────────────┘
- */
-
-// get byte length of a uint in base 16
-// @param src: uint64_t to get length of
-// @return byte length of x rounded up
-int hex_length(uint64_t *src);
-
-// get byte length of a uint128 in base 16
-// @param src: uint128 to get length of
-// @return byte length of src rounded up
-int hex_length_uint128(uint128_t *src);
-
-// get byte length of a uint256 in base 16
-// @param src: uint256 to get length of
-// @return byte length of src rounded up
-int hex_length_uint256(uint256_t *src);
-
-// get byte length of a uint512 in base 16
-// @param src: uint512 to get length of
-// @return byte length of src rounded up
-int hex_length_uint512(uint512_t *src);
+// @param newline: optional newline
+void print_hex_uint512(uint512_t *a, bool newline);
 
 #endif

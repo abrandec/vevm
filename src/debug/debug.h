@@ -38,13 +38,6 @@ void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
 
 /* Stack debugging */
 
-// printfs the entire stack
-// @param stack: the stack to print
-void stack_print(List *stack);
 
-// printf a specific stack index
-// @param stack: which to stack to point to
-// @param index: index to print from stack
-void stack_peak_print(List *stack, int index);
 
 #endif

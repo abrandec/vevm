@@ -22,6 +22,8 @@
         "gas_table.h": "c",
         "errors.h": "c",
         "uint128_t.h": "c",
-        "uint256_t.h": "c"
+        "uint256_t.h": "c",
+        "functional": "c",
+        "random": "c"
     }
 }

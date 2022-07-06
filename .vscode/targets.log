@@ -6,18 +6,21 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jul  6 02:48:53 2022
+# Make data base, printed on Wed Jul  6 12:56:36 2022
 
 # Variables
 
 # environment
 GDK_BACKEND = x11
+ 
 # environment
 LC_ALL = C
 # environment
 NO_AT_BRIDGE = 1
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/a/.gtkrc:/home/a/.config/gtkrc
+# makefile (from 'Makefile', line 12)
+UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c
 # environment
 VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-721eb652-ddc7-42be-8ffb-d0bc79212097.sock
 # environment
@@ -32,7 +35,7 @@ LIBS := -lm
 LC_ADDRESS = en_US.UTF-8
 # default
 MAKE_COMMAND := make
-# makefile (from 'Makefile', line 49)
+# makefile (from 'Makefile', line 58)
 VM := src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c src/debug/debug.c
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
@@ -58,6 +61,8 @@ OLDPWD = /home/a
 VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
+# makefile (from 'Makefile', line 14)
+MATH := src/common/math/bigint/bigint.c
 # environment
 VSCODE_CODE_CACHE_PATH = /home/a/.config/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
 # environment
@@ -98,18 +103,17 @@ WAYLAND_DISPLAY = wayland-0
 XDG_CONFIG_DIRS = /home/a/.config/kdedefaults:/etc/xdg
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
-# makefile (from 'Makefile', line 42)
+# makefile (from 'Makefile', line 51)
 EVM_FLAGS = -DMAINNET -DARROW_GLACIER
 # environment
 XCURSOR_THEME = breeze_cursors
 # environment
 XDG_SESSION_DESKTOP = KDE
- 
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST := Makefile
 # automatic
 @F = $(notdir $@)
-# makefile (from 'Makefile', line 21)
+# makefile (from 'Makefile', line 30)
 CHAIN := mainnet
 # environment
 VSCODE_VERBOSE_LOGGING = true
@@ -121,7 +125,7 @@ XDG_SESSION_TYPE = wayland
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
 DEVKITPPC = /opt/devkitpro/devkitPPC
-# makefile (from 'Makefile', line 48)
+# makefile (from 'Makefile', line 57)
 FLAGS := -Oz -DDEBUG
 # environment
 SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/798,unix/a-81cu:/tmp/.ICE-unix/798
@@ -167,7 +171,7 @@ VSCODE_LOG_NATIVE = false
 LC_TELEPHONE = en_US.UTF-8
 # environment
 GDK_SCALE = 1
-# makefile (from 'Makefile', line 22)
+# makefile (from 'Makefile', line 31)
 FORK := arrowglacier
 # automatic
 ?F = $(notdir $?)
@@ -185,6 +189,7 @@ XDG_CURRENT_DESKTOP = KDE
 XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
 # environment
 DESKTOP_SESSION = plasmawayland
+ 
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = KDE
 # 'override' directive
@@ -205,9 +210,11 @@ USER = a
 MAKE_VERSION := 4.3
 # environment
 KDE_SESSION_UID = 1000
+# makefile (from 'Makefile', line 20)
+TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c
 # environment
 QT_WAYLAND_FORCE_DPI = 96
-# makefile (from 'Makefile', line 32)
+# makefile (from 'Makefile', line 41)
 TEST_BIN = bin/tests
 # environment
 LC_MEASUREMENT = en_US.UTF-8
@@ -227,7 +234,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 GTK2_RC_FILES = /etc/gtk-2.0/gtkrc:/home/a/.gtkrc-2.0:/home/a/.config/gtkrc-2.0
 # environment
 HOME = /home/a
-# makefile (from 'Makefile', line 25)
+# makefile (from 'Makefile', line 34)
 DEBUG_MODE := 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
@@ -259,10 +266,10 @@ CC := clang
 KDE_FULL_SESSION = true
 # environment
 LC_IDENTIFICATION = en_US.UTF-8
-# makefile (from 'Makefile', line 18)
+# makefile (from 'Makefile', line 23)
 IO := src/common/io/io.c
 # variable set hash-table stats:
-# Load=125/1024=12%, Rehash=0, Collisions=4/173=2%
+# Load=128/1024=12%, Rehash=0, Collisions=5/178=3%
 
 # Pattern-specific Variable Values
 
@@ -270,6 +277,7 @@ IO := src/common/io/io.c
 
 # Directories
 
+ 
 # . (device 66306, inode 10368114): 14 files, no impossibilities.
 
 # 14 files, no impossibilities in 1 directories.
@@ -281,22 +289,22 @@ IO := src/common/io/io.c
 # Files
 
 # Not a target:
-tests/core_t/stack_t/stack_t.c:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-06 12:56:18.115920311
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+tests/main_t.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
 # Not a target:
-Makefile:
-#  Implicit rule search has been done.
-#  Last modified 2022-07-06 02:48:48.829946976
-#  File has been updated.
-#  Successfully updated.
-
-# Not a target:
 sample_programs/vision_etk/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-06 02:45:33.863283997
+#  Last modified 2022-07-06 11:17:46.352699231
 #  File has been updated.
 #  Successfully updated.
 
@@ -305,16 +313,17 @@ tests: main_t
 #  Modification time never checked.
 #  File has not been updated.
 
-main_t: tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c
+main_t: tests/main_t.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 73):
-	$(CC) $(EVM_FLAGS) -o $(TEST_BIN)/main_t $(VM) tests/main_t.c $(FLAGS) $(LIBS)
+#  recipe to execute (from 'Makefile', line 82):
+	$(CC) $(EVM_FLAGS) -o $(TEST_BIN)/main_t $(UTILS) $(VM) tests/main_t.c $(TESTS) -DTEST_MODE $(FLAGS) $(LIBS)
 
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -325,8 +334,7 @@ all: vetk
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/9=0%
- 
+# Load=0/32=0%, Rehash=0, Collisions=0/10=0%
 
 vetk: sample_programs/vision_etk/main.c
 #  Implicit rule search has not been done.
@@ -351,15 +359,9 @@ vetk: sample_programs/vision_etk/main.c
 # automatic
 # | := 
 # variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=9/17=53%
-#  recipe to execute (from 'Makefile', line 66):
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
-
-# Not a target:
-tests/core_t/vm_t/vm_t.c:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+# Load=8/32=25%, Rehash=0, Collisions=13/18=72%
+#  recipe to execute (from 'Makefile', line 75):
+	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(UTILS) $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
 
 # Not a target:
 .SUFFIXES:
@@ -367,26 +369,21 @@ tests/core_t/vm_t/vm_t.c:
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-tests/common_t/math_t/bigint_t/bigint_t.c:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
 # files hash-table stats:
-# Load=11/1024=1%, Rehash=0, Collisions=0/31=0%
+# Load=9/1024=1%, Rehash=0, Collisions=0/27=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 25 / storage = 315 B / avg = 12 B
-# current buf: size = 8162 B / used = 315 B / count = 25 / avg = 12 B
+# strcache buffers: 1 (0) / strings = 23 / storage = 232 B / avg = 10 B
+ 
+# current buf: size = 8162 B / used = 232 B / count = 23 / avg = 10 B
 
-# strcache performance: lookups = 38 / hit rate = 34%
+# strcache performance: lookups = 36 / hit rate = 36%
 # hash-table stats:
-# Load=25/8192=0%, Rehash=0, Collisions=0/38=0%
-# Finished Make data base on Wed Jul  6 02:48:53 2022
+# Load=23/8192=0%, Rehash=0, Collisions=0/36=0%
+# Finished Make data base on Wed Jul  6 12:56:36 2022
 
  

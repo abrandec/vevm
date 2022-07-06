@@ -131,6 +131,114 @@ void _sub(List *stack) {
 
 /*
   ┌───────────────────────────────┐
+  │   DIV                         │
+  └───────────────────────────────┘
+ */
+
+// EMV DIV operation
+// @param stack: the stack
+void _div(List *stack) {
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t c;
+  uint256_t d;
+  // just need the division
+  divmod_uint256(&c, &d, &a, &b);
+
+  stack_push(stack, &c);
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   MOD                         │
+  └───────────────────────────────┘
+ */
+
+// EVM MOD operation
+// @param stack: the stack
+void _mod(List *stack) {
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t c;
+  uint256_t d;
+
+  // just need the modulus
+  divmod_uint256(&c, &d, &a, &b);
+
+  stack_push(stack, &d);
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   ADDMOD                      │
+  └───────────────────────────────┘
+ */
+
+// EVM ADDMOD operation
+// @param stack: the stack
+void _addmod(List *stack) {
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t c = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  // to deal with the possibility of values being written to before
+  // arthemetic operations are complete
+  uint256_t d;
+  uint256_t e;
+
+  // (a + b) % c
+  add_uint256(&a, &a, &b);
+  divmod_uint256(&e, &d, &a, &c);
+
+  stack_push(stack, &d);
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   MULMOD                      │
+  └───────────────────────────────┘
+ */
+
+// EVM MULMOD operation
+// @param stack: the stack
+void _mulmod(List *stack) {
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  uint256_t c = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  // to deal with the possibility of values being written to before
+  // arthemetic operations are complete
+  uint256_t d;
+  uint256_t e;
+
+  // (a * b) % c
+  mul_uint256(&a, &a, &b);
+
+  divmod_uint256(&e, &d, &a, &c);
+
+  stack_push(stack, &d);
+}
+
+/*
+  ┌───────────────────────────────┐
   │   LT                          │
   └───────────────────────────────┘
  */
@@ -372,9 +480,8 @@ void _gaslimit(List *stack) {
 // @param mem_end: ending index of current memory usage
 // @param mem_expanded: initial memory expansion check
 // @param gas: gas meter
-void _mload(List *stack, uint256_t *memory, uint64_t *mem_end, bool *mem_expanded, uint64_t *gas) {
- 
-}
+void _mload(List *stack, uint256_t *memory, uint64_t *mem_end,
+            bool *mem_expanded, uint64_t *gas) {}
 
 /*
   ┌───────────────────────────────┐
@@ -404,8 +511,8 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  // (max mem length - 1) in bytes (999,999)
-  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 0x00000000000F423F);
+  // (max mem length - 1) (999,999)
+  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 999999);
 
   uint64_t index = E11(a) / 32;
   uint64_t index2 = index + 1;
@@ -488,8 +595,8 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  // (max mem length - 1) in bytes (999,999)
-  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 0x00000000000F423F);
+  // (max mem length - 1) (999,999)
+  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 999999);
 
   uint64_t begin_index = E11(a) / 32;
   uint64_t end_index = begin_index + 1;
@@ -553,7 +660,7 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   // shift byte from b to correct position and mask off unwanted bits
   // e.g. offset = 16
   // mask1 = 0x00FF000000000000000000000000000000000000000000000000000000000000
-  // b = 0x0069000000000000000000000000000000000000000000000000000000000000
+  //     b = 0x0069000000000000000000000000000000000000000000000000000000000000
   lshift_uint256(&b, &b, 248 - offset);
   and_uint256(&b, &b, &mask1);
 
@@ -790,11 +897,7 @@ void _vm(uint256_t program[], bool debug_mode) {
   while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
 
-    /*
-    ┌────────────────────┐
-    │   DEBUG            │
-    └────────────────────┘
-    */
+    // DEBUG MODE
     if (debug_mode) {
       print_debug(stack, memory, &pc, &gas, &opcode);
     }
@@ -815,6 +918,18 @@ void _vm(uint256_t program[], bool debug_mode) {
       break;
     case 0x03: // SUB
       _sub(stack);
+      break;
+    case 0x04: // DIV
+      _div(stack);
+      break;
+    case 0x06: // MOD
+      _mod(stack);
+      break;
+    case 0x08: // ADDMOD
+      _addmod(stack);
+      break;
+    case 0x09: // MULMOD
+      _mulmod(stack);
       break;
     case 0x10: // LT
       _lt(stack);

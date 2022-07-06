@@ -4,14 +4,14 @@
 | ----------------- | --- |
 | STOP              | ✅  |
 | ADD               | ✅  |
-| MUL               | ❌  |
+| MUL               | ✅  |
 | SUB               | ✅  |
-| DIV               | ❌  |
+| DIV               | ✅  |
 | SDIV              | ❌  |
-| MOD               | ❌  |
+| MOD               | ✅  |
 | SMOD              | ❌  |
-| ADDMOD            | ❌  |
-| MULMOD            | ❌  |
+| ADDMOD            | ✅  |
+| MULMOD            | ✅  |
 | EXP               | ❌  |
 | SIGNEXTEND        | ❌  |
 | LT                | ✅  |
@@ -23,7 +23,7 @@
 | AND               | ✅  |
 | OR                | ✅  |
 | XOR               | ✅  |
-| NOT               | ❌  |
+| NOT               | ✅  |
 | BYTE              | ❌  |
 | SHL               | ✅  |
 | SHR               | ✅  |
@@ -63,7 +63,7 @@
 | JUMP              | ❌  |
 | JUMPI             | ❌  |
 | PC                | ✅  |
-| MSIZE             | ❌  |
+| MSIZE             | ✅  |
 | GAS               | ✅  |
 | JUMPDEST          | ❌  |
 | PUSH1-PUSH32      | ✅  |

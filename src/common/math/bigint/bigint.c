@@ -1,4 +1,9 @@
+// largely adapted from:
+// https://github.com/Zilliqa/ledger-app-zilliqa/blob/master/src/uint256.c
+
 #include "bigint.h"
+
+#include "../../utils/hex_utils/hex_utils.h"
 
 #include <inttypes.h>
 #include <math.h>
@@ -472,9 +477,9 @@ bool lt_uint512(uint512_t *a, uint512_t *b) {
 // 128
 bool gt_uint128(uint128_t *a, uint128_t *b) {
   if (E_0(a) == E_0(b)) {
-    return E_1(a) > E_1(b);
+    return (E_1(a) > E_1(b));
   }
-  return (E_0(a) > E_0(b));
+  return (E_0(b) > E_0(b));
 }
 
 // 256
@@ -533,6 +538,52 @@ bool gte_uint256(uint256_t *a, uint256_t *b) {
 // 512
 bool gte_uint512(uint512_t *a, uint512_t *b) {
   return gt_uint512(a, b) || equal_uint512(a, b);
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   BITS                        │
+  └───────────────────────────────┘
+ */
+
+uint32_t bits_uint128(uint128_t *number) {
+  uint32_t result = 0;
+  if (E_0(number)) {
+    result = 64;
+    uint64_t up = E_0(number);
+    while (up) {
+      up >>= 1;
+      result++;
+    }
+  } else {
+    uint64_t low = E_1(number);
+    while (low) {
+      low >>= 1;
+      result++;
+    }
+  }
+  return result;
+}
+
+uint32_t bits_uint256(uint256_t *number) {
+  uint32_t result = 0;
+  if (!zero_uint128(&E_0(number))) {
+    result = 128;
+    uint128_t up;
+    copy_uint128(&up, &E_0(number));
+    while (!zero_uint128(&up)) {
+      rshift_uint128(&up, &up, 1);
+      result++;
+    }
+  } else {
+    uint128_t low;
+    copy_uint128(&low, &E_1(number));
+    while (!zero_uint128(&low)) {
+      rshift_uint128(&low, &low, 1);
+      result++;
+    }
+  }
+  return result;
 }
 
 /*
@@ -607,15 +658,17 @@ void sub_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
 
   sub_uint128(&E_0(dest), &E_0(a), &E_0(b));
   sub_uint128(&tmp, &E_1(a), &E_1(b));
+
   if (gt_uint128(&tmp, &E_1(a))) {
     uint128_t one;
+
     E0(one) = 0;
     E1(one) = 1;
 
     sub_uint128(&E_0(dest), &E_0(dest), &one);
-  } else {
-    sub_uint128(&E_1(dest), &E_1(a), &E_1(b));
   }
+
+  sub_uint128(&E_1(dest), &E_1(a), &E_1(b));
 }
 
 // 512
@@ -624,13 +677,16 @@ void sub_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
 
   sub_uint256(&E_0(dest), &E_0(a), &E_0(b));
   sub_uint256(&tmp, &E_1(a), &E_1(b));
+
   if (gt_uint256(&tmp, &E_1(a))) {
     uint256_t one;
+
     E0(one) = init_uint128(0);
     E1(one) = init_all_uint128(0, 1);
 
     sub_uint256(&E_0(dest), &E_0(dest), &one);
   } else {
+
     sub_uint256(&E_1(dest), &E_1(a), &E_1(b));
   }
 }
@@ -780,11 +836,13 @@ void mul_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   clear_uint256(&target1);
   lshift_uint128(&E0(target1), &first64, 64);
   clear_uint256(&target2);
+
   E0(E0(target2)) = E0(third64);
   lshift_uint128(&E1(target2), &third64, 64);
   add_uint256(dest, &target1, &target2);
   clear_uint256(&target1);
   copy_uint128(&E0(target1), &second64);
+
   add_uint256(&target2, &target1, dest);
   clear_uint256(&target1);
   copy_uint128(&E1(target1), &fourth64);
@@ -801,13 +859,80 @@ void mul_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {}
  */
 
 // 128
-void div_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {}
+void divmod_uint128(uint128_t *destDiv, uint128_t *destMod, uint128_t *a,
+                    uint128_t *b) {
+  uint128_t copyd, adder, resDiv, resMod;
+  uint128_t one;
+
+  E0(one) = 0;
+  E1(one) = 1;
+
+  uint32_t diffBits = bits_uint128(a) - bits_uint128(b);
+
+  clear_uint128(&resDiv);
+  copy_uint128(&resMod, a);
+
+  if (gt_uint128(b, a)) {
+    copy_uint128(destMod, a);
+    clear_uint128(destDiv);
+  } else {
+    lshift_uint128(&copyd, b, diffBits);
+    lshift_uint128(&adder, &one, diffBits);
+    if (gt_uint128(&copyd, &resMod)) {
+      rshift_uint128(&copyd, &copyd, 1);
+      rshift_uint128(&adder, &adder, 1);
+    }
+    while (gte_uint128(&resMod, b)) {
+      if (gte_uint128(&resMod, &copyd)) {
+        sub_uint128(&resMod, &resMod, &copyd);
+        or_uint128(&resDiv, &resDiv, &adder);
+      }
+      rshift_uint128(&copyd, &copyd, 1);
+      rshift_uint128(&adder, &adder, 1);
+    }
+    copy_uint128(destDiv, &resDiv);
+    copy_uint128(destMod, &resMod);
+  }
+}
 
 // 256
-void div_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {}
+void divmod_uint256(uint256_t *destDiv, uint256_t *destMod, uint256_t *a,
+                    uint256_t *b) {
+
+  uint256_t copyd, adder, resDiv, resMod;
+  uint256_t one;
+  E0(E1(one)) = 0;
+  E1(E1(one)) = 1;
+
+  uint32_t diffBits = bits_uint256(a) - bits_uint256(b);
+  clear_uint256(&resDiv);
+  copy_uint256(&resMod, a);
+  if (gt_uint256(b, a)) {
+    copy_uint256(destMod, a);
+    clear_uint256(destDiv);
+  } else {
+    lshift_uint256(&copyd, b, diffBits);
+    lshift_uint256(&adder, &one, diffBits);
+    if (gt_uint256(&copyd, &resMod)) {
+      rshift_uint256(&copyd, &copyd, 1);
+      rshift_uint256(&adder, &adder, 1);
+    }
+    while (gte_uint256(&resMod, b)) {
+      if (gte_uint256(&resMod, &copyd)) {
+        sub_uint256(&resMod, &resMod, &copyd);
+        or_uint256(&resDiv, &resDiv, &adder);
+      }
+      rshift_uint256(&copyd, &copyd, 1);
+      rshift_uint256(&adder, &adder, 1);
+    }
+    copy_uint256(destDiv, &resDiv);
+    copy_uint256(destMod, &resMod);
+  }
+}
 
 // 512
-void div_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {}
+void divmod_uint512(uint512_t *destDiv, uint256_t *destMod, uint512_t *a,
+                    uint512_t *b) {}
 
 /*
   ┌───────────────────────────────┐
@@ -819,7 +944,8 @@ void div_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {}
 void exp_uint128(uint128_t *dest, uint128_t *a, uint128_t *b) {}
 
 // 256
-// 512
+void exp_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {}
+
 // 512
 void exp_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {}
 
@@ -855,24 +981,106 @@ bool equal_uint512(uint512_t *a, uint512_t *b) {
 
 /*
   ┌───────────────────────────────┐
-  │   PRINTING                    │
+  │   PRINT DECIMAL               │
   └───────────────────────────────┘
  */
 
 // 128
-void print_hex_uint128(uint128_t *a) {
-  printf("%016llX%016llX", E_0(a), E_1(a));
+void print_uint128(uint128_t *a, bool newline) {
+  char temp[3];
+  
+  if (newline) {
+    temp[0] = '\n';
+  } else {
+    temp[0] = '\0';
+  }
+
+  temp[1] = '\0';
+  
+  printf("%20lld%020lld%s", E_0(a), E_1(a), temp);
 }
 
 // 256
-void print_hex_uint256(uint256_t *a) {
-  printf("%016llX%016llX%016llX%016llX", E_0(a), E_1(a));
+void print_uint256(uint256_t *a, bool newline) {
+  char temp[3];
+  
+  if (newline) {
+    temp[0] = '\n';
+  } else {
+    temp[0] = '\0';
+  }
+  
+  temp[1] = '\0';
+
+  printf("%020lld%020lld%020llX%020lld%s", E_0(a), E_1(a), temp);
 }
 
 // 512
-void print_hex_uint512(uint512_t *a) {
-  printf("%016llX%016llX%016llX%016llX%016llX%016llX%016llX%016llX", E_0(a),
-         E_1(a));
+void print_uint512(uint512_t *a, bool newline) {
+  char temp[3];
+
+  if (newline) {
+    temp[0] = '\n';
+  } else {
+    temp[0] = '\0';
+  }
+
+  temp[1] = '\0';
+  
+  printf("%020lld%020lld%020llX%020lld%020lld%020lld%020llX%020lld%s", E_0(a),
+         E_1(a), temp);
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   PRINT HEX                   │
+  └───────────────────────────────┘
+ */
+
+// 128
+void print_hex_uint128(uint128_t *a, bool newline) {
+  char temp[3];
+  
+  if (newline) {
+    temp[0] = '\n';
+  } else {
+    temp[0] = '\0';
+  }
+
+  temp[1] = '\0';
+  
+  printf("%016llX%016llX%s", E_0(a), E_1(a), temp);
+}
+
+// 256
+void print_hex_uint256(uint256_t *a, bool newline) {
+  char temp[3];
+
+  if (newline) {
+    temp[0] = '\n';
+  } else {
+    temp[0] = '\0';
+  }
+  
+  temp[1] = '\0';
+  
+  printf("%016llX%016llX%016llX%016llX%s", E_0(a), E_1(a), temp);
+}
+
+// 512
+void print_hex_uint512(uint512_t *a, bool newline) {
+  char temp[3];
+
+  if (newline) {
+    temp[0] = '\n';
+  } else {
+    temp[0] = '\0';
+  }
+  
+  temp[1] = '\0';
+  
+  printf("%016llX%016llX%016llX%016llX%016llX%016llX%016llX%016llX%s", E_0(a),
+         E_1(a), temp);
 }
 
 /*
@@ -880,17 +1088,6 @@ void print_hex_uint512(uint512_t *a) {
   │   HEX LENGTH                  │
   └───────────────────────────────┘
  */
-
-// <=64
-int hex_length(uint64_t *src) {
-  // get length of src in base 16
-  int x = ceil(log(*src + 1) / log(16));
-  // if length is odd, add one else return x
-  // accounts for bytes that start at 0 (e.g. 01...0F)
-  x % 2 ? x += 1 : x;
-  // only care about whole bytes, not individual digits
-  return x / 2;
-}
 
 // 128
 int hex_length_uint128(uint128_t *src) {

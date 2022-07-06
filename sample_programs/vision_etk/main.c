@@ -1,5 +1,7 @@
+#include "../../src/common/assets/assets.h"
 #include "../../src/common/io/io.h"
 #include "../../src/common/math/bigint/bigint.h"
+#include "../../src/common/utils/hex_utils/hex_utils.h"
 #include "../../src/core/config.h"
 #include "../../src/core/stack/stack.h"
 #include "../../src/core/vm/vm.h"
@@ -17,17 +19,12 @@
 // write to program buffer
 void write2_prog_buff(uint256_t program[]) {
   char char_bytecode[CHAR_BUFF_LEN];
-  char *pEnd;
-
-  // read_bytecode(program, char_bytecode);
-
-  int i;
 
   int digits64;
 
   // writing this buffer sucks so I just do this for now
   program[0] =
-      init_all_uint256(0x606960005300FFFF, UINT64_MAX, UINT64_MAX, UINT64_MAX);
+      init_all_uint256(0x6008600A600A0800, UINT64_MAX, UINT64_MAX, UINT64_MAX);
 
   program[1] =
       init_all_uint256(0xFF60020200FFFFFF, UINT64_MAX, UINT64_MAX, UINT64_MAX);
@@ -58,7 +55,7 @@ int main(int argc, char *argv[]) {
 
       // Title + logo
       printf("Vision EVM Options      "
-             "\033[93m▓▓\033[94m▓▓\033[92m▓▓\033[35m▓▓\033[91m▓▓\033[00m\n");
+             "%s\n", vevm_logo);
       printf("──────────────────────────────────\n");
       // Options
       printf("-debug, -d : debug mode\n"
@@ -70,9 +67,11 @@ int main(int argc, char *argv[]) {
 
   char *filename = "output_hex/output.hex";
 
-  print_file(filename);
+  // print_file(filename);
 
-  clear_buffer(program, MAX_BYTECODE_LEN);
+  char *pEnd;
+
+  // read_bytecode(program, char_bytecode);
 
   write2_prog_buff(program);
 

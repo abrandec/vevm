@@ -89,7 +89,9 @@ void mmap_alloc(char *filename) {}
  */
 
 void print_file(char *filename) {
+  // file descriptor
   int fd = open(filename, O_RDONLY);
+
   size_t mmapLen = file_size(filename);
   off_t offset = 0; // offset to seek to.
 
@@ -99,7 +101,9 @@ void print_file(char *filename) {
   if (ptr == MAP_FAILED) {
     perror("mmap");
     exit(EXIT_FAILURE);
+    // possibly printf empty file error if it occurs?
   }
+
   // File isn't necessarily loaded into memory until we access the
   // memory (causing a page fault to occur and making the kernel
   // handle it).
