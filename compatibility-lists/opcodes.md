@@ -57,7 +57,7 @@
 | POP               | ✅  |
 | MLOAD             | ❌  |
 | MSTORE            | ✅  |
-| MSTORE8           | ❌  |
+| MSTORE8           | ✅  |
 | SLOAD             | ❌  |
 | SSTORE            | ❌  |
 | JUMP              | ❌  |

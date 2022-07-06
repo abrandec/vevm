@@ -24,8 +24,8 @@ static const char memory_size_exceeded_err[21] = "MEMORY SIZE EXCEEDED\n";
 
 // Entry point for EVM
 // @param program[]: program to run
-// @param DEBUG: whether to print debug messages
-void _vm(uint256_t program[]);
+// @param debug_mode: whether to print debug messages
+void _vm(uint256_t program[], bool debug_mode);
 
 // set a buffer to zero
 // @param buffer: the buffer to initialize to zero

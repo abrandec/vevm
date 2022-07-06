@@ -396,7 +396,7 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint64_t ending_index = index;
   uint64_t offset = ((E11(a)) % 32) * 8;
 
-  // check if the memory location >32MB
+  // error checking
   if (gt_uint256(&a, &max_mem_len)) {
     custom_error(memory_size_exceeded_err);
   }
@@ -452,7 +452,94 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
 // @param mem_expanded: initial memory expansion check
 // @param gas: gas left
 void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
-              bool *mem_expanded, uint64_t *gas) {}
+              bool *mem_expanded, uint64_t *gas) {
+  // masks for extracting the byte
+  uint256_t mask1 = init_uint256(0xFFFFFFFFFFFFFFFF);
+  uint256_t mask2 = init_uint256(0xFFFFFFFFFFFFFFFF);
+
+  // POP and temporarily store values
+
+  // data to push
+  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  // used to calculate the index of the memory & offset
+  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
+  stack_pop(stack);
+
+  // (max mem length - 1) in bytes (999,999)
+  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 0x00000000000F423F);
+
+  uint64_t begin_index = E11(a) / 32;
+  uint64_t end_index = begin_index + 1;
+  uint64_t ending_index = begin_index;
+  uint64_t offset = ((E11(a)) % 32) * 8;
+
+  // error checking
+  if (gt_uint256(&a, &max_mem_len)) {
+    custom_error(memory_size_exceeded_err);
+  }
+
+  //              gas cost stuff              //
+
+  // check if memory has been expanded before
+  if (*mem_expanded) {
+    *mem_expanded = true;
+    *gas -= 3;
+  }
+
+  switch (offset) {
+  case 0:
+    break;
+  default:
+    ending_index += 1;
+    if (ending_index - *mem_end > 0) {
+      *gas -= ending_index * 3;
+      *mem_end = ending_index;
+    }
+    break;
+  }
+
+  //              bitshifting stuff            //
+
+  // shift masks to extract a byte
+  // e.g. offset = 16
+  // mask1 = 0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+  // mask2 = 0xFF00000000000000000000000000000000000000000000000000000000000000
+  rshift_uint256(&mask1, &mask1, offset + 8);
+  lshift_uint256(&mask2, &mask2, 256 - offset);
+
+  // combine masks
+  // e.g. offset = 16
+  // mask1 = 0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+  // mask2 = 0xFF00000000000000000000000000000000000000000000000000000000000000
+  // OR
+  // mask1 = 0xFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+  or_uint256(&mask1, &mask1, &mask2);
+
+  // mask-off single byte from memory using the combined masks
+  // e.g. offset = 16
+  // mask1 = 0xFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+  // memory[begin_index] =
+  // 0x333333333333333333333333333333333333333333333333333333333333333 AND
+  // memory[begin_index] =
+  // 0x3300333333333333333333333333333333333333333333333333333333333333
+  and_uint256(&memory[begin_index], &memory[begin_index], &mask1);
+
+  // shift byte from b to correct position
+  // e.g. offset = 16
+  // b = 0x0069000000000000000000000000000000000000000000000000000000000000
+  lshift_uint256(&b, &b, 248 - offset);
+
+  // combine byte from b with memory
+  // e.g. offset = 16
+  // memory[begin_index] =
+  // 0x3300333333333333333333333333333333333333333333333333333333333333 b =
+  // 0x0069000000000000000000000000000000000000000000000000000000000000 OR
+  // memory[begin_index] =
+  // 0x3369333333333333333333333333333333333333333333333333333333333333
+  or_uint256(&memory[begin_index], &memory[begin_index], &b);
+}
 
 /*
   ┌───────────────────────────────┐
@@ -639,8 +726,8 @@ void clear_buffer(uint256_t buffer[], int length) {
 
 // Entry point for EVM
 // @param program[]: program to run
-// @param DEBUG: whether to print debug messages
-void _vm(uint256_t program[]) {
+// @param debug_mode: whether to print debug messages
+void _vm(uint256_t program[], bool debug_mode) {
   // printf("%d\n", GAS_TABLE[0]);
   //      variables      //
 
@@ -669,22 +756,21 @@ void _vm(uint256_t program[]) {
 
   // clear all bits in memory
   clear_buffer(memory, MAX_MEMORY_LEN);
+  change_uint256(&memory[0], 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
 
   // while loop to run program //
   while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
 
-/*
-┌────────────────────┐
-│   OPTIONAL DEBUG   │
-└────────────────────┘
-*/
-#ifdef DEBUG
-    // DEBUG mode //
+    /*
+    ┌────────────────────┐
+    │   DEBUG            │
+    └────────────────────┘
+    */
     if (debug_mode) {
       print_debug(stack, memory, &pc, &gas, &opcode);
     }
-#endif
 
     // consume_gas(&opcode, &gas);
     pc += 1;
@@ -741,6 +827,9 @@ void _vm(uint256_t program[]) {
       break;
     case 0x52: // MSTORE
       _mstore(stack, memory, &mem_end, &mem_expanded, &gas);
+      break;
+    case 0x53: // MSTORE8
+      _mstore8(stack, memory, &mem_end, &mem_expanded, &gas);
       break;
     case 0x59: // MSIZE
       _msize(stack, &mem_end);

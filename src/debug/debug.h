@@ -4,13 +4,22 @@
 #include "../common/math/bigint/bigint.h"
 #include "../core/stack/stack.h"
 
-#ifdef DEBUG
-    static bool debug_mode = true;
-    #else
-    static bool debug_mode = false;
-#endif
+
+/*
+  ┌───────────────────────────────┐
+  │   MACROS                      │
+  └───────────────────────────────┘
+ */
 
 #define PRINT_LENGTH 9
+
+/*
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │                                                                            │
+  │   FUNCTIONS                                                                │
+  │                                                                            │
+  └────────────────────────────────────────────────────────────────────────────┘
+ */
 
 // print a given buffer
 // @param buffer: the buffer to print
