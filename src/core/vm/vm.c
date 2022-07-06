@@ -526,10 +526,15 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   // 0x3300333333333333333333333333333333333333333333333333333333333333
   and_uint256(&memory[begin_index], &memory[begin_index], &mask1);
 
-  // shift byte from b to correct position
+  // invert mask to extract the byte from b
+  not_uint256(&mask1, &mask1);
+
+  // shift byte from b to correct position and mask off unwanted bits
   // e.g. offset = 16
+  // mask1 = 0x00FF000000000000000000000000000000000000000000000000000000000000
   // b = 0x0069000000000000000000000000000000000000000000000000000000000000
   lshift_uint256(&b, &b, 248 - offset);
+  and_uint256(&b, &b, &mask1);
 
   // combine byte from b with memory
   // e.g. offset = 16
