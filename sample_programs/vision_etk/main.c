@@ -1,7 +1,8 @@
+#include "../../src/common/io/io.h"
 #include "../../src/common/math/bigint/bigint.h"
 #include "../../src/core/config.h"
-#include "../../src/core/vm/vm.h"
 #include "../../src/core/stack/stack.h"
+#include "../../src/core/vm/vm.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -13,50 +14,12 @@
 // buffer for reading bytecode (accounts for space between uint64_t's)
 #define CHAR_BUFF_LEN 49248
 
-static const char *filename = "output_hex/output.hex";
-
-// load bytecode from file & write to program buffer using write_bytecode
-// @prog_buf: buffer to write to
-void read_bytecode(uint256_t prog_buf[], char ch[]) {
-
-  FILE *fp = fopen(filename, "r");
-
-  if (fp == NULL) {
-    printf("Error: could not open file %s", filename);
-    exit(1);
-  }
-
-  // read one character at a time and
-  // display it to the output
-  int i = 0;
-
-  while ((ch[i] = fgetc(fp)) != EOF) {
-
-    ++i;
-    // only because im lazy and using strtoll that requires whitespace to read
-    // more than 16 char at a time
-    if (i % 16 == 0) {
-      ch[i] = ' ';
-      ++i;
-    }
-  }
-
-  ++i;
-
-  ch[i] = '\0';
-
-  // func to convert string to hex
-
-  // close the file
-  fclose(fp);
-}
-
 // write to program buffer
 void write2_prog_buff(uint256_t program[]) {
   char char_bytecode[CHAR_BUFF_LEN];
   char *pEnd;
 
-  read_bytecode(program, char_bytecode);
+  // read_bytecode(program, char_bytecode);
 
   int i;
 
@@ -84,7 +47,7 @@ int main(int argc, char *argv[]) {
     // debug flag
     if (strcmp(argv[i], "-DEBUG") == 0 || strcmp(argv[i], "-debug") == 0 ||
         strcmp(argv[i], "-D") == 0 || strcmp(argv[i], "-d") == 0) {
-        debug_mode = true;
+      debug_mode = true;
       // help flag
 
     } else
@@ -105,9 +68,11 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  clear_buffer(program, MAX_BYTECODE_LEN);
+  char *filename = "output_hex/output.hex";
 
-  // read_bytecode(program);
+  print_file(filename);
+
+  clear_buffer(program, MAX_BYTECODE_LEN);
 
   write2_prog_buff(program);
 

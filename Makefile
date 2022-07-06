@@ -14,6 +14,9 @@ FLAGS := -Oz
 # Assemble VM
 VM := src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c
 
+# IO
+IO := src/common/io/io.c
+
 # EVM FLAGS
 CHAIN := mainnet
 FORK := arrowglacier
@@ -60,7 +63,7 @@ tests: main_t
 
 # VETK (Vision ETK)
 vetk: sample_programs/vision_etk/main.c 
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
 
 #   						#
 # 			Tests 			#

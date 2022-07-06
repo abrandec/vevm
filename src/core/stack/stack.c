@@ -1,8 +1,8 @@
+#include "stack.h"
+
 #include "../../common/math/bigint/bigint.h"
 #include "../../errors/errors.h"
 #include "../config.h"
-
-#include "stack.h"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -17,6 +17,8 @@
 
 // for keeping track of stack length
 static int stack_len = 0;
+
+static uint256_t stackk[MAX_STACK_DEPTH];
 
 /*
   ┌────────────────────────────────────────────────────────────────────────────┐

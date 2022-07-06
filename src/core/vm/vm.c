@@ -1,10 +1,10 @@
+#include "vm.h"
+
 #include "../../common/math/bigint/bigint.h"
 #include "../../errors/errors.h"
 #include "../config.h"
 #include "../opcodes/gas_table.h"
 #include "../stack/stack.h"
-
-#include "vm.h"
 
 #include <inttypes.h>
 #include <stdbool.h>
@@ -78,7 +78,7 @@ void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
   └───────────────────────────────┘
  */
 
-// Add operation
+// EVM ADD operation
 // @param stack: the stack
 void _add(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -97,7 +97,7 @@ void _add(List *stack) {
   └───────────────────────────────┘
  */
 
-// multiplication operation
+// EVM MUL operation
 // @param stack: the stack
 void _mul(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -116,7 +116,7 @@ void _mul(List *stack) {
   └───────────────────────────────┘
  */
 
-// Subtract operation
+// EVM SUB operation
 // @param stack: the stack
 void _sub(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -135,7 +135,7 @@ void _sub(List *stack) {
   └───────────────────────────────┘
  */
 
-// Less than operation
+// EVM LT operation
 // @param stack: the stack
 void _lt(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -159,7 +159,7 @@ void _lt(List *stack) {
   └───────────────────────────────┘
  */
 
-// Greater than operation
+// EVM GT operation
 // @param stack: the stack
 void _gt(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -183,7 +183,7 @@ void _gt(List *stack) {
   └───────────────────────────────┘
  */
 
-// Equal operation
+// EVM EQ operation
 // @param stack: the stack
 void _eq(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -207,7 +207,7 @@ void _eq(List *stack) {
   └───────────────────────────────┘
  */
 
-// iszero operation
+// EVM ISZERO operation
 // @param stack: the stack
 void _iszero(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -228,7 +228,7 @@ void _iszero(List *stack) {
   └───────────────────────────────┘
  */
 
-// AND operation
+// EVM AND operation
 // @param stack: the stack
 void _and(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -247,7 +247,7 @@ void _and(List *stack) {
   └───────────────────────────────┘
  */
 
-// OR operation
+// EVM OR operation
 // @param stack: the stack
 void _or(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -266,7 +266,7 @@ void _or(List *stack) {
   └───────────────────────────────┘
  */
 
-// XOR operation
+// EVM XOR operation
 // @param stack: the stack
 void _xor(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -285,7 +285,7 @@ void _xor(List *stack) {
   └───────────────────────────────┘
  */
 
-// NOT operation
+// EVM NOT operation
 // @param stack: the stack
 void _not(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -302,7 +302,7 @@ void _not(List *stack) {
   └───────────────────────────────┘
  */
 
-// Left shift operation
+// EVM SHL operation
 // @param stack: the stack
 void _shl(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -328,7 +328,7 @@ void _shl(List *stack) {
   └───────────────────────────────┘
  */
 
-// Right shift operation
+// EVM SHR operation
 // @param stack: the stack
 void _shr(List *stack) {
   uint256_t a = stack_peak(stack, stack_length(stack) - 1);
@@ -353,7 +353,7 @@ void _shr(List *stack) {
   └───────────────────────────────┘
  */
 
-// gaslimit operation
+// EVM GASLIMIT operation
 // @param stack: the stack
 void _gaslimit(List *stack) {
   uint256_t a = init_all_uint256(0, 0, 0, GAS);
@@ -362,16 +362,32 @@ void _gaslimit(List *stack) {
 
 /*
   ┌───────────────────────────────┐
-  │   MSTORE                      │
+  │   MLOAD                       │
   └───────────────────────────────┘
  */
 
-// mstore operation
+// EVM MLOAD operation
 // @param stack: the stack
 // @param memory[]: the memory
 // @param mem_end: ending index of current memory usage
 // @param mem_expanded: initial memory expansion check
-// @param gas: gas left
+// @param gas: gas meter
+void _mload(List *stack, uint256_t *memory, uint64_t *mem_end, bool *mem_expanded, uint64_t *gas) {
+ 
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   MSTORE                      │
+  └───────────────────────────────┘
+ */
+
+// EVM MSTORE operation
+// @param stack: the stack
+// @param memory[]: the memory
+// @param mem_end: ending index of current memory usage
+// @param mem_expanded: initial memory expansion check
+// @param gas: gas meter
 void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
              bool *mem_expanded, uint64_t *gas) {
   // mask for 1st & 2nd index
@@ -396,7 +412,7 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint64_t ending_index = index;
   uint64_t offset = ((E11(a)) % 32) * 8;
 
-  // error checking
+  // memory bounds check
   if (gt_uint256(&a, &max_mem_len)) {
     custom_error(memory_size_exceeded_err);
   }
@@ -421,20 +437,25 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
     break;
   }
 
-  //              bitmasking stuff            //
+  //              bitshifting stuff            //
 
   uint512_t temp = init_uint512(0);
 
+  // add the data from b onto the first index in the uint512_t
   E0(temp) = b;
 
+  // shr data thats in the uint512_t
   rshift_uint512(&temp, &temp, offset);
 
+  // prepare the masks
   lshift_uint256(&mask1, &mask1, 256 - offset);
   rshift_uint256(&mask2, &mask2, offset);
 
+  // mask off a word in memory with both masks
   and_uint256(&memory[index], &memory[index], &mask1);
   and_uint256(&memory[index2], &memory[index2], &mask2);
 
+  // combine the data from temp with memory in the 1st and 2nd index
   or_uint256(&memory[index], &memory[index], &E0(temp));
   or_uint256(&memory[index2], &memory[index2], &E1(temp));
 }
@@ -445,7 +466,7 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   └───────────────────────────────┘
  */
 
-// mstore8 operation
+// EVM MSTORE8 operation
 // @param stack: the stack
 // @param memory[]: the memory
 // @param mem_end: ending index of current memory usage
@@ -475,7 +496,7 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint64_t ending_index = begin_index;
   uint64_t offset = ((E11(a)) % 32) * 8;
 
-  // error checking
+  // memory bounds check
   if (gt_uint256(&a, &max_mem_len)) {
     custom_error(memory_size_exceeded_err);
   }
@@ -552,7 +573,7 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   └───────────────────────────────┘
  */
 
-// pc operation
+// EVM PC operation
 // @param stack: the stack
 // @param pc: the program counter
 void _pc(List *stack, int *pc) {
@@ -566,7 +587,7 @@ void _pc(List *stack, int *pc) {
   └───────────────────────────────┘
  */
 
-// msize operation
+// EVM MSIZE operation
 // @param stack: the stack
 // @param mem_end: ending index of current memory usage
 void _msize(List *stack, uint64_t *mem_end) {
@@ -581,7 +602,7 @@ void _msize(List *stack, uint64_t *mem_end) {
   └───────────────────────────────┘
  */
 
-// gas operation
+// EVM GAS operation
 // @param stack: the stack
 // @param gas: gas left
 void _gas(List *stack, uint64_t *gas) {
@@ -596,6 +617,7 @@ void _gas(List *stack, uint64_t *gas) {
   └───────────────────────────────┘
  */
 
+// EVM PUSH operation
 // get bytes from program[] to push onto the stack
 // @param stack: the stack
 // @param program: the program[] to extract bytes from
@@ -673,7 +695,7 @@ void _push(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
   └───────────────────────────────┘
  */
 
-// duplicate elements on the stack
+// EVM DUP operation
 // @param stack: the stack
 // @param opcode: the dup(x) opcode
 void _dup(List *stack, uint64_t *opcode) {
@@ -691,7 +713,7 @@ void _dup(List *stack, uint64_t *opcode) {
   └───────────────────────────────┘
  */
 
-// swap two elements from the stack
+// EVM SWAP operation
 // @param stack: the stack
 // @param opcode: the swap(x) opcode
 void _swap(List *stack, uint64_t *opcode) {
@@ -829,6 +851,8 @@ void _vm(uint256_t program[], bool debug_mode) {
       break;
     case 0x50: // POP
       stack_pop(stack);
+    case 0x51: // MLOAD
+      _mload(stack, memory, &mem_end, &mem_expanded, &gas);
       break;
     case 0x52: // MSTORE
       _mstore(stack, memory, &mem_end, &mem_expanded, &gas);
