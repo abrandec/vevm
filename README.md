@@ -17,17 +17,17 @@ make
 ```
 
 # Testing
-##### All tests reside in a single program and can be run compiled by running:
+#### All tests reside in a single program and can be run compiled by running:
 ```
 make tests
 ```
-##### Running tests:
+#### Running tests:
 ```
 ./tests/bin/tests/main_t
 ```
 
 ## Specs
-##### [Available opcodes](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/opcodes.md)
+#### [Available opcodes](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/opcodes.md)
 
 ##### [EIP Compatibility](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/eips.md)
 
