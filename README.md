@@ -29,7 +29,7 @@ make tests
 ## Specs
 #### [Available opcodes](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/opcodes.md)
 
-##### [EIP Compatibility](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/eips.md)
+#### [EIP Compatibility](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/eips.md)
 
 ## License
 
