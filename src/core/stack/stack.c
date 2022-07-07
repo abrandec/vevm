@@ -55,7 +55,8 @@ Node *Node_create(void) {
 
 void Node_destroy(Node *node) {
   if (node == NULL) {
-    custom_error(stack_null_err);
+    // Error 0xA3: Stack NULL
+    custom_error(0xA3);
   } else {
     free(node);
   }
@@ -92,7 +93,8 @@ List *stack_create(void) {
 
 void stack_destroy(List *stack) {
   if (stack == NULL) {
-    custom_error(stack_null_err);
+    // Error 0xA3: stack NULL
+    custom_error(0xA3);
   } else {
     Node *node = stack->first;
     Node *next;
@@ -117,9 +119,11 @@ void stack_destroy(List *stack) {
 
 void stack_push(List *stack, uint256_t *val) {
   if (stack_length(stack) > MAX_STACK_DEPTH - 1) {
-    custom_error(stack_overflow_err);
+    // Error 0xA0: Stack overflow
+    custom_error(0xA0);
   } else if (stack == NULL) {
-    custom_error(stack_null_err);
+    // Error 0xA3: Stack NULL
+    custom_error(0xA3);
   } else {
     ++stack_len;
     Node *node = stack->first;
@@ -146,7 +150,8 @@ void stack_push(List *stack, uint256_t *val) {
 void stack_pop(List *stack) {
 
   if (stack_length(stack) == 0) {
-    custom_error(stack_underflow_err);
+    // Error 0xA1: Stack underflow
+    custom_error(0xA1);
   } else {
     int index = stack_length(stack) - 1;
     --stack_len;
@@ -181,7 +186,8 @@ void stack_swap(List *stack, int index) {
   int stack_l = stack_length(stack) - 1;
 
   if (stack == NULL || index == 0 || index > 15 || index > stack_len) {
-    custom_error(inaccessable_element_err);
+    // Error 0xA2: Stack index out of bounds
+    custom_error(0xA2);
   } else {
     uint256_t data2swap;
 
@@ -215,8 +221,8 @@ uint256_t stack_peak(List *stack, int index) {
   int stack_l = stack_length(stack);
 
   if (stack == NULL || stack_l == 0 || index > stack_l - 1 || index < -1) {
-    // slightly unhelpful error message!
-    custom_error(inaccessable_element_err);
+    // Error 0xA2: Stack index out of bounds
+    custom_error(0xA2);
     return val;
   } else {
     Node *node = stack->first;
@@ -239,7 +245,8 @@ uint256_t stack_peak(List *stack, int index) {
 
 int stack_length(List *stack) {
   if (stack == NULL) {
-    custom_error(stack_null_err);
+    // Error 0xA3: Stack NULL
+    custom_error(0xA3);
     return 0;
   } else {
     Node *node = stack->first;

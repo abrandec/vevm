@@ -30,15 +30,15 @@ IO := src/common/io/io.c
 CHAIN := mainnet
 FORK := arrowglacier
 
+# OPTIONS
+OPTIONS := 
+
 # DEBUG FLAG
 DEBUG_MODE := 1
 
 #					
 # 		MISC 		
 #					
-
-# Output dir for tests
-TEST_BIN = bin/tests
 
 #												
 #				Conditional Compilation			
@@ -54,7 +54,7 @@ endif
 
 # Compilation flag for debugging
 ifeq ($(DEBUG_MODE), 1)
-	FLAGS += -DDEBUG
+	OPTIONS += -DDEBUG
 	VM += src/debug/debug.c
 endif
 
@@ -72,11 +72,11 @@ tests: main_t
 
 # VETK (Vision ETK)
 vetk: sample_programs/vision_etk/main.c 
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(UTILS) $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(UTILS) $(VM) $(OPTIONS) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
 
 #   					
 # 			Tests 		
 #							
 
 main_t: tests/main_t.c
-	$(CC) $(EVM_FLAGS) -o $(TEST_BIN)/main_t $(UTILS) $(VM) tests/main_t.c $(TESTS) -DTEST_MODE $(FLAGS) $(LIBS)
+	$(CC) $(EVM_FLAGS) -o bin/tests/main_t $(UTILS) $(VM) tests/main_t.c $(TESTS) -DTEST $(FLAGS) $(LIBS)

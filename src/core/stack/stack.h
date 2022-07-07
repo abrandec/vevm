@@ -19,17 +19,6 @@ typedef struct ListTag {
 } List;
 
 /*
-  ┌───────────────────────────────┐
-  │   ERRORS                      │
-  └───────────────────────────────┘
- */
-
-static const char stack_null_err[14] = "Stack is NULL\n";
-static const char inaccessable_element_err[36] = "EVM - Stack element is inaccessable\n";
-static const char stack_overflow_err[22] = "EVM - Stack Overflow\n";
-static const char stack_underflow_err[22] = "EVM - Stack Underflow\n";
-
-/*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
   │   NODE FUNCTIONS                                                           │

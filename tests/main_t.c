@@ -1,3 +1,4 @@
+#include "main_t.h"
 #include "../src/common/cmd/cmd.h"
 #include "../src/common/utils/hex_utils/hex_utils.h"
 #include "common_t/math_t/bigint_t/bigint_t.h"
@@ -8,6 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static bool stack_overflow_bool = true;
+static bool stack_underflow_bool = true;
+static bool stack_out_of_bounds_bool = true;
+
 int main(void) {
   bool all_results = true;
 
@@ -15,7 +20,7 @@ int main(void) {
 
   printf("Stack tests: %s\n",
          test_results[0] ? GREEN "PASS" RESET : RED "FAIL" RESET);
-  
+
   //////////////////////////////
   // Final test results check //
   //////////////////////////////

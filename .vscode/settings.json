@@ -24,6 +24,7 @@
         "uint128_t.h": "c",
         "uint256_t.h": "c",
         "functional": "c",
-        "random": "c"
+        "random": "c",
+        "main_t.h": "c"
     }
 }

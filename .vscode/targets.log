@@ -6,13 +6,12 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jul  6 12:56:36 2022
+# Make data base, printed on Thu Jul  7 01:33:09 2022
 
 # Variables
 
 # environment
 GDK_BACKEND = x11
- 
 # environment
 LC_ALL = C
 # environment
@@ -125,8 +124,8 @@ XDG_SESSION_TYPE = wayland
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
 DEVKITPPC = /opt/devkitpro/devkitPPC
-# makefile (from 'Makefile', line 57)
-FLAGS := -Oz -DDEBUG
+# makefile (from 'Makefile', line 8)
+FLAGS := -Oz
 # environment
 SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/798,unix/a-81cu:/tmp/.ICE-unix/798
 # automatic
@@ -189,7 +188,6 @@ XDG_CURRENT_DESKTOP = KDE
 XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
 # environment
 DESKTOP_SESSION = plasmawayland
- 
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = KDE
 # 'override' directive
@@ -214,8 +212,6 @@ KDE_SESSION_UID = 1000
 TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c
 # environment
 QT_WAYLAND_FORCE_DPI = 96
-# makefile (from 'Makefile', line 41)
-TEST_BIN = bin/tests
 # environment
 LC_MEASUREMENT = en_US.UTF-8
 # environment
@@ -226,6 +222,7 @@ _ = /usr/bin/make
 LC_PAPER = en_US.UTF-8
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
+ 
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -234,7 +231,9 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 GTK2_RC_FILES = /etc/gtk-2.0/gtkrc:/home/a/.gtkrc-2.0:/home/a/.config/gtkrc-2.0
 # environment
 HOME = /home/a
-# makefile (from 'Makefile', line 34)
+# makefile (from 'Makefile', line 57)
+OPTIONS := -DDEBUG
+# makefile (from 'Makefile', line 37)
 DEBUG_MODE := 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
@@ -269,7 +268,7 @@ LC_IDENTIFICATION = en_US.UTF-8
 # makefile (from 'Makefile', line 23)
 IO := src/common/io/io.c
 # variable set hash-table stats:
-# Load=128/1024=12%, Rehash=0, Collisions=5/178=3%
+# Load=128/1024=12%, Rehash=0, Collisions=5/179=3%
 
 # Pattern-specific Variable Values
 
@@ -277,7 +276,6 @@ IO := src/common/io/io.c
 
 # Directories
 
- 
 # . (device 66306, inode 10368114): 14 files, no impossibilities.
 
 # 14 files, no impossibilities in 1 directories.
@@ -291,7 +289,7 @@ IO := src/common/io/io.c
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-06 12:56:18.115920311
+#  Last modified 2022-07-07 01:32:12.487454256
 #  File has been updated.
 #  Successfully updated.
 
@@ -318,12 +316,11 @@ main_t: tests/main_t.c
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 82):
-	$(CC) $(EVM_FLAGS) -o $(TEST_BIN)/main_t $(UTILS) $(VM) tests/main_t.c $(TESTS) -DTEST_MODE $(FLAGS) $(LIBS)
+	$(CC) $(EVM_FLAGS) -o bin/tests/main_t $(UTILS) $(VM) tests/main_t.c $(TESTS) -DTEST $(FLAGS) $(LIBS)
 
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -334,7 +331,7 @@ all: vetk
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/10=0%
+# Load=0/32=0%, Rehash=0, Collisions=0/11=0%
 
 vetk: sample_programs/vision_etk/main.c
 #  Implicit rule search has not been done.
@@ -359,9 +356,9 @@ vetk: sample_programs/vision_etk/main.c
 # automatic
 # | := 
 # variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=13/18=72%
+# Load=8/32=25%, Rehash=0, Collisions=13/19=68%
 #  recipe to execute (from 'Makefile', line 75):
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(UTILS) $(VM) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(UTILS) $(VM) $(OPTIONS) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
 
 # Not a target:
 .SUFFIXES:
@@ -378,12 +375,11 @@ vetk: sample_programs/vision_etk/main.c
 # No general ('VPATH' variable) search path.
 
 # strcache buffers: 1 (0) / strings = 23 / storage = 232 B / avg = 10 B
- 
 # current buf: size = 8162 B / used = 232 B / count = 23 / avg = 10 B
 
 # strcache performance: lookups = 36 / hit rate = 36%
 # hash-table stats:
 # Load=23/8192=0%, Rehash=0, Collisions=0/36=0%
-# Finished Make data base on Wed Jul  6 12:56:36 2022
+# Finished Make data base on Thu Jul  7 01:33:09 2022
 
  

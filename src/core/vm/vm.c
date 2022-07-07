@@ -521,7 +521,8 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
 
   // memory bounds check
   if (gt_uint256(&a, &max_mem_len)) {
-    custom_error(memory_size_exceeded_err);
+    // Error 0xB2: Memory size exceeded
+    custom_error(0xB2);
   }
 
   //              gas cost stuff              //
@@ -605,7 +606,8 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
 
   // memory bounds check
   if (gt_uint256(&a, &max_mem_len)) {
-    custom_error(memory_size_exceeded_err);
+    // Error 0xB2: Memory size exceeded
+    custom_error(0xB2);
   }
 
   //              gas cost stuff              //
@@ -896,12 +898,12 @@ void _vm(uint256_t program[], bool debug_mode) {
   // while loop to run program //
   while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
-
+  #ifdef DEBUG
     // DEBUG MODE
     if (debug_mode) {
       print_debug(stack, memory, &pc, &gas, &opcode);
     }
-
+  #endif
     // consume_gas(&opcode, &gas);
     pc += 1;
 
@@ -1055,13 +1057,15 @@ void _vm(uint256_t program[], bool debug_mode) {
       _swap(stack, &opcode);
       break;
     case 0xFE: // INVALID
-      custom_error(invalid_op_err);
+      // Error 0xB0: Invalid opcode
+    custom_error(0xB0);
       break;
     case 0xFF: // SELFDESTRUCT
       exit(1);
       break;
     default:
-      custom_error(invalid_op_err);
+    // Error 0xB0: Invalid opcode
+    custom_error(0xB0);
       break;
     }
   }

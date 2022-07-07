@@ -1,20 +1,16 @@
 #ifndef ERRORS_H
 #define ERRORS_H
 
+#include <inttypes.h>
+
 /*
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │                                                                            │
-  │   FUNCTIONS                                                                │
-  │                                                                            │
-  └────────────────────────────────────────────────────────────────────────────┘
+  ┌───────────────────────────────┐
+  │   FUNCTIONS                   │
+  └───────────────────────────────┘
  */
 
 // custom error handling
-// @param err_msg: error message
-void custom_error(const char err_msg[]);
-
-// critical error handling
-// @param err_msg: error message
-void critical_error(const char err_msg[]);
+// @param err_code: error code
+void custom_error(uint8_t err_code);
 
 #endif
