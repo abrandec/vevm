@@ -17,7 +17,7 @@ MATH := src/common/math/bigint/bigint.c
 VM := $(MATH) src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c
 
 # Assemble Tests
-TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c
+TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c tests/test_utils/assert.c
 
 # IO
 IO := src/common/io/io.c

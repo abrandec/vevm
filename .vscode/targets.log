@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul  7 01:33:09 2022
+# Make data base, printed on Thu Jul  7 02:54:06 2022
 
 # Variables
 
@@ -209,7 +209,7 @@ MAKE_VERSION := 4.3
 # environment
 KDE_SESSION_UID = 1000
 # makefile (from 'Makefile', line 20)
-TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c
+TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c tests/test_utils/assert.c
 # environment
 QT_WAYLAND_FORCE_DPI = 96
 # environment
@@ -222,7 +222,6 @@ _ = /usr/bin/make
 LC_PAPER = en_US.UTF-8
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
- 
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -279,6 +278,7 @@ IO := src/common/io/io.c
 # . (device 66306, inode 10368114): 14 files, no impossibilities.
 
 # 14 files, no impossibilities in 1 directories.
+ 
 
 # Implicit Rules
 
@@ -289,7 +289,7 @@ IO := src/common/io/io.c
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-07 01:32:12.487454256
+#  Last modified 2022-07-07 02:54:03.724027805
 #  File has been updated.
 #  Successfully updated.
 
@@ -380,6 +380,6 @@ vetk: sample_programs/vision_etk/main.c
 # strcache performance: lookups = 36 / hit rate = 36%
 # hash-table stats:
 # Load=23/8192=0%, Rehash=0, Collisions=0/36=0%
-# Finished Make data base on Thu Jul  7 01:33:09 2022
+# Finished Make data base on Thu Jul  7 02:54:06 2022
 
  

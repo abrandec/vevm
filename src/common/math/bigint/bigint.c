@@ -931,7 +931,7 @@ void divmod_uint256(uint256_t *destDiv, uint256_t *destMod, uint256_t *a,
 }
 
 // 512
-void divmod_uint512(uint512_t *destDiv, uint256_t *destMod, uint512_t *a,
+void divmod_uint512(uint512_t *destDiv, uint512_t *destMod, uint512_t *a,
                     uint512_t *b) {}
 
 /*

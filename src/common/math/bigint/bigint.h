@@ -574,7 +574,7 @@ void divmod_uint256(uint256_t *destDiv, uint256_t *destMod, uint256_t *a,
 // @param destMod: where to store the remainder of a and b
 // @param a: the  uint512_t to divide with
 // @param b: the  uint512_t to divide with
-void divmod_uint512(uint512_t *destDiv, uint256_t *destMod, uint512_t *a,
+void divmod_uint512(uint512_t *destDiv, uint512_t *destMod, uint512_t *a,
                     uint512_t *b);
 
 /*

@@ -845,7 +845,6 @@ void consume_gas(int *opcode, uint64_t *gas) {}
 // @param length: the length of the buffer
 void clear_buffer(uint256_t buffer[], int length) {
   int i = 0;
-  length = length - 1;
 
   for (; i < length; ++i) {
     clear_uint256(&buffer[i]);
@@ -1057,7 +1056,7 @@ void _vm(uint256_t program[], bool debug_mode) {
       _swap(stack, &opcode);
       break;
     case 0xFE: // INVALID
-      // Error 0xB0: Invalid opcode
+    // Error 0xB0: Invalid opcode
     custom_error(0xB0);
       break;
     case 0xFF: // SELFDESTRUCT
