@@ -17,10 +17,11 @@ make
 ```
 
 # Testing
+##### All tests reside in a single program and can be run compiled by running:
 ```
 make tests
 
-./tests/bin/RUN_TEST
+./tests/bin/tests/main_t
 ```
 ## [Available opcodes](https://github.com/abrandec/vision_evm/blob/main/compatibility-lists/opcodes.md)
 
