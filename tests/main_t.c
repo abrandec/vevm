@@ -12,13 +12,13 @@
 
 int main(void) {
   // number of tests
-  enum { test_len = 1 };
+  enum { test_len = 2 };
 
-  bool test_results[test_len] = {stack_tests()};
+  bool test_results[test_len] = {stack_tests(), vm_tests()};
 
   // check if all test results passed
   assert_bool_array_msg("Final test results", test_results, test_len);
-  
+
   return 0;
 }
 

@@ -82,6 +82,6 @@ void mmap_alloc(char *filename);
 
 // print a file
 // @param filename: the file to print
-void print_file(char *filename);
+void print_file(const char *filename);
 
 #endif

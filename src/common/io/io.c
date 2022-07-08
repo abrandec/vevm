@@ -88,7 +88,7 @@ void mmap_alloc(char *filename) {}
   └───────────────────────────────┘
  */
 
-void print_file(char *filename) {
+void print_file(const char *filename) {
   // file descriptor
   int fd = open(filename, O_RDONLY);
 

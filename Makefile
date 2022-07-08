@@ -9,7 +9,7 @@ FLAGS := -Oz
 
 # Local Libraries
 
-UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c
+UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c
 
 MATH := src/common/math/bigint/bigint.c
 

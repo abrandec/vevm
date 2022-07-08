@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul  7 02:54:06 2022
+# Make data base, printed on Thu Jul  7 23:50:28 2022
 
 # Variables
 
@@ -19,9 +19,9 @@ NO_AT_BRIDGE = 1
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/a/.gtkrc:/home/a/.config/gtkrc
 # makefile (from 'Makefile', line 12)
-UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c
+UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-721eb652-ddc7-42be-8ffb-d0bc79212097.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7dace0a2-a9a6-4d9f-9780-13f3e9ce0a07.sock
 # environment
 LC_NAME = en_US.UTF-8
 # environment
@@ -69,7 +69,7 @@ XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session1
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/xauth_kBCaCf
+XAUTHORITY = /run/user/1000/xauth_lnESAh
 # default
 .LOADED := 
 # default
@@ -117,7 +117,7 @@ CHAIN := mainnet
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 5806
+VSCODE_PID = 3212
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -127,7 +127,7 @@ DEVKITPPC = /opt/devkitpro/devkitPPC
 # makefile (from 'Makefile', line 8)
 FLAGS := -Oz
 # environment
-SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/798,unix/a-81cu:/tmp/.ICE-unix/798
+SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/775,unix/a-81cu:/tmp/.ICE-unix/775
 # automatic
 *F = $(notdir $*)
 # environment
@@ -199,7 +199,7 @@ XDG_VTNR = 2
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 658
+SYSTEMD_EXEC_PID = 645
 # environment
 DISPLAY = :1
 # environment
@@ -275,10 +275,9 @@ IO := src/common/io/io.c
 
 # Directories
 
-# . (device 66306, inode 10368114): 14 files, no impossibilities.
+# . (device 66306, inode 9590094): 13 files, no impossibilities.
 
-# 14 files, no impossibilities in 1 directories.
- 
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -289,7 +288,8 @@ IO := src/common/io/io.c
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-07 02:54:03.724027805
+ 
+#  Last modified 2022-07-07 23:50:26.715142468
 #  File has been updated.
 #  Successfully updated.
 
@@ -302,7 +302,7 @@ tests/main_t.c:
 # Not a target:
 sample_programs/vision_etk/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-06 11:17:46.352699231
+#  Last modified 2022-07-07 06:36:20.177435004
 #  File has been updated.
 #  Successfully updated.
 
@@ -374,12 +374,12 @@ vetk: sample_programs/vision_etk/main.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 232 B / avg = 10 B
-# current buf: size = 8162 B / used = 232 B / count = 23 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 22 / storage = 222 B / avg = 10 B
+# current buf: size = 8162 B / used = 222 B / count = 22 / avg = 10 B
 
-# strcache performance: lookups = 36 / hit rate = 36%
+# strcache performance: lookups = 35 / hit rate = 37%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=0/36=0%
-# Finished Make data base on Thu Jul  7 02:54:06 2022
+# Load=22/8192=0%, Rehash=0, Collisions=0/35=0%
+# Finished Make data base on Thu Jul  7 23:50:28 2022
 
  
