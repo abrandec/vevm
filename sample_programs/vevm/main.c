@@ -5,7 +5,6 @@
 #include "../../src/common/math/bigint/bigint.h"
 #include "../../src/common/utils/hex_utils/hex_utils.h"
 #include "../../src/core/config.h"
-#include "../../src/core/stack/stack.h"
 #include "../../src/core/vm/vm.h"
 
 #include <ctype.h>
@@ -14,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 
 // buffer for reading bytecode (accounts for space between uint64_t's)
 #define CHAR_BUFF_LEN 49248
@@ -46,11 +46,15 @@ void write2_prog_buff(uint256_t program[]) {
 
 int main(int argc, const char *argv[]) {
   static uint256_t program[MAX_BYTECODE_LEN];
+
+  FILE *fd;
   bool debug_mode = false;
 
-  const char *path = NULL;
-  const char *input = NULL;
-  
+  char *path = NULL;
+  char *file;
+  char *input = "idk";
+
+  // param variables
   int debug = 0;
   int perms = 0;
 
@@ -58,21 +62,20 @@ int main(int argc, const char *argv[]) {
       OPT_GROUP("Commands"),
       OPT_HELP(),
       OPT_STRING('i', "input", &input, "input bytecode"),
-      OPT_STRING('p', "path", &path, "path to hex file", NULL, 0, 0),
+      OPT_STRING('p', "path", &path, "path to hex file with bytecode", NULL, 0,
+                 0),
       OPT_BOOLEAN('d', "debug", &debug, "print EVM debug", NULL, 0, 0),
       OPT_END(),
   };
 
   struct argparse argparse;
   argparse_init(&argparse, options, usages, 0);
-  //argparse_describe(&argparse, vevm_logo, "");
   argc = argparse_parse(&argparse, argc, argv);
+  clear_buffer(program, MAX_BYTECODE_LEN);
 
-  write2_prog_buff(program);
-
-  // print_file(filename);
-  char data[420];
   char *pEnd;
+
+  char *str;
 
   // read_bytecode(program, char_bytecode);
 
@@ -80,10 +83,12 @@ int main(int argc, const char *argv[]) {
 
   // Input bytecode & debug = false
   if (input != NULL && debug == 0) {
+    E00(program[0]) = strtoull(input, &pEnd, 16);
+    print_hex_uint256(&program[0], true);
     printf("%s\n", input);
   }
 
-   // Input bytecode & debug mode = true
+  // Input bytecode & debug mode = true
   if (input != NULL && debug != 0) {
     printf("%d\n", debug);
     printf("%s\n", input);
@@ -93,24 +98,30 @@ int main(int argc, const char *argv[]) {
 
   // Read bytecode from file & debug = false
   if (path != NULL && debug == 0) {
-    printf("path: %s \n", path);
-    print_file(path);
+
+    //create_file(fd, path, input);
+    // file = read_file_fmmap(fd, input);
+    create_folder(path);
+    // printf("%s\n", file);
+    // print_file(fd, path);
+    print_hex_uint256(&program[0], true);
+
+    munmap(file, sizeof(file));
   }
 
   // Read bytecode from file & debug mode
   if (path != NULL && debug != 0) {
     printf("%s\n", path);
-    print_file(path);
+    print_file(fd, path);
     // load file && write to buffer
     // run vm
     debug_mode = true;
     //_vm(program, debug_mode);
   }
 
-  // If no input command exists
+  // If no input command exists //
   if (argc != 0) {
-    printf("Unvailable command\n");
-    printf("Refer to vetk -h for available commands\n");
+    printf("Refer to -help for usage\n");
   }
 
   return 0;

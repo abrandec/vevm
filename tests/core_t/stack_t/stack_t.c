@@ -17,10 +17,19 @@
 // @param stack: the stack to check
 // @return: true if the stack can handle overflows, false otherwise
 bool assert_overflow(List *stack) {
-  uint256_t dummy_data = init_all_uint256(0, 0, 0, 69);
 
-  for (int i = 0; i < MAX_STACK_DEPTH + 1; ++i) {
+  for (int i = 0; i < MAX_STACK_DEPTH + 10; ++i) {
+    uint256_t dummy_data =
+        rand_num_uint256(init_uint256(0), init_uint256(UINT64_MAX));
+    
     stack_push(stack, &dummy_data);
+
+    // peak @ top of stack to compare with dummy_data
+    uint256_t data = stack_peak(stack, stack_length(stack) - 1);
+    // compare data
+    if (!equal_uint256(&data, &dummy_data)) {
+      return assert_msg("Overflow check", false);
+    }
   }
 
   return assert_eq_msg("Overflow check", stack_length(stack), MAX_STACK_DEPTH);
@@ -43,7 +52,6 @@ bool assert_underflow(List *stack) {
 bool assert_swap(List *stack) {
   enum { max_stack_depth = MAX_STACK_DEPTH };
 
-  rand_num_uint128(init_all_uint128(0, 0), init_all_uint128(0, 20));
   uint256_t dummy_data[max_stack_depth] = {};
 
   // final suffle dummy data
@@ -67,11 +75,11 @@ bool assert_swap(List *stack) {
 // @return true if the stack can be destroyed, false otherwise
 bool assert_stack_destroy(List *stack) {
   uint256_t dummy_data = init_all_uint256(0, 0, 0, 69);
-
+  
   // check if stack is empty/zero in the first place and if so
   // add an element to the stack to make it non-empty
   stack_length(stack) == 0 ? stack_push(stack, &dummy_data) : 0;
-
+    
   stack_destroy(stack);
 
   return assert_eq_msg("Stack destroy check", stack_length(stack), 0);

@@ -20,6 +20,6 @@
   └───────────────────────────────┘
  */
 
-#define MAX_STACK_DEPTH 10
+#define MAX_STACK_DEPTH 1024
 
 #endif

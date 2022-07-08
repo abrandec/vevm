@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul  7 23:50:28 2022
+# Make data base, printed on Fri Jul  8 14:48:49 2022
 
 # Variables
 
@@ -19,9 +19,9 @@ NO_AT_BRIDGE = 1
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/a/.gtkrc:/home/a/.config/gtkrc
 # makefile (from 'Makefile', line 12)
-UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c
+UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c src/common/io/io.c
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7dace0a2-a9a6-4d9f-9780-13f3e9ce0a07.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-55458587-4964-4bf2-8b10-7f3384da0dee.sock
 # environment
 LC_NAME = en_US.UTF-8
 # environment
@@ -34,7 +34,7 @@ LIBS := -lm
 LC_ADDRESS = en_US.UTF-8
 # default
 MAKE_COMMAND := make
-# makefile (from 'Makefile', line 58)
+# makefile (from 'Makefile', line 55)
 VM := src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c src/debug/debug.c
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
@@ -102,8 +102,9 @@ WAYLAND_DISPLAY = wayland-0
 XDG_CONFIG_DIRS = /home/a/.config/kdedefaults:/etc/xdg
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
-# makefile (from 'Makefile', line 51)
+# makefile (from 'Makefile', line 48)
 EVM_FLAGS = -DMAINNET -DARROW_GLACIER
+ 
 # environment
 XCURSOR_THEME = breeze_cursors
 # environment
@@ -112,7 +113,7 @@ XDG_SESSION_DESKTOP = KDE
 MAKEFILE_LIST := Makefile
 # automatic
 @F = $(notdir $@)
-# makefile (from 'Makefile', line 30)
+# makefile (from 'Makefile', line 27)
 CHAIN := mainnet
 # environment
 VSCODE_VERBOSE_LOGGING = true
@@ -170,7 +171,7 @@ VSCODE_LOG_NATIVE = false
 LC_TELEPHONE = en_US.UTF-8
 # environment
 GDK_SCALE = 1
-# makefile (from 'Makefile', line 31)
+# makefile (from 'Makefile', line 28)
 FORK := arrowglacier
 # automatic
 ?F = $(notdir $?)
@@ -209,7 +210,7 @@ MAKE_VERSION := 4.3
 # environment
 KDE_SESSION_UID = 1000
 # makefile (from 'Makefile', line 20)
-TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c tests/test_utils/assert.c
+TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c tests/test_utils/assert.c tests/common_t/io_t/io_t.c
 # environment
 QT_WAYLAND_FORCE_DPI = 96
 # environment
@@ -230,9 +231,9 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 GTK2_RC_FILES = /etc/gtk-2.0/gtkrc:/home/a/.gtkrc-2.0:/home/a/.config/gtkrc-2.0
 # environment
 HOME = /home/a
-# makefile (from 'Makefile', line 57)
+# makefile (from 'Makefile', line 54)
 OPTIONS := -DDEBUG
-# makefile (from 'Makefile', line 37)
+# makefile (from 'Makefile', line 34)
 DEBUG_MODE := 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
@@ -264,10 +265,8 @@ CC := clang
 KDE_FULL_SESSION = true
 # environment
 LC_IDENTIFICATION = en_US.UTF-8
-# makefile (from 'Makefile', line 23)
-IO := src/common/io/io.c
 # variable set hash-table stats:
-# Load=128/1024=12%, Rehash=0, Collisions=5/179=3%
+# Load=127/1024=12%, Rehash=0, Collisions=5/177=3%
 
 # Pattern-specific Variable Values
 
@@ -275,9 +274,9 @@ IO := src/common/io/io.c
 
 # Directories
 
-# . (device 66306, inode 9590094): 13 files, no impossibilities.
+# . (device 66306, inode 9590094): 14 files, no impossibilities.
 
-# 13 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -288,8 +287,7 @@ IO := src/common/io/io.c
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
- 
-#  Last modified 2022-07-07 23:50:26.715142468
+#  Last modified 2022-07-08 14:48:42.569945217
 #  File has been updated.
 #  Successfully updated.
 
@@ -299,10 +297,11 @@ tests/main_t.c:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 # Not a target:
-sample_programs/vision_etk/main.c:
+sample_programs/vevm/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-07 06:36:20.177435004
+#  Last modified 2022-07-08 10:27:38.459854736
 #  File has been updated.
 #  Successfully updated.
 
@@ -315,7 +314,7 @@ main_t: tests/main_t.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 82):
+#  recipe to execute (from 'Makefile', line 80):
 	$(CC) $(EVM_FLAGS) -o bin/tests/main_t $(UTILS) $(VM) tests/main_t.c $(TESTS) -DTEST $(FLAGS) $(LIBS)
 
 # Not a target:
@@ -324,47 +323,47 @@ main_t: tests/main_t.c
 #  Modification time never checked.
 #  File has not been updated.
 
-all: vetk
+all: vevm
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/11=0%
-
-vetk: sample_programs/vision_etk/main.c
-#  Implicit rule search has not been done.
-#  Implicit/static pattern stem: ''
-#  File does not exist.
-#  File has been updated.
-#  Needs to be updated (-q is set).
-# automatic
-# @ := vetk
-# automatic
-# * := 
-# automatic
-# < := sample_programs/vision_etk/main.c
-# automatic
-# + := sample_programs/vision_etk/main.c
-# automatic
-# % := 
-# automatic
-# ^ := sample_programs/vision_etk/main.c
-# automatic
-# ? := sample_programs/vision_etk/main.c
-# automatic
-# | := 
-# variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=13/19=68%
-#  recipe to execute (from 'Makefile', line 75):
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(UTILS) $(VM) $(OPTIONS) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+# Load=0/32=0%, Rehash=0, Collisions=0/10=0%
 
 # Not a target:
 .SUFFIXES:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+
+vevm: sample_programs/vevm/main.c
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := vevm
+# automatic
+# * := 
+# automatic
+# < := sample_programs/vevm/main.c
+# automatic
+# + := sample_programs/vevm/main.c
+# automatic
+# % := 
+# automatic
+# ^ := sample_programs/vevm/main.c
+# automatic
+# ? := sample_programs/vevm/main.c
+# automatic
+# | := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=9/18=50%
+#  recipe to execute (from 'Makefile', line 72):
+	$(CC) $(EVM_FLAGS) -o bin/vevm/vevm  $(UTILS) $(VM) $(OPTIONS) sample_programs/vevm/main.c $(FLAGS) $(LIBS)
 
 # files hash-table stats:
 # Load=9/1024=1%, Rehash=0, Collisions=0/27=0%
@@ -374,12 +373,12 @@ vetk: sample_programs/vision_etk/main.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 22 / storage = 222 B / avg = 10 B
-# current buf: size = 8162 B / used = 222 B / count = 22 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 23 / storage = 226 B / avg = 9 B
+# current buf: size = 8162 B / used = 226 B / count = 23 / avg = 9 B
 
-# strcache performance: lookups = 35 / hit rate = 37%
+# strcache performance: lookups = 36 / hit rate = 36%
 # hash-table stats:
-# Load=22/8192=0%, Rehash=0, Collisions=0/35=0%
-# Finished Make data base on Thu Jul  7 23:50:28 2022
+# Load=23/8192=0%, Rehash=0, Collisions=0/36=0%
+# Finished Make data base on Fri Jul  8 14:48:49 2022
 
  

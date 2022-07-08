@@ -55,8 +55,7 @@ Node *Node_create(void) {
 
 void Node_destroy(Node *node) {
   if (node == NULL) {
-    // Error 0xA3: Stack NULL
-    custom_error(0xA3);
+    custom_error(STACK_NULL);
   } else {
     free(node);
   }
@@ -93,8 +92,7 @@ List *stack_create(void) {
 
 void stack_destroy(List *stack) {
   if (stack == NULL) {
-    // Error 0xA3: stack NULL
-    custom_error(0xA3);
+    custom_error(STACK_NULL);
   } else {
     Node *node = stack->first;
     Node *next;
@@ -119,14 +117,13 @@ void stack_destroy(List *stack) {
 
 void stack_push(List *stack, uint256_t *val) {
   if (stack_length(stack) > MAX_STACK_DEPTH - 1) {
-    // Error 0xA0: Stack overflow
-    custom_error(0xA0);
+    custom_error(STACK_OVERFLOW);
   } else if (stack == NULL) {
-    // Error 0xA3: Stack NULL
-    custom_error(0xA3);
+    custom_error(STACK_NULL);
   } else {
     ++stack_len;
     Node *node = stack->first;
+
     while (node->next != NULL) {
       node = node->next;
     }
@@ -136,7 +133,6 @@ void stack_push(List *stack, uint256_t *val) {
     copy_uint256(value, val);
 
     node->data = value;
-
     node->next = Node_create();
   }
 }
@@ -148,25 +144,28 @@ void stack_push(List *stack, uint256_t *val) {
  */
 
 void stack_pop(List *stack) {
-
   if (stack_length(stack) == 0) {
-    // Error 0xA1: Stack underflow
-    custom_error(0xA1);
+    custom_error(STACK_UNDERFLOW);
   } else {
     int index = stack_length(stack) - 1;
+
     --stack_len;
     if (index == 0) {
       Node *node = stack->first;
       stack->first = stack->first->next;
+
       uint256_t *data = node->data;
+
       free(data);
       Node_destroy(node);
     } else {
       Node *before = stack->first;
+
       while (index > 0) {
         before = before->next;
         --index;
       }
+
       Node *node = before->next;
       before->next = before->next->next;
       uint256_t *data = node->data;
@@ -186,8 +185,7 @@ void stack_swap(List *stack, int index) {
   int stack_l = stack_length(stack) - 1;
 
   if (stack == NULL || index == 0 || index > 15 || index > stack_len) {
-    // Error 0xA2: Stack index out of bounds
-    custom_error(0xA2);
+    custom_error(STACK_INVALID_INDEX);
   } else {
     uint256_t data2swap;
 
@@ -221,8 +219,7 @@ uint256_t stack_peak(List *stack, int index) {
   int stack_l = stack_length(stack);
 
   if (stack == NULL || stack_l == 0 || index > stack_l - 1 || index < -1) {
-    // Error 0xA2: Stack index out of bounds
-    custom_error(0xA2);
+    custom_error(STACK_INVALID_INDEX);
     return val;
   } else {
     Node *node = stack->first;
@@ -245,8 +242,7 @@ uint256_t stack_peak(List *stack, int index) {
 
 int stack_length(List *stack) {
   if (stack == NULL) {
-    // Error 0xA3: Stack NULL
-    custom_error(0xA3);
+  custom_error(STACK_NULL);
     return 0;
   } else {
     Node *node = stack->first;

@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 bool assert_msg(char msg[], bool condition) {
@@ -48,6 +49,8 @@ bool assert_eq_256_msg(char msg[], uint256_t a, uint256_t b) {
 bool assert_eq_512_msg(char msg[], uint512_t a, uint512_t b) {
   return assert_msg(msg, equal_uint512(&a, &b));
 }
+
+bool assert_char(char *a, char *b) { return (strcmp(a, b) == 0); }
 
 uint64_t rand_num(uint64_t min, uint64_t max) {
   time_t t;
@@ -133,13 +136,17 @@ bool assert_bool_array_msg(char msg[], bool arr[], size_t len) {
 
   for (; i < len; ++i) {
     if (!arr[i]) {
-      printf(RED "├──────────────────────────────────\n│ ▸ %s - FAIL\n├──────────────────────────────────\n" RESET, msg);
+      printf(RED "├──────────────────────────────────\n│ ▸ %s - "
+                 "FAIL\n├──────────────────────────────────\n" RESET,
+             msg);
 
       return false;
     }
   }
 
-  printf(GREEN "├──────────────────────────────────\n│ ▸ %s - PASS\n├──────────────────────────────────\n" RESET, msg);
+  printf(GREEN "├──────────────────────────────────\n│ ▸ %s - "
+               "PASS\n├──────────────────────────────────\n" RESET,
+         msg);
 
   return true;
 }

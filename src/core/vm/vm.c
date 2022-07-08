@@ -520,10 +520,7 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint64_t offset = ((E11(a)) % 32) * 8;
 
   // memory bounds check
-  if (gt_uint256(&a, &max_mem_len)) {
-    // Error 0xB2: Memory size exceeded
-    custom_error(0xB2);
-  }
+  gt_uint256(&a, &max_mem_len) ? custom_error(VM_MEMORY_SIZE_EXCEEDED) : 0;
 
   //              gas cost stuff              //
 
@@ -605,10 +602,7 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   uint64_t offset = ((E11(a)) % 32) * 8;
 
   // memory bounds check
-  if (gt_uint256(&a, &max_mem_len)) {
-    // Error 0xB2: Memory size exceeded
-    custom_error(0xB2);
-  }
+  gt_uint256(&a, &max_mem_len) ? custom_error(VM_MEMORY_SIZE_EXCEEDED) : 0;
 
   //              gas cost stuff              //
 
@@ -897,12 +891,12 @@ void _vm(uint256_t program[], bool debug_mode) {
   // while loop to run program //
   while (pc < MAX_PC) {
     get_opcode(program, &pc, &opcode);
-  #ifdef DEBUG
+#ifdef DEBUG
     // DEBUG MODE
     if (debug_mode) {
       print_debug(stack, memory, &pc, &gas, &opcode);
     }
-  #endif
+#endif
     // consume_gas(&opcode, &gas);
     pc += 1;
 
@@ -1056,15 +1050,13 @@ void _vm(uint256_t program[], bool debug_mode) {
       _swap(stack, &opcode);
       break;
     case 0xFE: // INVALID
-    // Error 0xB0: Invalid opcode
-    custom_error(0xB0);
+      custom_error(VM_INVALID_OPCODE);
       break;
     case 0xFF: // SELFDESTRUCT
       exit(1);
       break;
     default:
-    // Error 0xB0: Invalid opcode
-    custom_error(0xB0);
+      custom_error(VM_INVALID_OPCODE);
       break;
     }
   }

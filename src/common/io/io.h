@@ -2,6 +2,7 @@
 #define IO_H
 
 #include <stdbool.h>
+#include <stdio.h>
 
 /*
   ┌───────────────────────────────┐
@@ -10,46 +11,23 @@
  */
 
 // get the size of a file
+// @param fd: file descriptor
 // @param filename: the file to get the size of
 // @return the size of the file
-long file_size(const char *filename);
+long long file_size(FILE *fd, char *filename);
 
 /*
   ┌───────────────────────────────┐
-  │   READ FILE | MMAP            │
+  │   FMMAP                       │
   └───────────────────────────────┘
  */
 
-// read a file using mmap
-// @param filename: the file to read
-// @param data: the return data to read from the file
-// @return true if successful, false otherwise
-bool r_file_mmap(char *filename, char *data);
-
-/*
-  ┌───────────────────────────────┐
-  │   WRITE FILE | MMAP           │
-  └───────────────────────────────┘
- */
-
-// write to a file using mmap
-// @param filename: the file to write to
-// @param data: the data to write to the file
-// @return true if successful, false otherwise
-bool w_file_mmap(char *filename, char *data);
-
-/*
-  ┌───────────────────────────────┐
-  │   READ/WRITE FILE | MMAP      │
-  └───────────────────────────────┘
- */
-
-// read and write to a file using mmap
-// @param filename: the file to read and write to
-// @param r_data: the data to read from the file
-// @param w_data: data to write to the file
-// @return true if successful, false otherwise
-bool rw_file_mmap(char *filename, char *r_data, char *w_data);
+// Read a file using mmap (PROT_READ, MAP_PRIVATE)
+// @param fd: file descriptor
+// @param filename: the file to mmap
+// @param FileSize: the size of the file to mmap
+// @return the mmap'd file
+char *fmmap(FILE *fd, long long FileSize);
 
 /*
   ┌───────────────────────────────┐
@@ -58,22 +36,69 @@ bool rw_file_mmap(char *filename, char *r_data, char *w_data);
  */
 
 // create a file
+// @param fd: file descriptor
 // @param filename: the file to create
-// @param size: the size of the file to create
 // @param data: the data to write to the file
 // @return true if successful, false otherwise
-bool create_file(char *filename, char *data);
+bool create_file(FILE *fd, char *filename, char *data);
 
 /*
   ┌───────────────────────────────┐
-  │   MMAP ALLOC                  │
+  │   READ FILE | FMMAP           │
   └───────────────────────────────┘
  */
 
-// allocate memory using mmap
-// @param filename: the file to allocate memory for
-void mmap_alloc(char *filename);
+// read a file using fmmap
+// @param fd: file descriptor
+// @param filename: the file to read
+// @return file contents
+char *read_file_fmmap(FILE *fd, char *filename);
 
+/*
+  ┌───────────────────────────────┐
+  │   WRITE FILE | FMMAP          │
+  └───────────────────────────────┘
+ */
+
+// write to a file using fmmap
+// @param fd: file descriptor
+// @param filename: the file to write to
+// @param data: the data to write to the file
+// @return true if successful, false otherwise
+bool write_file_fmmap(FILE *fd, char *filename, char *data);
+
+/*
+  ┌───────────────────────────────┐
+  │   CREATE FOLDER               │
+  └───────────────────────────────┘
+ */
+
+// create a folder using mkdir
+// @param folder: the folder to create
+// @return true if successful, false otherwise
+bool create_folder(char *foldername);
+/*
+  ┌───────────────────────────────┐
+  │   FILE EXISTS?                │
+  └───────────────────────────────┘
+ */
+
+// check if a file exists with ambiguous error handling
+// @param fd: file descriptor
+// @param filename: the file to check
+// @return true if the file exists, false otherwise
+bool file_exists(FILE *fd, char *filename);
+/*
+  ┌───────────────────────────────┐
+  │   FOLDER EXISTS?              │
+  └───────────────────────────────┘
+ */
+
+// check if a folder exists with ambiguous error handling
+// @param fd: file descriptor
+// @param foldername: the folder to check
+// @return true if the folder exists, false otherwise
+bool folder_exists(FILE *fd, char *foldername);
 /*
   ┌───────────────────────────────┐
   │   PRINTING                    │
@@ -81,7 +106,8 @@ void mmap_alloc(char *filename);
  */
 
 // print a file
+// @param fd: file descriptor
 // @param filename: the file to print
-void print_file(const char *filename);
+void print_file(FILE *fd, char *filename);
 
 #endif

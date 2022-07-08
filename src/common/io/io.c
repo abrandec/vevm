@@ -3,6 +3,9 @@
 
 #include "io.h"
 
+#include "../../errors/errors.h"
+
+#include <errno.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -20,12 +23,20 @@
   └───────────────────────────────┘
  */
 
-long file_size(const char *filename) {
-  long ret;
-  FILE *fd = fopen(filename, "r");
+long long file_size(FILE *fd, char *filename) {
+  if (!filename) {
+    custom_error(IO_FILENAME_NULL);
+    return 0;
+  } else {
+  }
+  long ret = 0;
+  fd = fopen(filename, "r");
+
   if (!fd) {
+    custom_error(IO_FILE_OPEN_FAIL);
     return 0;
   }
+
   fseek(fd, 0, SEEK_END);
   ret = ftell(fd);
   fclose(fd);
@@ -34,29 +45,15 @@ long file_size(const char *filename) {
 
 /*
   ┌───────────────────────────────┐
-  │   READ FILE | MMAP            │
+  │   FMMAP                       │
   └───────────────────────────────┘
  */
 
-bool r_file_mmap(char *filename, char *data) {
-
+char *fmmap(FILE *fd, long long FileSize) {
+  fd = (FILE *)fileno(fd);
+  // fd NULL checks need to be done outside of this function!
+  return mmap(0, FileSize, PROT_READ, MAP_PRIVATE, (int)fd, 0);
 }
-
-/*
-  ┌───────────────────────────────┐
-  │   WRITE FILE | MMAP           │
-  └───────────────────────────────┘
- */
-
-bool w_file_mmap(char *filename, char *data) {}
-
-/*
-  ┌───────────────────────────────┐
-  │   READ/WRITE FILE | MMAP      │
-  └───────────────────────────────┘
- */
-
-bool rw_file_mmap(char *filename, char *r_data, char *w_data) {}
 
 /*
   ┌───────────────────────────────┐
@@ -64,23 +61,151 @@ bool rw_file_mmap(char *filename, char *r_data, char *w_data) {}
   └───────────────────────────────┘
  */
 
-bool create_file(char *filename, char *data) {
-  FILE *fd = fopen(filename, "w");
+bool create_file(FILE *fd, char *filename, char *data) {
+  if (!filename) {
+    custom_error(IO_FILENAME_NULL);
+    return false;
+  } else {
+    fd = fopen(filename, "w");
+  }
+
+  // fd = fopen(filename, "w");
+
+  if (!fd) {
+    custom_error(IO_FILE_OPEN_FAIL);
+    return false;
+  }
 
   fprintf(fd, "%s", data);
   fclose(fd);
 
-  // lol pls fix this
   return true;
 }
 
 /*
   ┌───────────────────────────────┐
-  │   MMAP ALLOC                  │
+  │   READ FILE | FMMAP           │
   └───────────────────────────────┘
  */
 
-void mmap_alloc(char *filename) {}
+char *read_file_fmmap(FILE *fd, char *filename) {
+  if (!filename) {
+    custom_error(IO_FILENAME_NULL);
+    return NULL;
+  }
+
+  char *str;
+  fd = fopen(filename, "r");
+
+  if (!fd) {
+    custom_error(IO_FILE_OPEN_FAIL);
+    return NULL;
+  }
+
+  fseek(fd, 0, SEEK_END);
+
+  str = fmmap(fd, ftell(fd));
+
+  // fclose does not unmap file so it's fine to call & it's portable
+  // https://pubs.opengroup.org/onlinepubs/7908799/xsh/mmap.html
+  fclose(fd);
+
+  return str;
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   WRITE FILE | FMMAP          │
+  └───────────────────────────────┘
+ */
+
+bool write_file_fmmap(FILE *fd, char *filename, char *data) {
+  if (!filename) {
+    custom_error(IO_FILENAME_NULL);
+    return false;
+  }
+  if(!data) {
+    custom_error(IO_DATA_NULL);
+    return false;
+  }
+
+  fd = fopen(filename, "w");
+
+  if (!fd) {
+    custom_error(IO_FILE_OPEN_FAIL);
+    return false;
+  }
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   CREATE FOLDER               │
+  └───────────────────────────────┘
+ */
+
+bool create_folder(char *foldername) {
+  errno = 0;
+  int ret = mkdir(foldername, S_IRWXU);
+
+  if (ret == -1) {
+    switch (errno) {
+    case EACCES:
+      custom_error(IO_WRITE_ACCESS_ERR);
+      return false;
+    case EEXIST:
+      custom_error(IO_FOLDER_NAME_ALREADY_EXISTS);
+      return false;
+    case ENAMETOOLONG:
+      custom_error(IO_FOLDER_NAME_TOO_LONG);
+      return false;
+    default:
+      perror("mkdir");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   FILE EXITS?                 │
+  └───────────────────────────────┘
+ */
+
+bool file_exists(FILE *fd, char *filename) {
+  if (!filename) {
+    return false;
+  }
+
+  fd = fopen(filename, "r");
+
+  if (!fd) {
+    return false;
+  }
+  fclose(fd);
+  return true;
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   FOLDER EXISTS?              │
+  └───────────────────────────────┘
+ */
+
+bool folder_exists(FILE *fd, char *foldername) {
+  if (!foldername) {
+    return false;
+  }
+
+  fd = fopen(foldername, "r");
+
+  if (!fd) {
+    return false;
+  }
+
+  return true;
+}
 
 /*
   ┌───────────────────────────────┐
@@ -88,11 +213,15 @@ void mmap_alloc(char *filename) {}
   └───────────────────────────────┘
  */
 
-void print_file(const char *filename) {
-  // file descriptor
-  int fd = open(filename, O_RDONLY);
+void print_file(FILE *fd, char *filename) {
+  if (!filename) {
+    printf("Error opening file!\n");
+    return;
+  }
 
-  size_t mmapLen = file_size(filename);
+  fd = open(filename, O_RDONLY);
+
+  size_t mmapLen = file_size(fd, filename);
   off_t offset = 0; // offset to seek to.
 
   // We use MAP_PRIVATE since writes to the region of memory should
@@ -101,7 +230,6 @@ void print_file(const char *filename) {
   if (ptr == MAP_FAILED) {
     perror("mmap");
     exit(EXIT_FAILURE);
-    // possibly printf empty file error if it occurs?
   }
 
   // File isn't necessarily loaded into memory until we access the

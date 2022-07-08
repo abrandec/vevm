@@ -9,7 +9,7 @@ FLAGS := -Oz
 
 # Local Libraries
 
-UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c
+UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c src/common/io/io.c
 
 MATH := src/common/math/bigint/bigint.c
 
@@ -17,10 +17,7 @@ MATH := src/common/math/bigint/bigint.c
 VM := $(MATH) src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c
 
 # Assemble Tests
-TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c tests/test_utils/assert.c
-
-# IO
-IO := src/common/io/io.c
+TESTS := tests/common_t/math_t/bigint_t/bigint_t.c tests/core_t/stack_t/stack_t.c tests/core_t/vm_t/vm_t.c tests/test_utils/assert.c tests/common_t/io_t/io_t.c
 
 #					
 # 		FLAGS 		
@@ -30,7 +27,7 @@ IO := src/common/io/io.c
 CHAIN := mainnet
 FORK := arrowglacier
 
-# OPTIONS
+# OPTIONS (PLEASE DEPRECATE)
 OPTIONS := 
 
 # DEBUG FLAG
@@ -62,7 +59,7 @@ endif
 #						Compiling					
 #													
 
-all: vetk
+all: vevm
 
 tests: main_t	
 
@@ -70,13 +67,14 @@ tests: main_t
 #		  Sample Programs		
 #								 
 
-# VETK (Vision ETK)
-vetk: sample_programs/vision_etk/main.c 
-	$(CC) $(EVM_FLAGS) -o bin/vetk/vetk $(IO) $(UTILS) $(VM) $(OPTIONS) sample_programs/vision_etk/main.c $(FLAGS) $(LIBS)
+# VEVM (Vision EVM)
+vevm: sample_programs/vevm/main.c 
+	$(CC) $(EVM_FLAGS) -o bin/vevm/vevm  $(UTILS) $(VM) $(OPTIONS) sample_programs/vevm/main.c $(FLAGS) $(LIBS)
 
 #   					
 # 			Tests 		
 #							
 
+# Main Test Suite
 main_t: tests/main_t.c
 	$(CC) $(EVM_FLAGS) -o bin/tests/main_t $(UTILS) $(VM) tests/main_t.c $(TESTS) -DTEST $(FLAGS) $(LIBS)
