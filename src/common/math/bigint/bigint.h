@@ -123,7 +123,7 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
 
 /*
   ┌───────────────────────────────┐
-  │   CHANGE VALUES               │
+  │   CHANGE ALL VALUES           │
   └───────────────────────────────┘
  */
 
@@ -131,7 +131,7 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
 // @param dest: the uint128_t to change
 // @param a: the 1st element to change (uint128_t.uint64_t[0])
 // @param b: the 2nd element to change (uint128_t.uint64_t[1])
-void change_uint128(uint128_t *dest, uint64_t a, uint64_t b);
+void change_all_uint128(uint128_t *dest, uint64_t a, uint64_t b);
 
 // change elements in an already initialized uint256_t
 // @param dest: the uint256_t to change
@@ -139,12 +139,36 @@ void change_uint128(uint128_t *dest, uint64_t a, uint64_t b);
 // @param b: the 2nd element to change (uint256_t.uint128_t[0].uint64_t[1])
 // @param c: the 3rd element to change (uint256_t.uint128_t[1].uint64_t[0])
 // @param d: the 4th element to change (uint256_t.uint128_t[1].uint64_t[1])
-void change_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
+void change_all_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
                     uint64_t d);
 
-// check change_uint256 && change_uint128 for reference
-void change_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
+// check change_all_uint256 && change_all_uint128 for reference
+void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
                     uint64_t d, uint64_t e, uint64_t f, uint64_t g, uint64_t h);
+
+/*
+  ┌───────────────────────────────┐
+  │   CHANGE INDEX VALUE          │
+  └───────────────────────────────┘
+ */
+
+// change an element in a uint128_t
+// @param dest: the uint128_t to change
+// @param index: the index of the element to change (0 or 1)
+// @param value: the value to change the element to
+void change_uint128(uint128_t *dest, int index, uint64_t a);
+
+// change an element in a uint256_t
+// @param dest: the uint256_t to change
+// @param index: the index of the element to change (0 to 3)
+// @param value: the value to change the element to
+void change_uint256(uint256_t *dest, int index, uint64_t a);
+
+// change an element in a uint512_t
+// @param dest: the uint512_t to change
+// @param index: the index of the element to change (0 to 7)
+// @param value: the value to change the element to
+void change_uint512(uint512_t *dest, int index, uint64_t a);
 
 /*
   ┌───────────────────────────────┐

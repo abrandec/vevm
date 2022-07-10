@@ -10,7 +10,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-// To get the compiler to not complain about formating for our custom integer types
+// To get the compiler to not complain about formating for our custom integer
+// types
 #pragma GCC diagnostic ignored "-Wformat"
 
 /*
@@ -41,7 +42,7 @@ uint256_t init_uint256(uint64_t a) {
 uint512_t init_uint512(uint64_t a) {
   uint512_t result;
 
-  change_uint512(&result, a, a, a, a, a, a, a, a);
+  change_all_uint512(&result, a, a, a, a, a, a, a, a);
   return result;
 }
 
@@ -84,19 +85,19 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
 
 /*
   ┌───────────────────────────────┐
-  │   CHANGE VALUES               │
+  │   CHANGE ALL VALUES           │
   └───────────────────────────────┘
  */
 
 // 128
-void change_uint128(uint128_t *dest, uint64_t a, uint64_t b) {
+void change_all_uint128(uint128_t *dest, uint64_t a, uint64_t b) {
   E_0(dest) = a;
   E_1(dest) = b;
 }
 
 // 256
-void change_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
-                    uint64_t d) {
+void change_all_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                        uint64_t d) {
   E_0_0(dest) = a;
   E_0_1(dest) = b;
   E_1_0(dest) = c;
@@ -104,13 +105,78 @@ void change_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
 }
 
 // 512
-void change_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
-                    uint64_t d, uint64_t e, uint64_t f, uint64_t g,
-                    uint64_t h) {
+void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                        uint64_t d, uint64_t e, uint64_t f, uint64_t g,
+                        uint64_t h) {
   uint256_t temp = init_all_uint256(a, b, c, d);
   E_0(dest) = temp;
   temp = init_all_uint256(e, f, g, h);
   E_1(dest) = temp;
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   CHANGE VALUES               │
+  └───────────────────────────────┘
+ */
+
+// 128
+void change_uint128(uint128_t *dest, int index, uint64_t a) {
+  switch (index) {
+  case 0:
+    E_0(dest) = a;
+    break;
+  default:
+    E_1(dest) = a;
+    break;
+  }
+}
+
+// 256
+void change_uint256(uint256_t *dest, int index, uint64_t a) {
+  switch (index) {
+  case 0:
+    E_0_0(dest) = a;
+    break;
+  case 1:
+    E_0_1(dest) = a;
+    break;
+  case 2:
+    E_1_0(dest) = a;
+    break;
+  default:
+    E_1_1(dest) = a;
+    break;
+  }
+}
+
+void change_uint512(uint512_t *dest, int index, uint64_t a) {
+  switch (index) {
+  case 0:
+    E00(E_0(dest)) = a;
+    break;
+  case 1:
+    E00(E_1(dest)) = a;
+    break;
+  case 2:
+    E01(E_0(dest)) = a;
+    break;
+  case 3:
+    E01(E_1(dest)) = a;
+    break;
+  case 4:
+    E10(E_0(dest)) = a;
+    break;
+  case 5:
+    E10(E_1(dest)) = a;
+    break;
+  case 6:
+    E11(E_0(dest)) = a;
+    break;
+  default:
+    E11(E_1(dest)) = a;
+    break;
+  }
 }
 
 /*
@@ -991,7 +1057,7 @@ bool equal_uint512(uint512_t *a, uint512_t *b) {
 // 128
 void print_uint128(uint128_t *a, bool newline) {
   char temp[3];
-  
+
   if (newline) {
     temp[0] = '\n';
   } else {
@@ -999,20 +1065,20 @@ void print_uint128(uint128_t *a, bool newline) {
   }
 
   temp[1] = '\0';
-  
+
   printf("%20lld%020lld%s", E_0(a), E_1(a), temp);
 }
 
 // 256
 void print_uint256(uint256_t *a, bool newline) {
   char temp[3];
-  
+
   if (newline) {
     temp[0] = '\n';
   } else {
     temp[0] = '\0';
   }
-  
+
   temp[1] = '\0';
 
   printf("%020lld%020lld%020llX%020lld%s", E_0(a), E_1(a), temp);
@@ -1029,7 +1095,7 @@ void print_uint512(uint512_t *a, bool newline) {
   }
 
   temp[1] = '\0';
-  
+
   printf("%020lld%020lld%020llX%020lld%020lld%020lld%020llX%020lld%s", E_0(a),
          E_1(a), temp);
 }
@@ -1043,7 +1109,7 @@ void print_uint512(uint512_t *a, bool newline) {
 // 128
 void print_hex_uint128(uint128_t *a, bool newline) {
   char temp[3];
-  
+
   if (newline) {
     temp[0] = '\n';
   } else {
@@ -1051,7 +1117,7 @@ void print_hex_uint128(uint128_t *a, bool newline) {
   }
 
   temp[1] = '\0';
-  
+
   printf("%016llX%016llX%s", E_0(a), E_1(a), temp);
 }
 
@@ -1064,9 +1130,9 @@ void print_hex_uint256(uint256_t *a, bool newline) {
   } else {
     temp[0] = '\0';
   }
-  
+
   temp[1] = '\0';
-  
+
   printf("%016llX%016llX%016llX%016llX%s", E_0(a), E_1(a), temp);
 }
 
@@ -1079,11 +1145,19 @@ void print_hex_uint512(uint512_t *a, bool newline) {
   } else {
     temp[0] = '\0';
   }
-  
+
   temp[1] = '\0';
-  
-  printf("%016llX""%016llX""%016llX""%016llX""%016llX""%016llX""%016llX""%016llX""%s", E_0(a),
-         E_1(a), temp);
+
+  printf("%016llX"
+         "%016llX"
+         "%016llX"
+         "%016llX"
+         "%016llX"
+         "%016llX"
+         "%016llX"
+         "%016llX"
+         "%s",
+         E_0(a), E_1(a), temp);
 }
 
 /*
@@ -1114,7 +1188,7 @@ int hex_length_uint512(uint512_t *src) {
 
 /*
   ┌───────────────────────────────┐
-  │   GET ELEMENT                 │
+  │  GET ELEMENT FROM GIVEN INDEX │
   └───────────────────────────────┘
  */
 
@@ -1125,8 +1199,10 @@ uint64_t get_element_uint128(uint128_t *src, int index) {
 
 // 256
 uint64_t get_element_uint256(uint256_t *src, int index) {
-  return index == 0 ? E_0_0(src) : index == 1 ? E_0_1(src) : index == 2 ? E_1_0(src) : E_1_1(src);
+  return index == 0   ? E_0_0(src)
+         : index == 1 ? E_0_1(src)
+         : index == 2 ? E_1_0(src)
+                      : E_1_1(src);
 }
 
 // 512
-
