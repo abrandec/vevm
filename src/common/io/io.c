@@ -23,13 +23,12 @@
   └───────────────────────────────┘
  */
 
-long long file_size(FILE *fd, char *filename) {
+long file_size(FILE *fd, char *filename) {
   if (!filename) {
     custom_error(IO_FILENAME_NULL);
     return 0;
-  } else {
-  }
-  long ret = 0;
+  } 
+
   fd = fopen(filename, "r");
 
   if (!fd) {
@@ -38,7 +37,9 @@ long long file_size(FILE *fd, char *filename) {
   }
 
   fseek(fd, 0, SEEK_END);
-  ret = ftell(fd);
+  // get file size
+  long ret = ftell(fd);
+  
   fclose(fd);
   return ret;
 }
@@ -65,12 +66,11 @@ bool create_file(FILE *fd, char *filename, char *data) {
   if (!filename) {
     custom_error(IO_FILENAME_NULL);
     return false;
-  } else {
-    fd = fopen(filename, "w");
   }
+  
+  fd = fopen(filename, "w");
 
-  // fd = fopen(filename, "w");
-
+  // check if file exists
   if (!fd) {
     custom_error(IO_FILE_OPEN_FAIL);
     return false;
@@ -88,7 +88,7 @@ bool create_file(FILE *fd, char *filename, char *data) {
   └───────────────────────────────┘
  */
 
-char *read_file_fmmap(FILE *fd, char *filename) {
+char * read_file_fmmap(FILE *fd, char *filename, long *filesize) {
   if (!filename) {
     custom_error(IO_FILENAME_NULL);
     return NULL;
@@ -96,19 +96,25 @@ char *read_file_fmmap(FILE *fd, char *filename) {
 
   char *str;
   fd = fopen(filename, "r");
-
+  // check if file exists
   if (!fd) {
     custom_error(IO_FILE_OPEN_FAIL);
     return NULL;
   }
-
+  // get file position
   fseek(fd, 0, SEEK_END);
 
+  // get file size
+  long filesize_ = ftell(fd);
+  
+  // read file
   str = fmmap(fd, ftell(fd));
 
   // fclose does not unmap file so it's fine to call & it's portable
   // https://pubs.opengroup.org/onlinepubs/7908799/xsh/mmap.html
   fclose(fd);
+
+  *filesize = filesize_;
 
   return str;
 }
@@ -124,6 +130,7 @@ bool write_file_fmmap(FILE *fd, char *filename, char *data) {
     custom_error(IO_FILENAME_NULL);
     return false;
   }
+
   if(!data) {
     custom_error(IO_DATA_NULL);
     return false;
@@ -131,10 +138,14 @@ bool write_file_fmmap(FILE *fd, char *filename, char *data) {
 
   fd = fopen(filename, "w");
 
+  // check if file exists
   if (!fd) {
     custom_error(IO_FILE_OPEN_FAIL);
     return false;
   }
+
+  // not finished lol
+  return true;
 }
 
 /*
@@ -180,9 +191,11 @@ bool file_exists(FILE *fd, char *filename) {
 
   fd = fopen(filename, "r");
 
+  // check if file exists
   if (!fd) {
     return false;
   }
+
   fclose(fd);
   return true;
 }
@@ -200,6 +213,7 @@ bool folder_exists(FILE *fd, char *foldername) {
 
   fd = fopen(foldername, "r");
 
+  // check if file exists
   if (!fd) {
     return false;
   }
