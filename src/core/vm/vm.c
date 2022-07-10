@@ -618,7 +618,7 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   default:
     ending_index += 1;
     if (ending_index - *mem_end > 0) {
-      *gas -= ending_index * 3;
+      *gas -= ending_index * 3;      
       *mem_end = ending_index;
     }
     break;
@@ -835,13 +835,13 @@ void _swap(List *stack, uint64_t *opcode) {
 void consume_gas(int *opcode, uint64_t *gas) {}
 
 // set a buffer to zero
-// @param buffer: the buffer to initialize to zero
-// @param length: the length of the buffer
-void clear_buffer(uint256_t buffer[], int length) {
-  int i = 0;
-
-  for (; i < length; ++i) {
-    clear_uint256(&buffer[i]);
+// @param buffer: the buffer to clear
+// @param start: the starting index to set to zero
+// @param end: the ending index to set to zero
+void clear_buffer(uint256_t buffer[], int start, int end) {
+  // foot shooty way to clear a buffer
+  for (; start < end; ++start) {
+    clear_uint256(&buffer[start]);
   }
 }
 
@@ -862,9 +862,6 @@ void _vm(uint256_t program[], bool debug_mode) {
 
   // EVM memory
   static uint256_t memory[MAX_MEMORY_LEN];
-
-  // clear all bits in memory
-  clear_buffer(memory, MAX_MEMORY_LEN);
 
   // for keeping track memory expansion costs
   uint64_t mem_end = 0;

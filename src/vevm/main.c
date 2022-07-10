@@ -38,7 +38,8 @@ void write2_prog_buff(uint256_t program[], char *data, long data_size) {
   int elements = (data_size / 16) + 1;
 
   int i = 0;
-
+  // side effect of adding unwanted bits to the end of the data
+  // not really a problem since adding STOP to the end of the bytecode mitigates this
   for (; i < elements; ++i) {
     change_uint256(&program[i / 4], i % 4, hex_char2uint(data, 16 * i, 16));
   }
@@ -62,7 +63,6 @@ void load_bytecode_file(uint256_t program[], char *file) {
 // main program
 int main(int argc, const char *argv[]) {
   static uint256_t program[MAX_BYTECODE_LEN];
-  clear_buffer(program, MAX_BYTECODE_LEN);
 
   // to hold input and file chars from argparse
   char *file = NULL;
@@ -105,6 +105,7 @@ int main(int argc, const char *argv[]) {
   // └───────────────────────────┘
   if (input != NULL && debug != 0) {
     write2_prog_buff(program, input, strlen(input));
+
     _vm(program, true);
   }
 

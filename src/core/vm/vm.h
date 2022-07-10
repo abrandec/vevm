@@ -20,8 +20,9 @@
 void _vm(uint256_t program[], bool debug_mode);
 
 // set a buffer to zero
-// @param buffer: the buffer to initialize to zero
-// @param length: the length of the buffer
-void clear_buffer(uint256_t buffer[], int length);
+// @param buffer: the buffer to clear
+// @param start: the starting index to set to zero
+// @param end: the ending index to set to zero
+void clear_buffer(uint256_t buffer[], int start, int end);
 
 #endif

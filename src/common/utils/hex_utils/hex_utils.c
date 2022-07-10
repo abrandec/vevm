@@ -15,7 +15,7 @@ uint64_t hex_char2uint(char *hex, int offset, int length) {
   int i = 0;
 
   while (*hex && i < length || *hex == '\0') {
-    ++i;
+  
 
     // get current character then increment
     uint8_t byte = (hex[offset]);
@@ -30,10 +30,11 @@ uint64_t hex_char2uint(char *hex, int offset, int length) {
       byte = byte - 'A' + 10;
     // shift 4 to make space for new digit, and add the 4 bits of the new digit
     val = (val << 4) | (byte & 0xF);
-
+    
+    ++i;
     ++offset;
   }
-
+  
   // get shift amount
   val = val << (64 - ((i % 16) * 4));
 
