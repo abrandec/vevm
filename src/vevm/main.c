@@ -32,16 +32,16 @@ static const char *const usages[] = {
 
 // write to program buffer
 // @param program[]: program buffer to write to
-// @param data: data to read from
-// @param data_size: size of file to read from
-void write2_prog_buff(uint256_t program[], char *data, long data_size) {
-  int elements = (data_size / 16) + 1;
+// @param bytecode: bytecode char to read from
+// @param bytecode_size: size of bytecode
+void write2_prog_buff(uint256_t program[], char *bytecode, long bytecode_size) {
+  int elements = (bytecode_size / 16) + 1;
 
   int i = 0;
-  // side effect of adding unwanted bits to the end of the data
+  // side effect of adding unwanted bits to the end of the bytecode
   // not really a problem since adding STOP to the end of the bytecode mitigates this
   for (; i < elements; ++i) {
-    change_uint256(&program[i / 4], i % 4, hex_char2uint(data, 16 * i, 16));
+    change_uint256(&program[i / 4], i % 4, hex_char2uint(bytecode, 16 * i, 16));
   }
 }
 
@@ -105,7 +105,6 @@ int main(int argc, const char *argv[]) {
   // └───────────────────────────┘
   if (input != NULL && debug != 0) {
     write2_prog_buff(program, input, strlen(input));
-
     _vm(program, true);
   }
 
