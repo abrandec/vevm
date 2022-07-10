@@ -1,12 +1,15 @@
 #include "hex_utils.h"
 
+#include <math.h>
+#include <stdio.h>
+
 /*
   ┌───────────────────────────────┐
   │   HEX2INT                     │
   └───────────────────────────────┘
  */
 
-uint64_t hex2int(char *hex) {
+uint64_t hex2int(char *hex, int length) {
   uint64_t val = 0;
     while (*hex) {
         // get current character then increment
@@ -18,6 +21,10 @@ uint64_t hex2int(char *hex) {
         // shift 4 to make space for new digit, and add the 4 bits of the new digit 
         val = (val << 4) | (byte & 0xF);
     }
+    // get shift amount from length (multiplying by 4 since hex_str_len returns length in bytes)
+    val = val << 64 - (hex_str_len(&hex) * 4);
+    
+    printf("%llX\n", val);
     return val;
 }
 
@@ -28,26 +35,13 @@ uint64_t hex2int(char *hex) {
  */
 
 char *uint2hex(uint64_t *val) {
-    // named like this to avoid accidental overwrites
-    static char uint2hexuint2hexuint2hex[16];
-
-    for (int i = 0; i < 8; ++i) {
-        uint2hexuint2hexuint2hex[i] = val[i] % 16;
-        if (uint2hexuint2hexuint2hex[i] > 9) {
-        uint2hexuint2hexuint2hex[i] += 'A' - 10;
-        } else {
-        uint2hexuint2hexuint2hex[i] += '0';
-        }
-    }
-    printf("%s\n", uint2hexuint2hexuint2hex);
-    uint2hexuint2hexuint2hex[16] = '\0';
-
-    return uint2hexuint2hexuint2hex;
+  char *hex = NULL;
+    return hex;
 }
 
 void reverse_string(char *str, uint32_t length) {
     uint32_t i, j;
-    for (i = 0, j = length - 1; i < j; i++, j--) {
+    for (i = 0, j = length - 1; i < j; ++i, --j) {
         uint8_t c;
         c = str[i];
         str[i] = str[j];
@@ -61,12 +55,22 @@ void reverse_string(char *str, uint32_t length) {
   └───────────────────────────────┘
  */
 
-int hex_length(uint64_t *src) {
+int hex_uint64_len(uint64_t *src) {
   // get length of src in base 16
   int x = ceil(log(*src + 1) / log(16));
   // if length is odd, add one else return x
   // accounts for bytes that start at 0 (e.g. 01...0F)
-  x % 2 ? x += 1 : x;
   // only care about whole bytes, not individual digits
-  return x / 2;
+  return (x % 2 ? x += 1 : x) / 2;
+}
+
+int hex_str_len(char *hex_str) {
+    int len = 0;
+
+    for(; *hex_str != '\0'; ++hex_str) {
+        ++len;
+    }
+
+  // if len is odd, add one else return len
+  return len % 2 ? len += 1 : len;
 }
