@@ -116,7 +116,7 @@ void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
 
 /*
   ┌───────────────────────────────┐
-  │   CHANGE VALUES               │
+  │   CHANGE INDEX VALUE          │
   └───────────────────────────────┘
  */
 
