@@ -39,7 +39,8 @@ void write2_prog_buff(uint256_t program[], char *bytecode, long bytecode_size) {
 
   int i = 0;
   // side effect of adding unwanted bits to the end of the bytecode
-  // not really a problem since adding STOP to the end of the bytecode mitigates this
+  // not really a problem since adding STOP to the end of the bytecode mitigates
+  // this
   for (; i < elements; ++i) {
     change_uint256(&program[i / 4], i % 4, hex_char2uint(bytecode, 16 * i, 16));
   }
@@ -133,8 +134,8 @@ int main(int argc, const char *argv[]) {
   // ┌───────────────────────────────────┐
   // │   IF NO COMMAND EXISTS            │
   // └───────────────────────────────────┘
-  if (argc != 0) {
-    printf("Refer to -help for usage\n");
+  if (argc != 0 || input == NULL && file == NULL) {
+    argparse_usage(&argparse);
   }
 
   return 0;
