@@ -85,37 +85,6 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
 
 /*
   ┌───────────────────────────────┐
-  │   CHANGE ALL VALUES           │
-  └───────────────────────────────┘
- */
-
-// 128
-void change_all_uint128(uint128_t *dest, uint64_t a, uint64_t b) {
-  E_0(dest) = a;
-  E_1(dest) = b;
-}
-
-// 256
-void change_all_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
-                        uint64_t d) {
-  E_0_0(dest) = a;
-  E_0_1(dest) = b;
-  E_1_0(dest) = c;
-  E_1_1(dest) = d;
-}
-
-// 512
-void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
-                        uint64_t d, uint64_t e, uint64_t f, uint64_t g,
-                        uint64_t h) {
-  uint256_t temp = init_all_uint256(a, b, c, d);
-  E_0(dest) = temp;
-  temp = init_all_uint256(e, f, g, h);
-  E_1(dest) = temp;
-}
-
-/*
-  ┌───────────────────────────────┐
   │   CHANGE INDEX VALUE          │
   └───────────────────────────────┘
  */
@@ -177,6 +146,37 @@ void change_uint512(uint512_t *dest, int index, uint64_t a) {
     E11(E_1(dest)) = a;
     break;
   }
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   CHANGE ALL VALUES           │
+  └───────────────────────────────┘
+ */
+
+// 128
+void change_all_uint128(uint128_t *dest, uint64_t a, uint64_t b) {
+  E_0(dest) = a;
+  E_1(dest) = b;
+}
+
+// 256
+void change_all_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                        uint64_t d) {
+  E_0_0(dest) = a;
+  E_0_1(dest) = b;
+  E_1_0(dest) = c;
+  E_1_1(dest) = d;
+}
+
+// 512
+void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                        uint64_t d, uint64_t e, uint64_t f, uint64_t g,
+                        uint64_t h) {
+  uint256_t temp = init_all_uint256(a, b, c, d);
+  E_0(dest) = temp;
+  temp = init_all_uint256(e, f, g, h);
+  E_1(dest) = temp;
 }
 
 /*

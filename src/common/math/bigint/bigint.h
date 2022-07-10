@@ -123,31 +123,6 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
 
 /*
   ┌───────────────────────────────┐
-  │   CHANGE ALL VALUES           │
-  └───────────────────────────────┘
- */
-
-// change elements in an already initialized uint128_t
-// @param dest: the uint128_t to change
-// @param a: the 1st element to change (uint128_t.uint64_t[0])
-// @param b: the 2nd element to change (uint128_t.uint64_t[1])
-void change_all_uint128(uint128_t *dest, uint64_t a, uint64_t b);
-
-// change elements in an already initialized uint256_t
-// @param dest: the uint256_t to change
-// @param a: the 1st element to change (uint256_t.uint128_t[0].uint64_t[0])
-// @param b: the 2nd element to change (uint256_t.uint128_t[0].uint64_t[1])
-// @param c: the 3rd element to change (uint256_t.uint128_t[1].uint64_t[0])
-// @param d: the 4th element to change (uint256_t.uint128_t[1].uint64_t[1])
-void change_all_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
-                    uint64_t d);
-
-// check change_all_uint256 && change_all_uint128 for reference
-void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
-                    uint64_t d, uint64_t e, uint64_t f, uint64_t g, uint64_t h);
-
-/*
-  ┌───────────────────────────────┐
   │   CHANGE INDEX VALUE          │
   └───────────────────────────────┘
  */
@@ -169,6 +144,32 @@ void change_uint256(uint256_t *dest, int index, uint64_t a);
 // @param index: the index of the element to change (0 to 7)
 // @param value: the value to change the element to
 void change_uint512(uint512_t *dest, int index, uint64_t a);
+
+/*
+  ┌───────────────────────────────┐
+  │   CHANGE ALL VALUES           │
+  └───────────────────────────────┘
+ */
+
+// change elements in an already initialized uint128_t
+// @param dest: the uint128_t to change
+// @param a: the 1st element to change (uint128_t.uint64_t[0])
+// @param b: the 2nd element to change (uint128_t.uint64_t[1])
+void change_all_uint128(uint128_t *dest, uint64_t a, uint64_t b);
+
+// change elements in an already initialized uint256_t
+// @param dest: the uint256_t to change
+// @param a: the 1st element to change (uint256_t.uint128_t[0].uint64_t[0])
+// @param b: the 2nd element to change (uint256_t.uint128_t[0].uint64_t[1])
+// @param c: the 3rd element to change (uint256_t.uint128_t[1].uint64_t[0])
+// @param d: the 4th element to change (uint256_t.uint128_t[1].uint64_t[1])
+void change_all_uint256(uint256_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                        uint64_t d);
+
+// check change_all_uint256 && change_all_uint128 for reference
+void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
+                        uint64_t d, uint64_t e, uint64_t f, uint64_t g,
+                        uint64_t h);
 
 /*
   ┌───────────────────────────────┐
@@ -591,7 +592,7 @@ void divmod_uint128(uint128_t *destDiv, uint128_t *destMod, uint128_t *a,
 // @param a: the  uint256_t to divide
 // @param b: the uint256_t to divide with
 void divmod_uint256(uint256_t *destDiv, uint256_t *destMod, uint256_t *a,
-                 uint256_t *b);
+                    uint256_t *b);
 
 // divide + mod two uint512_ts
 // @param destDiv: where to store the quotient of a and b
