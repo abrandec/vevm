@@ -253,9 +253,9 @@ void _lt(List *stack) {
   stack_pop(stack);
 
   if (lt_uint256(&a, &b)) {
-    change_uint256(&a, 0, 0, 0, 1);
+    change_all_uint256(&a, 0, 0, 0, 1);
   } else {
-    change_uint256(&a, 0, 0, 0, 0);
+    change_all_uint256(&a, 0, 0, 0, 0);
   }
 
   stack_push(stack, &a);
@@ -277,9 +277,9 @@ void _gt(List *stack) {
   stack_pop(stack);
 
   if (gt_uint256(&a, &b)) {
-    change_uint256(&a, 0, 0, 0, 1);
+    change_all_uint256(&a, 0, 0, 0, 1);
   } else {
-    change_uint256(&a, 0, 0, 0, 0);
+    change_all_uint256(&a, 0, 0, 0, 0);
   }
 
   stack_push(stack, &a);
@@ -301,9 +301,9 @@ void _eq(List *stack) {
   stack_pop(stack);
 
   if (equal_uint256(&a, &b)) {
-    change_uint256(&a, 0, 0, 0, 1);
+    change_all_uint256(&a, 0, 0, 0, 1);
   } else {
-    change_uint256(&a, 0, 0, 0, 0);
+    change_all_uint256(&a, 0, 0, 0, 0);
   }
 
   stack_push(stack, &a);
@@ -324,7 +324,7 @@ void _iszero(List *stack) {
   uint256_t b = init_uint256(0);
 
   if (equal_uint256(&a, &b)) {
-    change_uint256(&b, 0, 0, 0, 1);
+    change_all_uint256(&b, 0, 0, 0, 1);
   }
 
   stack_push(stack, &b);
@@ -422,7 +422,7 @@ void _shl(List *stack) {
   uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
 
   if (gt_uint256(&a, &c)) {
-    change_uint256(&c, 0, 0, 0, 0);
+    change_all_uint256(&c, 0, 0, 0, 0);
   } else {
     lshift_uint256(&c, &b, E11(a));
   }
@@ -447,7 +447,7 @@ void _shr(List *stack) {
   uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
 
   if (gt_uint256(&a, &c)) {
-    change_uint256(&c, 0, 0, 0, 0);
+    change_all_uint256(&c, 0, 0, 0, 0);
   } else {
     rshift_uint256(&c, &b, E11(a));
   }
@@ -863,6 +863,9 @@ void _vm(uint256_t program[], bool debug_mode) {
   // EVM memory
   static uint256_t memory[MAX_MEMORY_LEN];
 
+  // clear all bits in memory
+  clear_buffer(memory, MAX_MEMORY_LEN);
+
   // for keeping track memory expansion costs
   uint64_t mem_end = 0;
 
@@ -882,11 +885,6 @@ void _vm(uint256_t program[], bool debug_mode) {
 
   // for storing data to push onto stack
   uint256_t push_data;
-
-  // clear all bits in memory
-  clear_buffer(memory, MAX_MEMORY_LEN);
-  change_uint256(&memory[0], 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
-                 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
 
   // while loop to run program //
   while (pc < MAX_PC) {
