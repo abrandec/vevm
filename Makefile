@@ -68,8 +68,8 @@ tests: main_t
 #								 
 
 # VEVM (Vision EVM)
-vevm: sample_programs/vevm/main.c 
-	$(CC) $(EVM_FLAGS) -o bin/vevm/vevm  $(UTILS) $(VM) $(OPTIONS) sample_programs/vevm/main.c $(FLAGS) $(LIBS)
+vevm: src/vevm/main.c 
+	$(CC) $(EVM_FLAGS) -o bin/vevm/vevm  $(UTILS) $(VM) $(OPTIONS) src/vevm/main.c $(FLAGS) $(LIBS)
 
 #   					
 # 			Tests 		

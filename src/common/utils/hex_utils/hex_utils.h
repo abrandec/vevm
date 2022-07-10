@@ -5,15 +5,16 @@
 
 /*
   ┌───────────────────────────────┐
-  │   HEX2INT                     │
+  │   HEX CHAR TO UINT            │
   └───────────────────────────────┘
  */
 
 // convert a hex string to a uint64_t
 // @param hex: the hex string to convert (max length of 16 characters)
-// @param length: the length of the hex string
+// @param offset: the offset to start at in the hex string
+// @param length: the length of the hex string to convert
 // @return the converted uint64_t
-uint64_t hex2int(char *hex, int length);
+uint64_t hex_char2uint(char *hex, int offset, int length);
 
 /*
   ┌───────────────────────────────┐
@@ -47,10 +48,5 @@ void reverse_string(char *str, uint32_t length);
 // @param src: the uint64_t to get the length of
 // @return the length of the hex string in bytes rounded up
 int hex_uint64_len(uint64_t *src);
-
-// get the length of a hex string in bytes rounded up
-// @param hex_str: the hex string to get the length of (16 characters max)
-// @return the length of the hex string in bytes rounded up
-int hex_str_len(char *hex_str);
 
 #endif

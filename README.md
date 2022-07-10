@@ -1,4 +1,4 @@
-# Vision EVM
+# VEVM (Vision EVM)
 
 # What is it?
 An experimental Ethereum Virtual Machine written in C for learning purposes.

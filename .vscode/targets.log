@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  8 14:48:49 2022
+# Make data base, printed on Fri Jul  8 15:18:08 2022
 
 # Variables
 
@@ -104,7 +104,6 @@ XDG_CONFIG_DIRS = /home/a/.config/kdedefaults:/etc/xdg
 +D = $(patsubst %/,%,$(dir $+))
 # makefile (from 'Makefile', line 48)
 EVM_FLAGS = -DMAINNET -DARROW_GLACIER
- 
 # environment
 XCURSOR_THEME = breeze_cursors
 # environment
@@ -274,9 +273,9 @@ LC_IDENTIFICATION = en_US.UTF-8
 
 # Directories
 
-# . (device 66306, inode 9590094): 14 files, no impossibilities.
+# . (device 66306, inode 9590094): 12 files, no impossibilities.
 
-# 14 files, no impossibilities in 1 directories.
+# 12 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -287,7 +286,7 @@ LC_IDENTIFICATION = en_US.UTF-8
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-08 14:48:42.569945217
+#  Last modified 2022-07-08 15:17:29.006579124
 #  File has been updated.
 #  Successfully updated.
 
@@ -296,14 +295,6 @@ tests/main_t.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-
- 
-# Not a target:
-sample_programs/vevm/main.c:
-#  Implicit rule search has been done.
-#  Last modified 2022-07-08 10:27:38.459854736
-#  File has been updated.
-#  Successfully updated.
 
 tests: main_t
 #  Implicit rule search has not been done.
@@ -333,12 +324,19 @@ all: vevm
 # Load=0/32=0%, Rehash=0, Collisions=0/10=0%
 
 # Not a target:
+src/vevm/main.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-08 10:27:38.459854736
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
 .SUFFIXES:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-vevm: sample_programs/vevm/main.c
+vevm: src/vevm/main.c
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
 #  File does not exist.
@@ -349,21 +347,21 @@ vevm: sample_programs/vevm/main.c
 # automatic
 # * := 
 # automatic
-# < := sample_programs/vevm/main.c
+# < := src/vevm/main.c
 # automatic
-# + := sample_programs/vevm/main.c
+# + := src/vevm/main.c
 # automatic
 # % := 
 # automatic
-# ^ := sample_programs/vevm/main.c
+# ^ := src/vevm/main.c
 # automatic
-# ? := sample_programs/vevm/main.c
+# ? := src/vevm/main.c
 # automatic
 # | := 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=9/18=50%
 #  recipe to execute (from 'Makefile', line 72):
-	$(CC) $(EVM_FLAGS) -o bin/vevm/vevm  $(UTILS) $(VM) $(OPTIONS) sample_programs/vevm/main.c $(FLAGS) $(LIBS)
+	$(CC) $(EVM_FLAGS) -o bin/vevm/vevm  $(UTILS) $(VM) $(OPTIONS) src/vevm/main.c $(FLAGS) $(LIBS)
 
 # files hash-table stats:
 # Load=9/1024=1%, Rehash=0, Collisions=0/27=0%
@@ -373,12 +371,13 @@ vevm: sample_programs/vevm/main.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 226 B / avg = 9 B
-# current buf: size = 8162 B / used = 226 B / count = 23 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 21 / storage = 188 B / avg = 8 B
+# current buf: size = 8162 B / used = 188 B / count = 21 / avg = 8 B
 
-# strcache performance: lookups = 36 / hit rate = 36%
+# strcache performance: lookups = 34 / hit rate = 38%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=0/36=0%
-# Finished Make data base on Fri Jul  8 14:48:49 2022
+# Load=21/8192=0%, Rehash=0, Collisions=0/34=0%
+ 
+# Finished Make data base on Fri Jul  8 15:18:08 2022
 
  

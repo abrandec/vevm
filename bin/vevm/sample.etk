@@ -1,0 +1,4 @@
+push1 0x40
+push1 0x00
+mstore
+stop
