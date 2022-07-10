@@ -677,7 +677,7 @@ void print_hex_uint512(uint512_t *a, bool newline);
 
 /*
   ┌───────────────────────────────┐
-  │   GET INDEX                   │
+  │  GET ELEMENT FROM GIVEN INDEX │
   └───────────────────────────────┘
  */
 
