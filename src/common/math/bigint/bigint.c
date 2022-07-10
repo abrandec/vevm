@@ -1111,3 +1111,22 @@ int hex_length_uint512(uint512_t *src) {
   int x = hex_length_uint256(&E_0(src));
   return x == 0 ? hex_length_uint256(&E_1(src)) : x + 32;
 }
+
+/*
+  ┌───────────────────────────────┐
+  │   GET INDEX                   │
+  └───────────────────────────────┘
+ */
+
+// 128
+uint64_t get_element_uint128(uint128_t *src, int index) {
+  return index == 0 ? E_0(src) : E_1(src);
+}
+
+// 256
+uint64_t get_element_uint256(uint256_t *src, int index) {
+  return index == 0 ? E_0_0(src) : index == 1 ? E_0_1(src) : index == 2 ? E_1_0(src) : E_1_1(src);
+}
+
+// 512
+

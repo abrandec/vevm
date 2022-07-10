@@ -675,4 +675,20 @@ void print_hex_uint256(uint256_t *src, bool newline);
 // @param newline: optional newline
 void print_hex_uint512(uint512_t *a, bool newline);
 
+/*
+  ┌───────────────────────────────┐
+  │   GET INDEX                   │
+  └───────────────────────────────┘
+ */
+
+// get uint64_t at a given index in uint128_t
+// @param src: the uint128_t to get the index from
+// @param index: the index to get
+uint64_t get_element_uint128(uint128_t *src, int index);
+
+// get uint64_t at a given index in uint256_t
+// @param src: the uint256_t to get the index from
+// @param index: the index to get
+uint64_t get_element_uint256(uint256_t *src, int index);
+
 #endif
