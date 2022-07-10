@@ -41,6 +41,7 @@ long file_size(FILE *fd, char *filename) {
   long ret = ftell(fd);
   
   fclose(fd);
+
   return ret;
 }
 
@@ -217,6 +218,26 @@ bool folder_exists(FILE *fd, char *foldername) {
   if (!fd) {
     return false;
   }
+
+  return true;
+}
+
+/*
+  ┌───────────────────────────────┐
+  │   SAFE_MUNMAP                 │
+  └───────────────────────────────┘
+ */
+
+bool safe_munmap(char *file, long filesize) {
+  if (!file) {
+    return false;
+  }
+  munmap(file, filesize);
+  // not sure if this is necessary
+  /* if (munmap(file, filesize) == -1) {
+    perror("munmap");
+    return false;
+  } */
 
   return true;
 }
