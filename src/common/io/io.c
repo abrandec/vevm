@@ -67,6 +67,7 @@ bool safe_munmap(char *file, long filesize) {
   if (!file) {
     return false;
   }
+  
   munmap(file, filesize);
   // not sure if this is necessary
   /* if (munmap(file, filesize) == -1) {
