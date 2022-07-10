@@ -684,11 +684,13 @@ void print_hex_uint512(uint512_t *a, bool newline);
 // get uint64_t at a given index in uint128_t
 // @param src: the uint128_t to get the index from
 // @param index: the index to get
+// @return the uint64_t at the given index
 uint64_t get_element_uint128(uint128_t *src, int index);
 
 // get uint64_t at a given index in uint256_t
 // @param src: the uint256_t to get the index from
 // @param index: the index to get
+// @return the uint64_t at the given index
 uint64_t get_element_uint256(uint256_t *src, int index);
 
 #endif
