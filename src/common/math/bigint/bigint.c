@@ -10,6 +10,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+// To get the compiler to not complain about formating for our custom integer types
+#pragma GCC diagnostic ignored "-Wformat"
+
 /*
   ┌───────────────────────────────┐
   │   INIT                        │
@@ -1079,7 +1082,7 @@ void print_hex_uint512(uint512_t *a, bool newline) {
   
   temp[1] = '\0';
   
-  printf("%016llX%016llX%016llX%016llX%016llX%016llX%016llX%016llX%s", E_0(a),
+  printf("%016llX""%016llX""%016llX""%016llX""%016llX""%016llX""%016llX""%016llX""%s", E_0(a),
          E_1(a), temp);
 }
 
@@ -1091,10 +1094,10 @@ void print_hex_uint512(uint512_t *a, bool newline) {
 
 // 128
 int hex_length_uint128(uint128_t *src) {
-  int x = hex_length(&E_0(src));
+  int x = hex_uint64_len(&E_0(src));
   // if the first uint64 is 0, then return the length of the second uint128
   // else add the length of the first uint128 & add 8
-  return x == 0 ? hex_length(&E_1(src)) : x + 8;
+  return x == 0 ? hex_uint64_len(&E_1(src)) : x + 8;
 }
 
 // 256
