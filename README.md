@@ -13,7 +13,7 @@ make
 
 # Running
 ```
-./bin/main
+./bin/vevm
 ```
 
 # Testing
