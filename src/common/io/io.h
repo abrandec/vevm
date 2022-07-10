@@ -31,6 +31,18 @@ char *fmmap(FILE *fd, long long FileSize);
 
 /*
   ┌───────────────────────────────┐
+  │   SAFE_MUNMAP                 │
+  └───────────────────────────────┘
+ */
+
+// munmap with proper error handling
+// @param file: the file to munmap
+// @param filesize: the size of the file to munmap
+// @return true if successful, false otherwise
+bool safe_munmap(char *file, long filesize);
+
+/*
+  ┌───────────────────────────────┐
   │   CREATE FILE                 │
   └───────────────────────────────┘
  */
@@ -100,18 +112,6 @@ bool file_exists(FILE *fd, char *filename);
 // @param foldername: the folder to check
 // @return true if the folder exists, false otherwise
 bool folder_exists(FILE *fd, char *foldername);
-
-/*
-  ┌───────────────────────────────┐
-  │   SAFE_MUNMAP                 │
-  └───────────────────────────────┘
- */
-
-// munmap with proper error handling
-// @param file: the file to munmap
-// @param filesize: the size of the file to munmap
-// @return true if successful, false otherwise
-bool safe_munmap(char *file, long filesize);
 
 /*
   ┌───────────────────────────────┐

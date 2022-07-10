@@ -27,7 +27,7 @@ long file_size(FILE *fd, char *filename) {
   if (!filename) {
     custom_error(IO_FILENAME_NULL);
     return 0;
-  } 
+  }
 
   fd = fopen(filename, "r");
 
@@ -39,7 +39,7 @@ long file_size(FILE *fd, char *filename) {
   fseek(fd, 0, SEEK_END);
   // get file size
   long ret = ftell(fd);
-  
+
   fclose(fd);
 
   return ret;
@@ -59,6 +59,26 @@ char *fmmap(FILE *fd, long long FileSize) {
 
 /*
   ┌───────────────────────────────┐
+  │   SAFE_MUNMAP                 │
+  └───────────────────────────────┘
+ */
+
+bool safe_munmap(char *file, long filesize) {
+  if (!file) {
+    return false;
+  }
+  munmap(file, filesize);
+  // not sure if this is necessary
+  /* if (munmap(file, filesize) == -1) {
+    perror("munmap");
+    return false;
+  } */
+
+  return true;
+}
+
+/*
+  ┌───────────────────────────────┐
   │   CREATE FILE                 │
   └───────────────────────────────┘
  */
@@ -68,7 +88,7 @@ bool create_file(FILE *fd, char *filename, char *data) {
     custom_error(IO_FILENAME_NULL);
     return false;
   }
-  
+
   fd = fopen(filename, "w");
 
   // check if file exists
@@ -89,7 +109,7 @@ bool create_file(FILE *fd, char *filename, char *data) {
   └───────────────────────────────┘
  */
 
-char * read_file_fmmap(FILE *fd, char *filename, long *filesize) {
+char *read_file_fmmap(FILE *fd, char *filename, long *filesize) {
   if (!filename) {
     custom_error(IO_FILENAME_NULL);
     return NULL;
@@ -107,7 +127,7 @@ char * read_file_fmmap(FILE *fd, char *filename, long *filesize) {
 
   // get file size
   long filesize_ = ftell(fd);
-  
+
   // read file
   str = fmmap(fd, ftell(fd));
 
@@ -132,7 +152,7 @@ bool write_file_fmmap(FILE *fd, char *filename, char *data) {
     return false;
   }
 
-  if(!data) {
+  if (!data) {
     custom_error(IO_DATA_NULL);
     return false;
   }
@@ -218,26 +238,6 @@ bool folder_exists(FILE *fd, char *foldername) {
   if (!fd) {
     return false;
   }
-
-  return true;
-}
-
-/*
-  ┌───────────────────────────────┐
-  │   SAFE_MUNMAP                 │
-  └───────────────────────────────┘
- */
-
-bool safe_munmap(char *file, long filesize) {
-  if (!file) {
-    return false;
-  }
-  munmap(file, filesize);
-  // not sure if this is necessary
-  /* if (munmap(file, filesize) == -1) {
-    perror("munmap");
-    return false;
-  } */
 
   return true;
 }
