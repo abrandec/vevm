@@ -25,7 +25,7 @@
 // Get opcode from program buffer
 // @param program[]: program buffer
 // @param pc: program counter
-// @param: opcode: dest to write to
+// @param: opcode: dest to write opcode to
 void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
   // opcode mask
   uint64_t op_mask = 0xFF00000000000000;
@@ -231,7 +231,6 @@ void _mulmod(List *stack) {
 
   // (a * b) % c
   mul_uint256(&a, &a, &b);
-
   divmod_uint256(&e, &d, &a, &c);
 
   stack_push(stack, &d);
@@ -252,11 +251,7 @@ void _lt(List *stack) {
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  if (lt_uint256(&a, &b)) {
-    change_all_uint256(&a, 0, 0, 0, 1);
-  } else {
-    change_all_uint256(&a, 0, 0, 0, 0);
-  }
+  lt_uint256(&a, &b) ? change_all_uint256(&a, 0,0,0,1) : change_all_uint256(&a, 0,0,0,0);
 
   stack_push(stack, &a);
 }
@@ -276,11 +271,8 @@ void _gt(List *stack) {
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  if (gt_uint256(&a, &b)) {
-    change_all_uint256(&a, 0, 0, 0, 1);
-  } else {
-    change_all_uint256(&a, 0, 0, 0, 0);
-  }
+
+  gt_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1) : change_all_uint256(&a, 0, 0, 0, 0);
 
   stack_push(stack, &a);
 }
@@ -300,12 +292,8 @@ void _eq(List *stack) {
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  if (equal_uint256(&a, &b)) {
-    change_all_uint256(&a, 0, 0, 0, 1);
-  } else {
-    change_all_uint256(&a, 0, 0, 0, 0);
-  }
-
+  equal_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1) : change_all_uint256(&a, 0, 0, 0, 0);
+  
   stack_push(stack, &a);
 }
 
@@ -323,9 +311,7 @@ void _iszero(List *stack) {
 
   uint256_t b = init_uint256(0);
 
-  if (equal_uint256(&a, &b)) {
-    change_all_uint256(&b, 0, 0, 0, 1);
-  }
+  equal_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1) : change_all_uint256(&a, 0, 0, 0, 0);
 
   stack_push(stack, &b);
 }
