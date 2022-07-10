@@ -173,6 +173,24 @@ void change_all_uint512(uint512_t *dest, uint64_t a, uint64_t b, uint64_t c,
 
 /*
   ┌───────────────────────────────┐
+  │   MAX VALUE                   │
+  └───────────────────────────────┘
+ */
+
+// get max value of a uint128_t
+// @return the max value of a uint128_t
+uint128_t max_uint128(void);
+
+// get max value of a uint256_t
+// @return the max value of a uint256_t
+uint256_t max_uint256(void);
+
+// get max value of a uint512_t
+// @return the max value of a uint512_t
+uint512_t max_uint512(void);
+
+/*
+  ┌───────────────────────────────┐
   │   COPY                        │
   └───────────────────────────────┘
  */

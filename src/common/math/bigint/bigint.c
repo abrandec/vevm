@@ -85,6 +85,26 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
 
 /*
   ┌───────────────────────────────┐
+  │   MAX VALUE                   │
+  └───────────────────────────────┘
+ */
+
+// 128
+uint128_t max_uint128(void) {
+  return init_uint128(UINT64_MAX);
+}
+
+// 256
+uint256_t max_uint256(void) {
+  return init_uint256(UINT64_MAX);
+}
+
+uint512_t max_uint512(void) {
+  return init_uint512(UINT64_MAX);
+}
+
+/*
+  ┌───────────────────────────────┐
   │   CHANGE INDEX VALUE          │
   └───────────────────────────────┘
  */
