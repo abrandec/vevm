@@ -134,7 +134,7 @@ int main(int argc, const char *argv[]) {
   // ┌───────────────────────────────────┐
   // │   IF NO COMMAND EXISTS            │
   // └───────────────────────────────────┘
-  if (argc == 0) {
+  if (argv != 0 && file == NULL && input == NULL) {
     argparse_usage(&argparse);
   }
 
