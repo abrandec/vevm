@@ -5,84 +5,13 @@
 
 /*
   ┌───────────────────────────────┐
-  │   TYPE DEFINITIONS            │
-  └───────────────────────────────┘
- */
-
-typedef struct NodeTag {
-  uint256_t *data;
-  struct NodeTag *next;
-} Node;
-
-typedef struct ListTag {
-  struct NodeTag *first;
-} List;
-
-/*
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │                                                                            │
-  │   NODE FUNCTIONS                                                           │
-  │                                                                            │
-  └────────────────────────────────────────────────────────────────────────────┘
- */
-
-/*
-  ┌───────────────────────────────┐
-  │   NODE CREATE                 │
-  └───────────────────────────────┘
- */
-
-// create a new node
-Node *Node_create(void);
-
-/*
-  ┌───────────────────────────────┐
-  │   NODE DESTROY                │
-  └───────────────────────────────┘
- */
-
-// destroy a node
-// @param node: the node to destroy
-void Node_destroy(Node *node);
-
-/*
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │                                                                            │
-  │   STACK FUNCTIONS                                                          │
-  │                                                                            │
-  └────────────────────────────────────────────────────────────────────────────┘
- */
-
-/*
-  ┌───────────────────────────────┐
-  │   STACK CREATE                │
-  └───────────────────────────────┘
- */
-
-// create a new stack
-// @return a new stack
-List *stack_create(void);
-
-/*
-  ┌───────────────────────────────┐
-  │   STACK DESTROY               │
-  └───────────────────────────────┘
- */
-
-// destroy the stack
-// @param stack: the stack to destroy
-void stack_destroy(List *stack);
-
-/*
-  ┌───────────────────────────────┐
   │   STACK PUSH                  │
   └───────────────────────────────┘
  */
 
 // push a new element on top of the stack
-// @param stack: the stack to push onto
 // @param data: the data to push onto the stack
-void stack_push(List *stack, uint256_t *data);
+void stack_push(uint256_t *data);
 
 /*
   ┌───────────────────────────────┐
@@ -91,8 +20,7 @@ void stack_push(List *stack, uint256_t *data);
  */
 
 // pop the top element on the stack
-// @param stack: the stack to pop the top element from
-void stack_pop(List *stack);
+void stack_pop();
 
 /*
   ┌───────────────────────────────┐
@@ -101,9 +29,8 @@ void stack_pop(List *stack);
  */
 
 // swap the top element with another element
-// @param stack: the stack to swap the top element of
 // @param index: the index of the element to swap with
-void stack_swap(List *stack, int index);
+void stack_swap(int index);
 
 /*
   ┌───────────────────────────────┐
@@ -112,10 +39,9 @@ void stack_swap(List *stack, int index);
  */
 
 // peak at the stack at a certain index
-// @param stack: stack to peek from
 // @param index: index of the stack to peek
 // @return the stack item
-uint256_t stack_peak(List *stack, int index);
+uint256_t stack_peak(int index);
 
 /*
   ┌───────────────────────────────┐
@@ -124,8 +50,7 @@ uint256_t stack_peak(List *stack, int index);
  */
 
 // gets length of stack
-// @param stack: stack to get length of
 // @return length of stack
-int stack_length(List *stack);
+int stack_length();
 
 #endif
