@@ -60,7 +60,7 @@ int main(int argc, const char *argv[]) {
   }
 
   // ┌───────────────────┐
-  // │   STACK TESTS     │
+  // │   BIGINT TESTS    │
   // └───────────────────┘
   if (_bigint_tests != 0) {
     enum { test_len = 1 };
