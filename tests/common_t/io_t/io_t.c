@@ -17,7 +17,7 @@ bool io_test_read_fmmap(void) {
   folder_exists(fd, "test_data") ? 0 : create_folder("test_data");
   create_file(fd, "test_data/test_file.txt", "data eata");
   
-  data = read_file_fmmap(fd, "test_data/test_file.txt");
+  //data = read_file_fmmap(fd, "test_data/test_file.txt");
 
   return assert_msg("Read check", assert_char("data eata", data));
 }

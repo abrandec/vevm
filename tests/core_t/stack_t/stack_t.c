@@ -5,7 +5,6 @@
 #include "../../../src/core/config.h"
 #include "../../../src/core/stack/stack.h"
 #include "../../../src/errors/errors.h"
-#include "../../main_t.h"
 #include "../../test_utils/assert.h"
 
 #include <stdbool.h>
@@ -21,7 +20,7 @@ bool assert_overflow(List *stack) {
   for (int i = 0; i < MAX_STACK_DEPTH + 10; ++i) {
     uint256_t dummy_data =
         rand_num_uint256(init_uint256(0), init_uint256(UINT64_MAX));
-    
+
     stack_push(stack, &dummy_data);
 
     // peak @ top of stack to compare with dummy_data
@@ -75,11 +74,11 @@ bool assert_swap(List *stack) {
 // @return true if the stack can be destroyed, false otherwise
 bool assert_stack_destroy(List *stack) {
   uint256_t dummy_data = init_all_uint256(0, 0, 0, 69);
-  
+
   // check if stack is empty/zero in the first place and if so
   // add an element to the stack to make it non-empty
   stack_length(stack) == 0 ? stack_push(stack, &dummy_data) : 0;
-    
+
   stack_destroy(stack);
 
   return assert_eq_msg("Stack destroy check", stack_length(stack), 0);

@@ -97,7 +97,7 @@ uint256_t rand_num_uint256(uint256_t min, uint256_t max) {
   E11(one) = 1;
   uint256_t randomNum;
 
-  change_uint256(&randomNum, rand(), rand(), rand(), rand());
+  change_all_uint256(&randomNum, rand(), rand(), rand(), rand());
 
   sub_uint256(&temp1, &max, &min);
   add_uint256(&temp1, &temp1, &one);
@@ -118,9 +118,9 @@ uint512_t rand_num_uint512(uint512_t min, uint512_t max) {
   uint512_t temp3;
 
   uint512_t one;
-  change_uint512(&one, 0, 0, 0, 0, 0, 0, 0, 1);
+  change_all_uint512(&one, 0, 0, 0, 0, 0, 0, 0, 1);
   uint512_t randomNum;
-  change_uint512(&randomNum, rand(), rand(), rand(), rand(), rand(), rand(),
+  change_all_uint512(&randomNum, rand(), rand(), rand(), rand(), rand(), rand(),
                  rand(), rand());
 
   sub_uint512(&temp1, &max, &min);
