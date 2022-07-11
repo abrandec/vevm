@@ -9,20 +9,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Read
 bool io_test_read_fmmap(void) {
   FILE *fd;
   char *data;
 
   folder_exists(fd, "test_data") ? 0 : create_folder("test_data");
-  create_file(fd, "test_data/test_file.txt", "data eata");
-  
-  //data = read_file_fmmap(fd, "test_data/test_file.txt");
+  create_file(fd, "test_data/test_file.txt", "test data");
+  long file_size;
+  data = read_file_fmmap(fd, "test_data/test_file.txt", &file_size);
 
-  return assert_msg("Read check", assert_char("data eata", data));
+  return assert_msg("Read check", assert_char("test data", data));
 }
-
-// Write
 bool io_test_write_fmmap(void) { return true; }
 
 bool io_tests(void) {

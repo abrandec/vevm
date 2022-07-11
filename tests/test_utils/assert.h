@@ -75,28 +75,8 @@ bool assert_eq_512_msg(char msg[], uint512_t a, uint512_t b);
 bool assert_char(char *a, char *b);
 
 // uint64_t pseudo number generator
-// @param min: the minimum value to generate
-// @param max: the maximum value to generate
-// @return a pseudo random number between a given min and max
-uint64_t rand_num(uint64_t min, uint64_t max);
-
-// uint128_t psudo number generator
-// @param min: the minimum value to generate
-// @param max: the maximum value to generate
-// @return a pseudo random number between a given min and max
-uint128_t rand_num_uint128(uint128_t min, uint128_t max);
-
-// uint256_t psudo number generator
-// @param min: the minimum value to generate
-// @param max: the maximum value to generate
-// @return a pseudo random number between a given min and max
-uint256_t rand_num_uint256(uint256_t min, uint256_t max);
-
-// uint512_t psudo number generator
-// @param min: the minimum value to generate
-// @param max: the maximum value to generate
-// @return a pseudo random number between a given min and max
-uint512_t rand_num_uint512(uint512_t min, uint512_t max);
+// @return a pseudo random number
+uint64_t rand_num(void);
 
 // assert that all the values in an array of true
 // @param msg[]: the message to print

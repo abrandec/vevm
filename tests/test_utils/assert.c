@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <sys/random.h>
 
 bool assert_msg(char msg[], bool condition) {
   if (condition) {
@@ -52,83 +52,14 @@ bool assert_eq_512_msg(char msg[], uint512_t a, uint512_t b) {
 
 bool assert_char(char *a, char *b) { return (strcmp(a, b) == 0); }
 
-uint64_t rand_num(uint64_t min, uint64_t max) {
-  time_t t;
-  srand((unsigned)time(&t));
-  return (rand() % (max - min + 1)) + min;
-}
+uint64_t rand_num(void) {
+  unsigned int tmp;
 
-uint128_t rand_num_uint128(uint128_t min, uint128_t max) {
-  time_t t;
+  getrandom(&tmp, sizeof(unsigned int), GRND_NONBLOCK) == -1
+      ? perror("getrandom")
+      : "";
 
-  srand((unsigned)time(&t));
-
-  uint128_t result;
-  uint128_t temp1;
-  uint128_t temp2;
-  uint128_t temp3;
-
-  uint128_t one;
-  E1(one) = 1;
-  uint128_t randomNum;
-
-  E0(randomNum) = rand();
-  E1(randomNum) = rand();
-
-  sub_uint128(&temp1, &max, &min);
-  add_uint128(&temp1, &temp1, &one);
-  divmod_uint128(&temp3, &temp2, &result, &randomNum);
-  add_uint128(&result, &result, &min);
-
-  return result;
-}
-
-uint256_t rand_num_uint256(uint256_t min, uint256_t max) {
-  time_t t;
-
-  srand((unsigned)time(&t));
-
-  uint256_t result;
-  uint256_t temp1;
-  uint256_t temp2;
-  uint256_t temp3;
-
-  uint256_t one;
-  E11(one) = 1;
-  uint256_t randomNum;
-
-  change_all_uint256(&randomNum, rand(), rand(), rand(), rand());
-
-  sub_uint256(&temp1, &max, &min);
-  add_uint256(&temp1, &temp1, &one);
-  divmod_uint256(&temp3, &temp2, &result, &randomNum);
-  add_uint256(&result, &result, &min);
-
-  return result;
-}
-
-uint512_t rand_num_uint512(uint512_t min, uint512_t max) {
-  time_t t;
-
-  srand((unsigned)time(&t));
-
-  uint512_t result;
-  uint512_t temp1;
-  uint512_t temp2;
-  uint512_t temp3;
-
-  uint512_t one;
-  change_all_uint512(&one, 0, 0, 0, 0, 0, 0, 0, 1);
-  uint512_t randomNum;
-  change_all_uint512(&randomNum, rand(), rand(), rand(), rand(), rand(), rand(),
-                 rand(), rand());
-
-  sub_uint512(&temp1, &max, &min);
-  add_uint512(&temp1, &temp1, &one);
-  divmod_uint512(&temp3, &temp2, &result, &randomNum);
-  add_uint512(&result, &result, &min);
-
-  return result;
+  return tmp;
 }
 
 bool assert_bool_array_msg(char msg[], bool arr[], size_t len) {
