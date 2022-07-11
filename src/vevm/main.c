@@ -75,10 +75,10 @@ int main(int argc, const char *argv[]) {
 
   struct argparse_option options[] = {
       OPT_GROUP("Commands"),
-      OPT_HELP(),
       OPT_STRING('i', "input", &input, "input bytecode"),
       OPT_STRING('f', "file", &file, "file with bytecode", NULL, 0, 0),
       OPT_BOOLEAN('d', "debug", &debug, "print EVM debug", NULL, 0, 0),
+      OPT_HELP(),
       OPT_END(),
   };
 
@@ -134,7 +134,7 @@ int main(int argc, const char *argv[]) {
   // ┌───────────────────────────────────┐
   // │   IF NO COMMAND EXISTS            │
   // └───────────────────────────────────┘
-  if (argc != 0 || input == NULL && file == NULL) {
+  if (argc == 0) {
     argparse_usage(&argparse);
   }
 
