@@ -1,6 +1,10 @@
 #include "vm_t.h"
 
+#include "../../../src/common/cmd/cmd.h"
+#include "../../../src/common/io/io.h"
 #include "../../../src/common/math/bigint/bigint.h"
+#include "../../../src/common/utils/hex_utils/hex_utils.h"
+#include "../../../src/core/config.h"
 #include "../../../src/core/stack/stack.h"
 #include "../../../src/core/vm/vm.h"
 #include "../../test_utils/assert.h"
@@ -8,51 +12,78 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 
-bool assert_opcode(uint256_t program[], int expected) {
-  int pc = 0;
-  uint64_t opcode = 0;
+// write to program buffer
+// @param program[]: program buffer to write to
+// @param bytecode: bytecode char to read from
+// @param bytecode_size: size of bytecode
+void write2_prog_buff(uint256_t program[], char *bytecode, long bytecode_size) {
+  int elements = (bytecode_size / 16) + 1;
 
-  //_vm(program, true, &pc, &opcode);
-
-  return assert_eq_msg("Opcode check", opcode, false);
-  return true;
+  int i = 0;
+  // side effect of adding unwanted bits to the end of the bytecode
+  // not really a problem since adding STOP to the end of the bytecode mitigates
+  // this
+  for (; i < elements; ++i) {
+    change_uint256(&program[i / 4], i % 4, hex_char2uint(bytecode, 16 * i, 16));
+  }
 }
 
-bool assert_mem_bounds(uint256_t program[], int expected) {
+// load bytecode from file
+// @param program[]: program buffer to write to
+// @param file: size of file to read from
+void load_bytecode_file(uint256_t program[], char *file) {
+  FILE *fd;
 
-  //_vm(program, true, &pc, &opcode);
+  long file_size;
 
-  return assert_eq_msg("Mem bounds check", 0, 0);
+  file = read_file_fmmap(fd, file, &file_size);
+
+  file == NULL ? exit(1) : write2_prog_buff(program, file, file_size);
+
+  safe_munmap(file, file_size);
+}
+
+bool assert_mem_bounds(uint256_t program[]) {
+  
+  char *file = "test_data/vm_data/mem_bounds";
+  load_bytecode_file(program, file);
+
+  stack_reset();
+  
+  int pc = 0;
+  uint64_t opcode = 0;
+  uint64_t gas = GAS - 21000;
+
+  // EVM memory
+  static uint256_t memory[MAX_MEMORY_LEN];
+
+  // for keeping track memory expansion costs
+  uint64_t mem_end = 0;
+
+  // for checking if the first index in memory is being used (gas calc)
+  bool mem_expanded = false;
+
+  _vm(program, memory, &pc, 10, &opcode, &gas, &mem_expanded, &mem_end);
+
+  return assert_msg("mem_bounds", true);
 }
 
 // set sample program for testing
 // @param program: the program to set
-void set_sample_prog(uint256_t program[]) {
-  
-
-  // set bytecode //
-  change_all_uint256(&program[0], 0x1110203040500700, 0x01, 0x02, 0x03);
-  change_all_uint256(&program[1], 0x04, 0x05, 0x06, 0x07);
-  change_all_uint256(&program[2], 0x09, 0x0A, 0x0B, 0x0C);
-  change_all_uint256(&program[3], 0x0E, 0x0F, 0x10, 0x11);
-
-  // set bytecode for last index
-  change_all_uint256(&program[MAX_BYTECODE_LEN - 1], 0x13, 0x14, 0x15, 0x16);
-}
+void set_sample_prog(uint256_t program[]) {}
 
 // set memory for testing
 // @param memory: the memory to set
-void set_memory(uint256_t memory[]) {
- 
-}
+void set_memory(uint256_t memory[]) {}
 
 // vm tests
 bool vm_tests(void) {
   static uint256_t program[MAX_BYTECODE_LEN];
 
   // Run tests
-  enum { test_len = 2 };
-  bool test_results[test_len] = {assert_opcode(program, 0), assert_mem_bounds(program, 0)};
+  enum { test_len = 1 };
+  bool test_results[test_len] = {assert_mem_bounds(program)};
   return assert_bool_array_msg("VM results", test_results, test_len);
 }

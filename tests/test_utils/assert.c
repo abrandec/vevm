@@ -12,10 +12,10 @@
 
 bool assert_msg(char msg[], bool condition) {
   if (condition) {
-    printf(GREEN "│ ▪ %s - PASS\n" RESET, msg);
+    printf(GREEN "│ ▸ %s - PASS\n" RESET, msg);
     return true;
   } else {
-    printf(RED "│ ▪ %s - FAIL\n" RESET, msg);
+    printf(RED "│ ▸ %s - FAIL\n" RESET, msg);
     return false;
   }
 }
@@ -67,7 +67,7 @@ bool assert_bool_array_msg(char msg[], bool arr[], size_t len) {
 
   for (; i < len; ++i) {
     if (!arr[i]) {
-      printf(RED "├──────────────────────────────────\n│ ▸ %s - "
+      printf(RED "├──────────────────────────────────\n│ ▪ %s - "
                  "FAIL\n├──────────────────────────────────\n" RESET,
              msg);
 
@@ -75,7 +75,7 @@ bool assert_bool_array_msg(char msg[], bool arr[], size_t len) {
     }
   }
 
-  printf(GREEN "├──────────────────────────────────\n│ ▸ %s - "
+  printf(GREEN "├──────────────────────────────────\n│ ▪ %s - "
                "PASS\n├──────────────────────────────────\n" RESET,
          msg);
 
