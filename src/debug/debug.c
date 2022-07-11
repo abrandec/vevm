@@ -12,9 +12,9 @@
 #include <unistd.h>
 
 /* Stack debugging */
-void print_stack(List *stack) {
+void print_stack() {
   
-  if (stack_length(stack) <= 0) {
+  if (stack_length() <= 0) {
     printf(
         "\n┌───────────────────────────────────────────────────────────────"
         "────────────┐\n│ STACK                                                "
@@ -28,8 +28,8 @@ void print_stack(List *stack) {
         "───────────┘\n");
 
   } else {
-    Node *node = stack->first;
-    int i = stack_length(stack) - 1;
+    
+    int i = stack_length() - 1;
 
     printf(
         "\n┌───────────────────────────────────────────────────────────────"
@@ -39,14 +39,14 @@ void print_stack(List *stack) {
         "│\n├────────────────────────────────────────────────────────────────"
         "───────────┤\n");
 
-    while (node->next != NULL) {
+    while (1) {
       printf("│ 0x%03X: 0x", i);
-      print_hex_uint256(node->data, false);
+      
       printf(" │\n");
-      node = node->next;
+      
       --i;
 
-      if (node->next != NULL) {
+      if (1) {
         printf(
             "├────────────────────────────────────────────────────────────────"
             "───────────┤\n");
@@ -78,7 +78,7 @@ void print_buffer(uint256_t buffer[], const char buff_name[], int length) {
          "───────────┘\n");
 }
 
-void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
+void print_debug(uint256_t memory[], int *pc, uint64_t *gas,
                  uint64_t *opcode) {
   static const char prog_name[8] = "PROGRAM";
   static const char mem_name[8] = "MEMORY ";
@@ -88,7 +88,7 @@ void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
          "           │ %s\n│ PC       %06d                 │\n│ GAS      "
          "%06lu   │\n└─────────────────────────────────┘",
          vevm_logo, *opcode, OP_NAME[*opcode], *pc, *gas);
-  print_stack(stack);
+  print_stack();
 
   print_buffer(memory, mem_name, PRINT_LENGTH);
 

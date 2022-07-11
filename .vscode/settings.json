@@ -26,6 +26,7 @@
         "functional": "c",
         "random": "c",
         "main_t.h": "c",
-        "cmd.h": "c"
+        "cmd.h": "c",
+        "strings.h": "c"
     }
 }

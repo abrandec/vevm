@@ -79,16 +79,15 @@ void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
  */
 
 // EVM ADD operation
-// @param stack: the stack
-void _add(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _add(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   add_uint256(&a, &b, &a);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -98,16 +97,15 @@ void _add(List *stack) {
  */
 
 // EVM MUL operation
-// @param stack: the stack
-void _mul(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _mul(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   mul_uint256(&a, &a, &b);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -117,16 +115,15 @@ void _mul(List *stack) {
  */
 
 // EVM SUB operation
-// @param stack: the stack
-void _sub(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _sub(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   sub_uint256(&a, &a, &b);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -136,20 +133,19 @@ void _sub(List *stack) {
  */
 
 // EMV DIV operation
-// @param stack: the stack
-void _div(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _div(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   uint256_t c;
   uint256_t d;
   // just need the division
   divmod_uint256(&c, &d, &a, &b);
 
-  stack_push(stack, &c);
+  stack_push(&c);
 }
 
 /*
@@ -159,13 +155,12 @@ void _div(List *stack) {
  */
 
 // EVM MOD operation
-// @param stack: the stack
-void _mod(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _mod(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   uint256_t c;
   uint256_t d;
@@ -173,7 +168,7 @@ void _mod(List *stack) {
   // just need the modulus
   divmod_uint256(&c, &d, &a, &b);
 
-  stack_push(stack, &d);
+  stack_push(&d);
 }
 
 /*
@@ -183,16 +178,15 @@ void _mod(List *stack) {
  */
 
 // EVM ADDMOD operation
-// @param stack: the stack
-void _addmod(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _addmod(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t c = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t c = stack_peak(stack_length() - 1);
+  stack_pop();
 
   // to deal with the possibility of values being written to before
   // arthemetic operations are complete
@@ -203,7 +197,7 @@ void _addmod(List *stack) {
   add_uint256(&a, &a, &b);
   divmod_uint256(&e, &d, &a, &c);
 
-  stack_push(stack, &d);
+  stack_push(&d);
 }
 
 /*
@@ -213,16 +207,15 @@ void _addmod(List *stack) {
  */
 
 // EVM MULMOD operation
-// @param stack: the stack
-void _mulmod(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _mulmod(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t c = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t c = stack_peak(stack_length() - 1);
+  stack_pop();
 
   // to deal with the possibility of values being written to before
   // arthemetic operations are complete
@@ -233,7 +226,7 @@ void _mulmod(List *stack) {
   mul_uint256(&a, &a, &b);
   divmod_uint256(&e, &d, &a, &c);
 
-  stack_push(stack, &d);
+  stack_push(&d);
 }
 
 /*
@@ -243,17 +236,16 @@ void _mulmod(List *stack) {
  */
 
 // EVM LT operation
-// @param stack: the stack
-void _lt(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _lt(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   lt_uint256(&a, &b) ? change_all_uint256(&a, 0,0,0,1) : change_all_uint256(&a, 0,0,0,0);
 
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -263,18 +255,17 @@ void _lt(List *stack) {
  */
 
 // EVM GT operation
-// @param stack: the stack
-void _gt(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _gt(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
 
   gt_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1) : change_all_uint256(&a, 0, 0, 0, 0);
 
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -284,17 +275,16 @@ void _gt(List *stack) {
  */
 
 // EVM EQ operation
-// @param stack: the stack
-void _eq(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _eq(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   equal_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1) : change_all_uint256(&a, 0, 0, 0, 0);
   
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -304,16 +294,15 @@ void _eq(List *stack) {
  */
 
 // EVM ISZERO operation
-// @param stack: the stack
-void _iszero(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _iszero(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
   uint256_t b = init_uint256(0);
 
   equal_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1) : change_all_uint256(&a, 0, 0, 0, 0);
 
-  stack_push(stack, &b);
+  stack_push(&b);
 }
 
 /*
@@ -323,16 +312,15 @@ void _iszero(List *stack) {
  */
 
 // EVM AND operation
-// @param stack: the stack
-void _and(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _and(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   and_uint256(&a, &a, &b);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -342,16 +330,15 @@ void _and(List *stack) {
  */
 
 // EVM OR operation
-// @param stack: the stack
-void _or(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _or(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   or_uint256(&a, &a, &b);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -361,16 +348,15 @@ void _or(List *stack) {
  */
 
 // EVM XOR operation
-// @param stack: the stack
-void _xor(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _xor(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   xor_uint256(&a, &a, &b);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -380,14 +366,13 @@ void _xor(List *stack) {
  */
 
 // EVM NOT operation
-// @param stack: the stack
-void _not(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _not(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
   not_uint256(&a, &a);
 
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -397,13 +382,12 @@ void _not(List *stack) {
  */
 
 // EVM SHL operation
-// @param stack: the stack
-void _shl(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _shl(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
 
@@ -413,7 +397,7 @@ void _shl(List *stack) {
     lshift_uint256(&c, &b, E11(a));
   }
 
-  stack_push(stack, &c);
+  stack_push( &c);
 }
 
 /*
@@ -423,12 +407,11 @@ void _shl(List *stack) {
  */
 
 // EVM SHR operation
-// @param stack: the stack
-void _shr(List *stack) {
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+void _shr(void) {
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
 
@@ -438,7 +421,7 @@ void _shr(List *stack) {
     rshift_uint256(&c, &b, E11(a));
   }
 
-  stack_push(stack, &c);
+  stack_push(&c);
 }
 
 /*
@@ -448,10 +431,9 @@ void _shr(List *stack) {
  */
 
 // EVM GASLIMIT operation
-// @param stack: the stack
-void _gaslimit(List *stack) {
+void _gaslimit(void) {
   uint256_t a = init_all_uint256(0, 0, 0, GAS);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -461,12 +443,11 @@ void _gaslimit(List *stack) {
  */
 
 // EVM MLOAD operation
-// @param stack: the stack
 // @param memory[]: the memory
 // @param mem_end: ending index of current memory usage
 // @param mem_expanded: initial memory expansion check
 // @param gas: gas meter
-void _mload(List *stack, uint256_t *memory, uint64_t *mem_end,
+void _mload(uint256_t *memory, uint64_t *mem_end,
             bool *mem_expanded, uint64_t *gas) {}
 
 /*
@@ -476,12 +457,11 @@ void _mload(List *stack, uint256_t *memory, uint64_t *mem_end,
  */
 
 // EVM MSTORE operation
-// @param stack: the stack
 // @param memory[]: the memory
 // @param mem_end: ending index of current memory usage
 // @param mem_expanded: initial memory expansion check
 // @param gas: gas meter
-void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
+void _mstore(uint256_t memory[], uint64_t *mem_end,
              bool *mem_expanded, uint64_t *gas) {
   // mask for 1st & 2nd index
   uint256_t mask1 = init_uint256(0xFFFFFFFFFFFFFFFF);
@@ -490,12 +470,12 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
   // POP and temporarily store values
 
   // data to push
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
   // used to calculate the index of the memory & offset
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   // (max mem length - 1) (999,999)
   uint256_t max_mem_len = init_all_uint256(0, 0, 0, 999999);
@@ -558,12 +538,11 @@ void _mstore(List *stack, uint256_t memory[], uint64_t *mem_end,
  */
 
 // EVM MSTORE8 operation
-// @param stack: the stack
 // @param memory[]: the memory
 // @param mem_end: ending index of current memory usage
 // @param mem_expanded: initial memory expansion check
 // @param gas: gas left
-void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
+void _mstore8(uint256_t memory[], uint64_t *mem_end,
               bool *mem_expanded, uint64_t *gas) {
   // masks for extracting the byte
   uint256_t mask1 = init_uint256(0xFFFFFFFFFFFFFFFF);
@@ -572,12 +551,12 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
   // POP and temporarily store values
 
   // data to push
-  uint256_t a = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t a = stack_peak(stack_length() - 1);
+  stack_pop();
 
   // used to calculate the index of the memory & offset
-  uint256_t b = stack_peak(stack, stack_length(stack) - 1);
-  stack_pop(stack);
+  uint256_t b = stack_peak(stack_length() - 1);
+  stack_pop();
 
   // (max mem length - 1) (999,999)
   uint256_t max_mem_len = init_all_uint256(0, 0, 0, 999999);
@@ -663,11 +642,10 @@ void _mstore8(List *stack, uint256_t memory[], uint64_t *mem_end,
  */
 
 // EVM PC operation
-// @param stack: the stack
 // @param pc: the program counter
-void _pc(List *stack, int *pc) {
+void _pc(int *pc) {
   uint256_t a = init_all_uint256(0, 0, 0, *pc - 1);
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -677,12 +655,11 @@ void _pc(List *stack, int *pc) {
  */
 
 // EVM MSIZE operation
-// @param stack: the stack
 // @param mem_end: ending index of current memory usage
-void _msize(List *stack, uint64_t *mem_end) {
+void _msize(uint64_t *mem_end) {
   uint256_t a = init_all_uint256(0, 0, 0, *mem_end * 8);
 
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -692,12 +669,11 @@ void _msize(List *stack, uint64_t *mem_end) {
  */
 
 // EVM GAS operation
-// @param stack: the stack
 // @param gas: gas left
-void _gas(List *stack, uint64_t *gas) {
+void _gas(uint64_t *gas) {
   uint256_t a = init_all_uint256(0, 0, 0, *gas);
 
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -708,12 +684,11 @@ void _gas(List *stack, uint64_t *gas) {
 
 // EVM PUSH operation
 // get bytes from program[] to push onto the stack
-// @param stack: the stack
 // @param program: the program[] to extract bytes from
 // @param opcode: the push(x) opcode
 // @param pc: the program counter
 // @return bytes from program[] to push onto the stack
-void _push(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
+void _push(uint256_t program[], uint64_t *opcode, int *pc) {
 
   // masks for getting data from program[] to push
   uint256_t mask256_1 = init_uint256(0xFFFFFFFFFFFFFFFF);
@@ -775,7 +750,7 @@ void _push(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
     or_uint256(&data1, &data1, &data2);
   }
 
-  stack_push(stack, &data1);
+  stack_push(&data1);
 }
 
 /*
@@ -785,15 +760,14 @@ void _push(List *stack, uint256_t program[], uint64_t *opcode, int *pc) {
  */
 
 // EVM DUP operation
-// @param stack: the stack
 // @param opcode: the dup(x) opcode
-void _dup(List *stack, uint64_t *opcode) {
+void _dup(uint64_t *opcode) {
   // dup opcodes start @ 128 (0x80)
   int dup_index = *opcode - 127;
 
-  uint256_t a = stack_peak(stack, stack_length(stack) - dup_index);
+  uint256_t a = stack_peak(stack_length() - dup_index);
 
-  stack_push(stack, &a);
+  stack_push(&a);
 }
 
 /*
@@ -803,13 +777,12 @@ void _dup(List *stack, uint64_t *opcode) {
  */
 
 // EVM SWAP operation
-// @param stack: the stack
 // @param opcode: the swap(x) opcode
-void _swap(List *stack, uint64_t *opcode) {
+void _swap(uint64_t *opcode) {
   // swap opcodes start @ 144 (0x90)
   int swap_index = *opcode - 143;
 
-  stack_swap(stack, swap_index);
+  stack_swap(swap_index);
 }
 
 /*
@@ -860,9 +833,6 @@ void _vm(uint256_t program[], bool debug_mode) {
 
   uint64_t gas = GAS - 21000;
 
-  // initialize stack
-  List *stack = stack_create();
-
   // for storing current opcode
   uint64_t opcode;
 
@@ -875,7 +845,7 @@ void _vm(uint256_t program[], bool debug_mode) {
 #ifdef DEBUG
     // DEBUG MODE
     if (debug_mode) {
-      print_debug(stack, memory, &pc, &gas, &opcode);
+      
     }
 #endif
     // consume_gas(&opcode, &gas);
@@ -883,82 +853,81 @@ void _vm(uint256_t program[], bool debug_mode) {
 
     switch (opcode) {
     case 0x00: // STOP
-      stack_destroy(stack);
       exit(1);
       break;
     case 0x01: // ADD
-      _add(stack);
+      _add();
       break;
     case 0x02: // MUL
-      _mul(stack);
+      _mul();
       break;
     case 0x03: // SUB
-      _sub(stack);
+      _sub();
       break;
     case 0x04: // DIV
-      _div(stack);
+      _div();
       break;
     case 0x06: // MOD
-      _mod(stack);
+      _mod();
       break;
     case 0x08: // ADDMOD
-      _addmod(stack);
+      _addmod();
       break;
     case 0x09: // MULMOD
-      _mulmod(stack);
+      _mulmod();
       break;
     case 0x10: // LT
-      _lt(stack);
+      _lt();
       break;
     case 0x11: // GT
-      _gt(stack);
+      _gt();
       break;
     case 0x14: // EQ
-      _eq(stack);
+      _eq();
       break;
     case 0x15: // ISZERO
-      _iszero(stack);
+      _iszero();
       break;
     case 0x16: // AND
-      _and(stack);
+      _and();
       break;
     case 0x17: // OR
-      _or(stack);
+      _or();
       break;
     case 0x18: // XOR
-      _xor(stack);
+      _xor();
       break;
     case 0x19: // NOT
-      _not(stack);
+      _not();
       break;
     case 0x1B: // SHL
-      _shl(stack);
+      _shl();
       break;
     case 0x1C: // SHR
-      _shr(stack);
+      _shr();
       break;
     case 0x45: // GASLIMIT
-      _gaslimit(stack);
+      _gaslimit();
       break;
     case 0x50: // POP
-      stack_pop(stack);
+      stack_pop();
     case 0x51: // MLOAD
-      _mload(stack, memory, &mem_end, &mem_expanded, &gas);
+      _mload(memory, &mem_end, &mem_expanded, &gas);
       break;
     case 0x52: // MSTORE
-      _mstore(stack, memory, &mem_end, &mem_expanded, &gas);
+      _mstore(memory, &mem_end, &mem_expanded, &gas);
       break;
     case 0x53: // MSTORE8
-      _mstore8(stack, memory, &mem_end, &mem_expanded, &gas);
+      _mstore8(memory, &mem_end, &mem_expanded, &gas);
       break;
     case 0x59: // MSIZE
-      _msize(stack, &mem_end);
+      _msize(&mem_end);
       break;
     case 0x58: // PC
-      _pc(stack, &pc);
+      _pc(&pc);
       break;
     case 0x5A: // GAS
-      _gas(stack, &gas);
+      _gas(&gas);
       break;
     case 0x60: // PUSH1
     case 0x61: // PUSH2
@@ -992,7 +961,7 @@ void _vm(uint256_t program[], bool debug_mode) {
     case 0x7D: // PUSH30
     case 0x7E: // PUSH31
     case 0x7F: // PUSH32
-      _push(stack, program, &opcode, &pc);
+      _push(program, &opcode, &pc);
       break;
     case 0x80: // DUP1
     case 0x81: // DUP2
@@ -1010,7 +979,7 @@ void _vm(uint256_t program[], bool debug_mode) {
     case 0x8D: // DUP14
     case 0x8E: // DUP15
     case 0x8F: // DUP16
-      _dup(stack, &opcode);
+      _dup(&opcode);
       break;
     case 0x90: // SWAP1
     case 0x91: // SWAP2
@@ -1028,7 +997,7 @@ void _vm(uint256_t program[], bool debug_mode) {
     case 0x9D: // SWAP14
     case 0x9E: // SWAP15
     case 0x9F: // SWAP16
-      _swap(stack, &opcode);
+      _swap(&opcode);
       break;
     case 0xFE: // INVALID
       custom_error(VM_INVALID_OPCODE);

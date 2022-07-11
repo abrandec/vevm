@@ -28,12 +28,11 @@
 void print_buffer(uint256_t buffer[], const char buff_name[], int length);
 
 // print debug information
-// @param stack: stack to print
 // @param buffer: memory to print
 // @param pc: program counter
 // @param gas: gas remaining
 // @param opcode: opcode
-void print_debug(List *stack, uint256_t memory[], int *pc, uint64_t *gas,
+void print_debug(uint256_t memory[], int *pc, uint64_t *gas,
                  uint64_t *opcode);
 
 /* Stack debugging */
