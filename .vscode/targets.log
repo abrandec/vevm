@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  8 15:18:08 2022
+# Make data base, printed on Mon Jul 11 12:36:05 2022
 
 # Variables
 
@@ -24,6 +24,7 @@ UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/
 VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-55458587-4964-4bf2-8b10-7f3384da0dee.sock
 # environment
 LC_NAME = en_US.UTF-8
+ 
 # environment
 LC_NUMERIC = en_US.UTF-8
 # environment
@@ -286,7 +287,7 @@ LC_IDENTIFICATION = en_US.UTF-8
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-08 15:17:29.006579124
+#  Last modified 2022-07-11 12:36:02.246547801
 #  File has been updated.
 #  Successfully updated.
 
@@ -326,7 +327,7 @@ all: vevm
 # Not a target:
 src/vevm/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-08 10:27:38.459854736
+#  Last modified 2022-07-11 11:19:44.846634409
 #  File has been updated.
 #  Successfully updated.
 
@@ -372,12 +373,12 @@ vevm: src/vevm/main.c
 # No general ('VPATH' variable) search path.
 
 # strcache buffers: 1 (0) / strings = 21 / storage = 188 B / avg = 8 B
+ 
 # current buf: size = 8162 B / used = 188 B / count = 21 / avg = 8 B
 
 # strcache performance: lookups = 34 / hit rate = 38%
 # hash-table stats:
 # Load=21/8192=0%, Rehash=0, Collisions=0/34=0%
- 
-# Finished Make data base on Fri Jul  8 15:18:08 2022
+# Finished Make data base on Mon Jul 11 12:36:05 2022
 
  

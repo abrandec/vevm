@@ -14,8 +14,8 @@ uint64_t hex_char2uint(char *hex, int offset, int length) {
   uint64_t val = 0;
   int i = 0;
 
+  // needs to account for \n
   while (*hex && i < length || *hex == '\0') {
-  
 
     // get current character then increment
     uint8_t byte = (hex[offset]);

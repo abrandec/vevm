@@ -52,7 +52,7 @@ void stack_pop(void) {
  */
 
 void stack_swap(int index) {
-  stack_len == 0 || index > stack_len - 1 ? custom_error(STACK_UNDERFLOW) : 0;
+  stack_len == 0 || index > stack_len - 1 || index < 0 ? custom_error(STACK_UNDERFLOW) : 0;
   uint256_t temp = stack[stack_len - 1];
   stack[stack_len - 1] = stack[index];
   stack[index] = temp;
@@ -79,3 +79,11 @@ uint256_t stack_peak(int index) {
  */
 
 int stack_length(void) { return stack_len; }
+
+/*
+  ┌───────────────────────────────┐
+  │   STACK RESET                 │
+  └───────────────────────────────┘
+ */
+
+void stack_reset(void) { stack_len = 0; }

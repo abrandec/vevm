@@ -53,4 +53,13 @@ uint256_t stack_peak(int index);
 // @return length of stack
 int stack_length();
 
+/*
+  ┌───────────────────────────────┐
+  │   STACK RESET                 │
+  └───────────────────────────────┘
+ */
+
+// set stack to zero
+void stack_reset(void);
+
 #endif
