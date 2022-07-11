@@ -25,11 +25,6 @@ static const char *const usages[] = {
     NULL,
 };
 
-// argparse
-#define PERM_READ (1 << 0)
-#define PERM_WRITE (1 << 1)
-#define PERM_EXEC (1 << 2)
-
 // write to program buffer
 // @param program[]: program buffer to write to
 // @param bytecode: bytecode char to read from
@@ -98,7 +93,7 @@ int main(int argc, const char *argv[]) {
   // └───────────────────┘
   if (input != NULL && debug == 0) {
     write2_prog_buff(program, input, strlen(input));
-    _vm(program, false);
+    run_vm(program);
   }
 
   // ┌───────────────────────────┐
@@ -106,7 +101,7 @@ int main(int argc, const char *argv[]) {
   // └───────────────────────────┘
   if (input != NULL && debug != 0) {
     write2_prog_buff(program, input, strlen(input));
-    _vm(program, true);
+    run_vm(program);
   }
 
   //┌────────────────────────────────────────────────┐
@@ -120,7 +115,7 @@ int main(int argc, const char *argv[]) {
   // └───────────────────────────┘
   if (file != NULL && debug == 0) {
     load_bytecode_file(program, file);
-    _vm(program, false);
+    run_vm(program);
   }
 
   // ┌───────────────────────────────────┐
@@ -128,7 +123,7 @@ int main(int argc, const char *argv[]) {
   // └───────────────────────────────────┘
   if (file != NULL && debug != 0) {
     load_bytecode_file(program, file);
-    _vm(program, true);
+    run_vm(program);
   }
 
   // ┌───────────────────────────────────┐
