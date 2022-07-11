@@ -87,7 +87,7 @@ void _add(List *stack) {
   uint256_t b = stack_peak(stack, stack_length(stack) - 1);
   stack_pop(stack);
 
-  add_uint256(&a, &a, &b);
+  add_uint256(&a, &b, &a);
   stack_push(stack, &a);
 }
 
