@@ -90,18 +90,12 @@ uint512_t init_all_uint512(uint64_t a, uint64_t b, uint64_t c, uint64_t d,
  */
 
 // 128
-uint128_t max_uint128(void) {
-  return init_uint128(UINT64_MAX);
-}
+uint128_t max_uint128(void) { return init_uint128(UINT64_MAX); }
 
 // 256
-uint256_t max_uint256(void) {
-  return init_uint256(UINT64_MAX);
-}
+uint256_t max_uint256(void) { return init_uint256(UINT64_MAX); }
 
-uint512_t max_uint512(void) {
-  return init_uint512(UINT64_MAX);
-}
+uint512_t max_uint512(void) { return init_uint512(UINT64_MAX); }
 
 /*
   ┌───────────────────────────────┐
@@ -700,17 +694,14 @@ void add_uint256(uint256_t *dest, uint256_t *a, uint256_t *b) {
   uint128_t tmp;
   add_uint128(&E_0(dest), &E_0(a), &E_0(b));
   add_uint128(&tmp, &E_1(a), &E_1(b));
-
-  if (gt_uint128(&E_1(a), &tmp)) {
+  if (gt_uint128(&E_1(b), &tmp)) {
     uint128_t one;
-
     E0(one) = 0;
     E1(one) = 1;
-
     add_uint128(&E_0(dest), &E_0(dest), &one);
-  } else {
-    add_uint128(&E_1(dest), &E_1(a), &E_1(b));
   }
+  
+  add_uint128(&E_1(dest), &E_1(a), &E_1(b));
 }
 
 // 512
@@ -718,15 +709,14 @@ void add_uint512(uint512_t *dest, uint512_t *a, uint512_t *b) {
   uint256_t tmp;
   add_uint256(&E_0(dest), &E_0(a), &E_0(b));
   add_uint256(&tmp, &E_1(a), &E_1(b));
-  if (gt_uint256(&E_1(a), &tmp)) {
+  if (gt_uint256(&E_1(b), &tmp)) {
     uint256_t one;
     E0(one) = init_uint128(0);
     E1(one) = init_all_uint128(0, 1);
 
     add_uint256(&E_0(dest), &E_0(dest), &one);
-  } else {
-    add_uint256(&E_1(dest), &E_1(a), &E_1(b));
   }
+  add_uint256(&E_1(dest), &E_1(a), &E_1(b));
 }
 
 /*
