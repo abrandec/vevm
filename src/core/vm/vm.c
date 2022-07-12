@@ -120,9 +120,7 @@ void _div(void) {
   uint256_t c = init_uint256(0);
   uint256_t d;
 
-  // just need the division
   equal_uint256(&b, &c) ? 0 : divmod_uint256(&c, &d, &a, &b);
-
   stack_push(&c);
 }
 
@@ -142,9 +140,8 @@ void _mod(void) {
 
   uint256_t c;
   uint256_t d = init_uint256(0);
-  equal_uint256(&b, &d) ? 0 : divmod_uint256(&c, &d, &a, &b);
-  // just need the modulus
 
+  equal_uint256(&b, &d) ? 0 : divmod_uint256(&c, &d, &a, &b);
   stack_push(&d);
 }
 
@@ -165,16 +162,12 @@ void _addmod(void) {
   uint256_t c = stack_peak(stack_length() - 1);
   stack_pop();
 
-  // to deal with the possibility of values being written to before
-  // arthemetic operations are complete
   uint256_t d = init_uint256(0);
   uint256_t e;
 
   // (a + b) % c
   add_uint256(&a, &a, &b);
-  // div by 0 check
   equal_uint256(&c, &d) ? 0 : divmod_uint256(&e, &d, &a, &c);
-
   stack_push(&d);
 }
 
@@ -195,15 +188,12 @@ void _mulmod(void) {
   uint256_t c = stack_peak(stack_length() - 1);
   stack_pop();
 
-  // to deal with the possibility of values being written to before
-  // arthemetic operations are complete
   uint256_t d = init_uint256(0);
   uint256_t e;
 
   // (a * b) % c
   mul_uint256(&a, &a, &b);
   equal_uint256(&c, &d) ? 0 : divmod_uint256(&e, &d, &a, &c);
-
   stack_push(&d);
 }
 
@@ -223,7 +213,6 @@ void _lt(void) {
 
   lt_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1)
                      : change_all_uint256(&a, 0, 0, 0, 0);
-
   stack_push(&a);
 }
 
@@ -243,7 +232,6 @@ void _gt(void) {
 
   gt_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1)
                      : change_all_uint256(&a, 0, 0, 0, 0);
-
   stack_push(&a);
 }
 
@@ -263,7 +251,6 @@ void _eq(void) {
 
   equal_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1)
                         : change_all_uint256(&a, 0, 0, 0, 0);
-
   stack_push(&a);
 }
 
@@ -282,7 +269,6 @@ void _iszero(void) {
 
   equal_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1)
                         : change_all_uint256(&a, 0, 0, 0, 0);
-
   stack_push(&b);
 }
 
@@ -352,7 +338,6 @@ void _not(void) {
   stack_pop();
 
   not_uint256(&a, &a);
-
   stack_push(&a);
 }
 
@@ -371,7 +356,6 @@ void _shl(void) {
   stack_pop();
 
   lshift_uint256(&a, &b, E11(a));
-
   stack_push(&a);
 }
 
@@ -385,11 +369,11 @@ void _shl(void) {
 void _shr(void) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
+  
   uint256_t b = stack_peak(stack_length() - 1);
   stack_pop();
 
   rshift_uint256(&a, &b, E11(a));
-
   stack_push(&a);
 }
 
