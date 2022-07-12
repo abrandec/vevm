@@ -30,6 +30,7 @@ bool assert_overflow(void) {
   }
 
   stack_push(&dummy_data);
+  stack_push(&dummy_data);
 
   return assert_eq(stack_length(), MAX_STACK_DEPTH);
 }
@@ -105,9 +106,9 @@ bool stack_tests(void) {
 
   // run all tests
   // assert_stack_destroy for last test
-  bool all_tests[stack_l] = {assert_msg("Overflow", assert_overflow()),
-                             assert_msg("Underflow", assert_underflow()),
-                             assert_msg("Swap", assert_swap())};
+  bool all_tests[stack_l] = {assert_msg("overflow", assert_overflow()),
+                             assert_msg("underflow", assert_underflow()),
+                             assert_msg("swap", assert_swap())};
 
   // check & return results
   return assert_bool_array_msg("STACK TESTS", all_tests, stack_l);
