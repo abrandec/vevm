@@ -20,6 +20,7 @@ bool io_test_read_fmmap(void) {
 
   return assert_msg("Read check", assert_char("test data", data));
 }
+
 bool io_test_write_fmmap(void) { return true; }
 
 bool io_tests(void) {
@@ -29,5 +30,5 @@ bool io_tests(void) {
   bool test_results[test_len] = {io_test_read_fmmap(), io_test_write_fmmap()};
 
   // check if all test results passed
-  return assert_bool_array_msg("IO results", test_results, test_len);
+  return assert_bool_array_msg("IO TESTS", test_results, test_len);
 }

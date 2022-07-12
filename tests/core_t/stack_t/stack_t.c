@@ -110,5 +110,5 @@ bool stack_tests(void) {
                              assert_msg("Swap", assert_swap())};
 
   // check & return results
-  return assert_bool_array_msg("Stack tests", all_tests, stack_l);
+  return assert_bool_array_msg("STACK TESTS", all_tests, stack_l);
 }

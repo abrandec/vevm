@@ -22,5 +22,5 @@ bool bigint_tests(void) {
   bool all_tests[stack_l] = {};
 
   // check & return results
-  return assert_bool_array_msg("Big int tests", all_tests, stack_l);
+  return assert_bool_array_msg("BIG INT TESTS", all_tests, stack_l);
 }

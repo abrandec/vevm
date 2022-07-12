@@ -56,7 +56,7 @@ int main(int argc, const char *argv[]) {
   if (_all_tests != 0) {
     enum { test_len = 4 };
     bool test_results[test_len] = {bigint_tests(), stack_tests(), vm_tests(), io_tests()};
-    assert_bool_array_msg("Final test results", test_results, test_len);
+    assert_bool_array_msg("FINAL RESULTS", test_results, test_len);
   }
 
   // ┌───────────────────┐
@@ -65,7 +65,7 @@ int main(int argc, const char *argv[]) {
   if (_bigint_tests != 0) {
     enum { test_len = 1 };
     bool test_results[test_len] = {bigint_tests()};
-    assert_bool_array_msg("Final test results", test_results, test_len);
+    assert_bool_array_msg("FINAL RESULTS", test_results, test_len);
   }
 
   // ┌───────────────────┐
@@ -74,7 +74,7 @@ int main(int argc, const char *argv[]) {
   if (_stack_tests != 0) {
     enum { test_len = 1 };
     bool test_results[test_len] = {stack_tests()};
-    assert_bool_array_msg("Final test results", test_results, test_len);
+    assert_bool_array_msg("FINAL RESULTS", test_results, test_len);
   }
 
   // ┌───────────────────┐
