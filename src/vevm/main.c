@@ -33,9 +33,6 @@ void write2_prog_buff(uint256_t program[], char *bytecode, long bytecode_size) {
   int elements = (bytecode_size / 16) + 1;
 
   int i = 0;
-  // side effect of adding unwanted bits to the end of the bytecode
-  // not really a problem since adding STOP to the end of the bytecode mitigates
-  // this
   for (; i < elements; ++i) {
     change_uint256(&program[i / 4], i % 4, hex_char2uint(bytecode, 16 * i, 16));
   }

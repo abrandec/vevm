@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul 11 12:36:05 2022
+# Make data base, printed on Mon Jul 11 14:47:02 2022
 
 # Variables
 
@@ -21,10 +21,9 @@ GTK_RC_FILES = /etc/gtk/gtkrc:/home/a/.gtkrc:/home/a/.config/gtkrc
 # makefile (from 'Makefile', line 12)
 UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c src/common/io/io.c
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-55458587-4964-4bf2-8b10-7f3384da0dee.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-9492c78c-8bec-483e-a7b9-fbf504156392.sock
 # environment
 LC_NAME = en_US.UTF-8
- 
 # environment
 LC_NUMERIC = en_US.UTF-8
 # environment
@@ -46,7 +45,7 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
 .VARIABLES := 
 # environment
-PWD = /home/a/Documents/github/vision_evm
+PWD = /home/a/Documents/github/vevm
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
@@ -82,7 +81,7 @@ PLASMA_USE_QT_SCALING = 1
 # environment
 DEVKITARM = /opt/devkitpro/devkitARM
 # makefile
-CURDIR := /home/a/Documents/github/vision_evm
+CURDIR := /home/a/Documents/github/vevm
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
@@ -274,7 +273,7 @@ LC_IDENTIFICATION = en_US.UTF-8
 
 # Directories
 
-# . (device 66306, inode 9590094): 12 files, no impossibilities.
+# . (device 66306, inode 11955104): 12 files, no impossibilities.
 
 # 12 files, no impossibilities in 1 directories.
 
@@ -284,10 +283,11 @@ LC_IDENTIFICATION = en_US.UTF-8
 
 # Files
 
+ 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-11 12:36:02.246547801
+#  Last modified 2022-07-11 13:59:35.076602168
 #  File has been updated.
 #  Successfully updated.
 
@@ -327,7 +327,7 @@ all: vevm
 # Not a target:
 src/vevm/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-11 11:19:44.846634409
+#  Last modified 2022-07-11 13:43:54.343286611
 #  File has been updated.
 #  Successfully updated.
 
@@ -373,12 +373,11 @@ vevm: src/vevm/main.c
 # No general ('VPATH' variable) search path.
 
 # strcache buffers: 1 (0) / strings = 21 / storage = 188 B / avg = 8 B
- 
 # current buf: size = 8162 B / used = 188 B / count = 21 / avg = 8 B
 
 # strcache performance: lookups = 34 / hit rate = 38%
 # hash-table stats:
 # Load=21/8192=0%, Rehash=0, Collisions=0/34=0%
-# Finished Make data base on Mon Jul 11 12:36:05 2022
+# Finished Make data base on Mon Jul 11 14:47:02 2022
 
  

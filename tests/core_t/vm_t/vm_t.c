@@ -265,7 +265,7 @@ bool vm_tests(void) {
   static uint256_t program[MAX_BYTECODE_LEN];
 
   // Run tests
-  enum { test_len = 2 };
+  enum { test_len = 3 };
   bool test_results[test_len] = {assert_opcodes(program), assert_push(program),
                                  assert_mem_bounds(program)};
   return assert_bool_array_msg("VM results", test_results, test_len);

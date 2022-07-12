@@ -26,13 +26,14 @@ static uint256_t stack[MAX_STACK_DEPTH];
   └───────────────────────────────┘
  */
 
-void stack_push(uint256_t *val) {
-  stack_len > MAX_STACK_DEPTH - 1 ? custom_error(STACK_OVERFLOW)
-                                  : copy_uint256(&stack[stack_len], val);
-
-  ++stack_len;
+void stack_push(uint256_t *val) { 
+if (stack_len > MAX_STACK_DEPTH - 1) {
+ custom_error(STACK_OVERFLOW);
+} else {
+  copy_uint256(&stack[stack_len], val);
+ ++stack_len;
 }
-
+}
 /*
   ┌───────────────────────────────┐
   │   STACK POP                   │
@@ -40,9 +41,12 @@ void stack_push(uint256_t *val) {
  */
 
 void stack_pop(void) {
-  stack_len == 0 ? custom_error(STACK_UNDERFLOW)
-                 : zero_uint256(&stack[stack_len]);
-  --stack_len;
+  if (stack_len == 0) {
+    custom_error(STACK_UNDERFLOW);
+  } else {
+    --stack_len;
+    zero_uint256(&stack[stack_len]);
+  }
 }
 
 /*
@@ -52,10 +56,13 @@ void stack_pop(void) {
  */
 
 void stack_swap(int index) {
-  stack_len == 0 || index > stack_len - 1 || index < 0 ? custom_error(STACK_UNDERFLOW) : 0;
-  uint256_t temp = stack[stack_len - 1];
-  stack[stack_len - 1] = stack[index];
-  stack[index] = temp;
+  if (stack_len == 0 || index > stack_len - 1 || index < 0) {
+    custom_error(STACK_UNDERFLOW);
+  } else {
+    uint256_t temp = stack[stack_len - 1];
+    stack[stack_len - 1] = stack[index];
+    stack[index] = temp;
+  }
 }
 
 /*
