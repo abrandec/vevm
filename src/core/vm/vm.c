@@ -27,41 +27,18 @@
 // @param pc: program counter
 // @param: opcode: dest to write opcode to
 void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
-  // opcode mask
-  uint64_t op_mask = 0xFF00000000000000;
-  // get uint256_t index by dividing by 32 (32 bytes in a uint256_t)
+  uint256_t op_mask = init_all_uint256(0xFF00000000000000, 0, 0, 0);
+  // index opcode is in
   int index = *pc / 32;
-  // get location of opcode within the uint256_t
-  int offset = *pc % 32;
+
   // amount to shift the mask by to get the opcode
-  int op_mask_mv = ((offset % 8) * 8);
+  int op_mask_mv = ((*pc % 32) * 8);
 
-  // shift the mask to extract an opcode within a uint64_t
-  // e.g. 0xFF00000000000000 >> (2 * 8) = 0x0000FF000000000
-  op_mask = op_mask >> op_mask_mv;
+  rshift_uint256(&op_mask, &op_mask, op_mask_mv);
+  and_uint256(&op_mask, &program[index], &op_mask);
+  rshift_uint256(&op_mask, &op_mask, 248 - op_mask_mv);
 
-  // get uint64_t that opcode is located in
-  switch (offset / 8) {
-  case 0: // uint256_t[index].uint128_t[0].uint64_t[0]
-    *opcode = E00(program[index]);
-    break;
-  case 1: // uint256_t[index].uint128_t[0].uint64_t[1]
-    *opcode = E01(program[index]);
-    break;
-  case 2: // uint256_t[index].uint128_t[1].uint64_t[0]
-    *opcode = E10(program[index]);
-    break;
-  case 3: // uint256_t[index].uint128_t[1].uint64_t[1]
-    *opcode = E11(program[index]);
-    break;
-  }
-
-  // 1. get opcode by ANDing the opcode with the mask
-  // e.g. 0x602261694201611 & 0x0000FF000000000 = 0x000061000000000
-  // 2. shift opcode to the right to get the actual value
-  // e.g. 0x000061000000000 -> 0x000000000000061
-  // write to dest
-  *opcode = (*opcode & op_mask) >> (56 - op_mask_mv);
+  *opcode = E11(op_mask);
 }
 
 /*
@@ -140,10 +117,11 @@ void _div(void) {
   uint256_t b = stack_peak(stack_length() - 1);
   stack_pop();
 
-  uint256_t c;
+  uint256_t c = init_uint256(0);
   uint256_t d;
+
   // just need the division
-  divmod_uint256(&c, &d, &a, &b);
+  equal_uint256(&b, &c) ? 0 : divmod_uint256(&c, &d, &a, &b);
 
   stack_push(&c);
 }
@@ -163,10 +141,9 @@ void _mod(void) {
   stack_pop();
 
   uint256_t c;
-  uint256_t d;
-
+  uint256_t d = init_uint256(0);
+  equal_uint256(&b, &d) ? 0 : divmod_uint256(&c, &d, &a, &b);
   // just need the modulus
-  divmod_uint256(&c, &d, &a, &b);
 
   stack_push(&d);
 }
@@ -190,12 +167,13 @@ void _addmod(void) {
 
   // to deal with the possibility of values being written to before
   // arthemetic operations are complete
-  uint256_t d;
+  uint256_t d = init_uint256(0);
   uint256_t e;
 
   // (a + b) % c
   add_uint256(&a, &a, &b);
-  divmod_uint256(&e, &d, &a, &c);
+  // div by 0 check
+  equal_uint256(&c, &d) ? 0 : divmod_uint256(&e, &d, &a, &c);
 
   stack_push(&d);
 }
@@ -219,12 +197,12 @@ void _mulmod(void) {
 
   // to deal with the possibility of values being written to before
   // arthemetic operations are complete
-  uint256_t d;
+  uint256_t d = init_uint256(0);
   uint256_t e;
 
   // (a * b) % c
   mul_uint256(&a, &a, &b);
-  divmod_uint256(&e, &d, &a, &c);
+  equal_uint256(&c, &d) ? 0 : divmod_uint256(&e, &d, &a, &c);
 
   stack_push(&d);
 }
@@ -392,15 +370,9 @@ void _shl(void) {
   uint256_t b = stack_peak(stack_length() - 1);
   stack_pop();
 
-  uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
+  lshift_uint256(&a, &b, E11(a));
 
-  if (gt_uint256(&a, &c)) {
-    change_all_uint256(&c, 0, 0, 0, 0);
-  } else {
-    lshift_uint256(&c, &b, E11(a));
-  }
-
-  stack_push(&c);
+  stack_push(&a);
 }
 
 /*
@@ -416,15 +388,9 @@ void _shr(void) {
   uint256_t b = stack_peak(stack_length() - 1);
   stack_pop();
 
-  uint256_t c = init_all_uint256(0, 0, 0, 0x00000000000000FF);
+  rshift_uint256(&a, &b, E11(a));
 
-  if (gt_uint256(&a, &c)) {
-    change_all_uint256(&c, 0, 0, 0, 0);
-  } else {
-    rshift_uint256(&c, &b, E11(a));
-  }
-
-  stack_push(&c);
+  stack_push(&a);
 }
 
 /*
@@ -481,7 +447,7 @@ void _mstore(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
   stack_pop();
 
   // (max mem length - 1) (999,999)
-  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 0xF423F);
+  uint256_t max_mem_len = init_all_uint256(0, 0, 0, MAX_MEMORY_LEN - 1);
 
   uint64_t index = E11(a) / 32;
   uint64_t index2 = index + 1;
@@ -562,7 +528,7 @@ void _mstore8(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
   stack_pop();
 
   // (max mem length - 1) (999,999)
-  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 999999);
+  uint256_t max_mem_len = init_all_uint256(0, 0, 0, 0x0F4239);
 
   uint64_t begin_index = E11(a) / 32;
   uint64_t end_index = begin_index + 1;
@@ -667,7 +633,7 @@ void _msize(uint64_t *mem_end) {
 
 /*
   ┌───────────────────────────────┐
-  │   Gas                         │
+  │   GAS                         │
   └───────────────────────────────┘
  */
 

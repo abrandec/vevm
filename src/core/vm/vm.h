@@ -18,6 +18,7 @@
 // @param program[]: program to run
 // @param memory[]: memory to run program in
 // @param pc: program counter
+// @param max_pc: max program counter
 // @param opcode: opcode
 // @param gas: gas remaining
 // @param mem_expanded: whether memory is expanded
