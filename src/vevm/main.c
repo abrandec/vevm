@@ -25,11 +25,20 @@ static const char *const usages[] = {
     NULL,
 };
 
+void print_exit(const char *msg) {
+    printf(YELLOW "%s\n" RESET, msg);
+    exit(1);
+}
+
 // write to program buffer
 // @param program[]: program buffer to write to
 // @param bytecode: bytecode char to read from
-// @param bytecode_size: size of bytecode
+// @param bytecode_size: size of bytecode char
 void write2_prog_buff(uint256_t program[], char *bytecode, long bytecode_size) {
+  const static char bytecode_max_err[34] = "bytecode size exceeds 3072 bytes\0";
+  // 3073: max bytecode length in bytes + '\0'
+  bytecode_size > 3073 ? print_exit(bytecode_max_err) : 0;
+
   int elements = (bytecode_size / 16) + 1;
 
   int i = 0;
@@ -79,46 +88,19 @@ int main(int argc, const char *argv[]) {
   argparse_init(&argparse, options, usages, 0);
   argc = argparse_parse(&argparse, argc, argv);
 
-  //┌────────────────────────────────────────────────┐
-  //│                                                │
-  //│   INPUT BYTECODE                               │
-  //│                                                │
-  //└────────────────────────────────────────────────┘
-
   // ┌───────────────────┐
   // │   INPUT BYTECODE  │
   // └───────────────────┘
-  if (input != NULL && debug == 0) {
+  if (input != NULL) {
+
     write2_prog_buff(program, input, strlen(input));
     run_vm(program);
   }
-
-  // ┌───────────────────────────┐
-  // │   INPUT BYTECODE + DEBUG  │
-  // └───────────────────────────┘
-  if (input != NULL && debug != 0) {
-    write2_prog_buff(program, input, strlen(input));
-    run_vm(program);
-  }
-
-  //┌────────────────────────────────────────────────┐
-  //│                                                │
-  //│   READ FILE WITH BYTECODE                      │
-  //│                                                │
-  //└────────────────────────────────────────────────┘
 
   // ┌───────────────────────────┐
   // │   READ FILE WITH BYTCODE  │
   // └───────────────────────────┘
-  if (file != NULL && debug == 0) {
-    load_bytecode_file(program, file);
-    run_vm(program);
-  }
-
-  // ┌───────────────────────────────────┐
-  // │   READ FILE WITH BYTCODE + DEBUG  │
-  // └───────────────────────────────────┘
-  if (file != NULL && debug != 0) {
+  if (file != NULL) {
     load_bytecode_file(program, file);
     run_vm(program);
   }
