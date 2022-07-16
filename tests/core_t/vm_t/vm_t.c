@@ -14,6 +14,10 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 
+const static char incorrect_value[20] = "incorrect value\0";
+
+/* These test have a lot of room for improvement */
+
 /*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
@@ -50,6 +54,21 @@ void load_bytecode_file(uint256_t program[], char *file) {
   safe_munmap(file, file_size);
 }
 
+// for quick testing on arithmetic
+// @param program[]: program buffer
+// @param memory[]: memory buffer
+void hot_load_vm(uint256_t program[], uint256_t memory[]) {
+  stack_reset();
+  vm_state_t vm;
+  vm.pc = 0;
+  vm.max_pc = 10;
+  vm.opcode = 0;
+  vm.gas = 0;
+  vm.mem_end = 0;
+
+  _vm(program, memory, &vm);
+}
+
 /*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
@@ -58,13 +77,14 @@ void load_bytecode_file(uint256_t program[], char *file) {
   └────────────────────────────────────────────────────────────────────────────┘
  */
 
-bool assert_opcodes(uint256_t program[]) {
+bool assert_get_opcodes(uint256_t program[]) {
   char *file = "test_data/vm_data/opcodes";
   load_bytecode_file(program, file);
-
-  int pc = 0;
-  uint64_t opcode = 0;
-  uint64_t gas = GAS - 21000;
+vm_state_t vm;
+  vm.pc = 0;
+  vm.opcode = 0;
+  vm.gas = 0;
+  vm.mem_end = 0;
 
   // EVM memory
   static uint256_t memory[MAX_MEMORY_LEN];
@@ -81,36 +101,33 @@ bool assert_opcodes(uint256_t program[]) {
   for (; i < 255; ++i) {
     stack_reset();
     // set program counter to i
-    pc = i;
-    _vm(program, memory, &pc, i + 1, &opcode, &gas, &mem_expanded, &mem_end);
-    equality = assert_eq(opcode, i);
+    vm.pc = i;
+    vm.max_pc = i + 1;
+    _vm(program, memory, &vm);
+    equality = assert_eq(vm.opcode, i);
   }
 
-  return assert_msg("opcodes", equality);
+  return equality;
 }
 
-bool assert_push(uint256_t program[]) {
+// test every push opcode and confirm values on the stack are correct
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_push(uint256_t program[], uint256_t memory[]) {
   char *file = "test_data/vm_data/push_op";
   load_bytecode_file(program, file);
   stack_reset();
-  int pc = 0;
-  uint64_t opcode = 0;
-  uint64_t gas = GAS - 21000;
-
-  // EVM memory
-  static uint256_t memory[MAX_MEMORY_LEN];
-
-  // for keeping track memory expansion costs
-  uint64_t mem_end = 0;
-
-  // for checking if the first index in memory is being used (gas calc)
-  bool mem_expanded = false;
+  vm_state_t vm;
+  vm.pc = 0;
+  vm.max_pc = 528;
+  vm.opcode = 0;
+  vm.gas = 0;
+  vm.mem_end = 0;
 
   bool equality = true;
 
-  int i = 0;
 
-  _vm(program, memory, &pc, 528, &opcode, &gas, &mem_expanded, &mem_end);
+  _vm(program, memory, &vm);
 
   // it does the job I guess
   uint256_t peak32 = stack_peak(stack_length() - 1);
@@ -222,51 +239,731 @@ bool assert_push(uint256_t program[]) {
       peak32, init_all_uint256(0x4345785487453232, 0x3982385923934843,
                                0x3489343493484334, 0x9438349439834943));
 
-  return assert_msg("push", equality);
+  return equality;
 }
 
-bool assert_mem_bounds(uint256_t program[]) {
+// assert VM memory bounds cannot be exceeded
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_mem_bounds(uint256_t program[], uint256_t memory[]) {
 
   char *file = "test_data/vm_data/mem_bounds";
   load_bytecode_file(program, file);
 
   stack_reset();
+  vm_state_t vm;
+  vm.pc = 0;
+  vm.max_pc = 10;
+  vm.opcode = 0;
+  vm.gas = 0;
+  vm.mem_end = 0;
 
-  int pc = 0;
-  uint64_t opcode = 0;
-  uint64_t gas = GAS - 21000;
+  _vm(program, memory, &vm);
 
-  // EVM memory
-  static uint256_t memory[MAX_MEMORY_LEN];
+  vm.mem_expanded ? 0 : assert_msg("memory not expanded", false);
 
-  // for keeping track memory expansion costs
-  uint64_t mem_end = 0;
-
-  // for checking if the first index in memory is being used (gas calc)
-  bool mem_expanded = false;
-
-  _vm(program, memory, &pc, 10, &opcode, &gas, &mem_expanded, &mem_end);
-
-  mem_expanded ? 0 : assert_msg("memory not expanded", false);
-
-  return assert_msg("mem_bounds", mem_expanded);
+  return assert_msg("mem_bounds", vm.mem_expanded);
 }
 
-// set sample program for testing
-// @param program: the program to set
-void set_sample_prog(uint256_t program[]) {}
+// assert addition on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_add(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "add error", ASSERT_UINT256_T,
+                          false, false);
 
-// set memory for testing
-// @param memory: the memory to set
-void set_memory(uint256_t memory[]) {}
+  program[0] = init_all_uint256(0x6011600A600B0100, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x15);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+  return assert_msg(__func__, status);
+}
+
+// assert multiplication on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_mul(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "mul error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6055600560050200, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x19);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert subtraction on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_sub(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "sub error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600C0300, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x02);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert division on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_div(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "div error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert sdiv on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_sdiv(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "sdiv error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6055600360220500, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x0B);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert mod on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_mod(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "mod error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x60336007605806, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x04);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert smod on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_smod(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "smod error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert addmod on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_addmod(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "addmod error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6008600760550800, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x04);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert mulmod on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_mulmod(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "mulmod error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6008600760550900, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x03);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert exp on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_exp(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "exp error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert lt on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_lt(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "lt error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6008605560071000, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 1);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert gt on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_gt(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "gt error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6008600760551100, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 1);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert slt on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_slt(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "slt error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert sgt on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_sgt(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "sgt error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert eq on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool _assert_eq(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "eq error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6008605560551400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 1);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert iszero on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_iszero(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "iszero error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6008605560001500, 0, 0, 0);
+
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 1);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert and on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_and(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "and error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x601160FD60FE1600, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0xFC);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert or on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_or(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "or error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x601160FA60FC1700, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0xFE);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert xor on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_xor(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "xor error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x601160FA60FC1800, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x06);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert not on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_not(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "not error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x601160FA60FC1900, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                                        0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFF03);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert iszero on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_byte(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "byte error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x601160FA60FC1A00, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert shl on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_shl(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "shl error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x601160FA60FC1B00, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0xA000000000000000, 0, 0, 0);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert shr on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_shr(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "shr error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x601160FF60011C00, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x7F);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert sha3 on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_sha3(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "sha3 error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert address on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_address(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "address error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert balance on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_balance(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "balance error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert origin on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_origin(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "balance error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert caller on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_caller(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "caller error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert callvalue on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_callvalue(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "caller error",
+                          ASSERT_UINT256_T, false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+  assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert calldataload on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_calldataload(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "calldataload error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert calldatasize on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_calldatasize(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "calldatasize error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
+
+// assert calldatacopy on stack
+// @param: program[]: program buffer
+// @param: memory[]: memory buffer
+bool assert_calldatacopy(uint256_t program[], uint256_t memory[]) {
+  error_t assert_err;
+  bool status = set_error(&assert_err, __func__, "calldatacopy error", ASSERT_UINT256_T,
+                          false, false);
+
+  program[0] = init_all_uint256(0x6011600A600F0400, 0, 0, 0);
+  hot_load_vm(program, memory);
+
+  uint256_t expected = init_all_uint256(0, 0, 0, 0x01);
+  uint256_t actual = stack_peak(stack_length() - 1);
+assert_err.expected = &expected;
+  assert_err.actual = &actual;
+
+  !assert_eq_uint256(expected, actual) ? status = assert_error(&assert_err) : 0;
+
+  return assert_msg(__func__, status);
+}
 
 // vm tests
 bool vm_tests(void) {
   static uint256_t program[MAX_BYTECODE_LEN];
+  static uint256_t memory[MAX_MEMORY_LEN];
 
   // Run tests
-  enum { test_len = 2 };
-  bool test_results[test_len] = {assert_opcodes(program), assert_push(program),
-                                 assert_mem_bounds(program)};
+  enum { test_len = 25 };
+
+  bool test_results[test_len] = {
+      assert_get_opcodes(program), assert_push(program, memory),
+      assert_add(program, memory), assert_mul(program, memory),
+      assert_sub(program, memory),
+      // test more below
+      assert_div(program, memory), assert_sdiv(program, memory),
+      assert_mod(program, memory), assert_smod(program, memory),
+      assert_addmod(program, memory), assert_mulmod(program, memory),
+      assert_exp(program, memory), assert_lt(program, memory),
+      assert_gt(program, memory), assert_slt(program, memory),
+      assert_sgt(program, memory), _assert_eq(program, memory),
+      assert_iszero(program, memory), assert_and(program, memory),
+      assert_or(program, memory), assert_xor(program, memory),
+      assert_not(program, memory), assert_byte(program, memory),
+      assert_shl(program, memory), assert_shr(program, memory)};
+
+  // assert_msg("mem bounds", assert_mem_bounds(program));
   return assert_bool_array_msg("VM TESTS", test_results, test_len);
 }

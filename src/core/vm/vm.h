@@ -6,6 +6,15 @@
 
 #include <inttypes.h>
 
+typedef struct vm_state_t {
+  uint64_t pc;
+  uint64_t max_pc;
+  uint64_t opcode;
+  uint64_t gas;
+  uint64_t mem_end;
+  bool mem_expanded;
+} vm_state_t;
+
 /*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
@@ -23,8 +32,7 @@
 // @param gas: gas remaining
 // @param mem_expanded: whether memory is expanded
 // @param mem_end: end of memory
-void _vm(uint256_t program[], uint256_t memory[], int *pc, int max_pc, uint64_t *opcode,
-         uint64_t *gas, bool *mem_expanded, uint64_t *mem_end);
+void _vm(uint256_t program[], uint256_t memory[], vm_state_t *vm_state);
 
 // wrapper for _vm
 // @param program[]: program to run

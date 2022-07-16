@@ -1,5 +1,5 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/a/Documents/github/vevm'
-clang -DMAINNET -DARROW_GLACIER -o bin/vevm/vevm  src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c src/common/io/io.c src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c src/debug/debug.c -DDEBUG src/vevm/main.c -Oz -lm
+clang -DMAINNET -DARROW_GLACIER -o bin/vevm/vevm  src/errors/errors.c src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c src/common/io/io.c src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c  src/debug/debug.c -DDEBUG src/vevm/main.c -Oz -lm
 make: Leaving directory '/home/a/Documents/github/vevm'
  

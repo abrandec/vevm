@@ -24,21 +24,20 @@
 
 // Get opcode from program buffer
 // @param program[]: program buffer
-// @param pc: program counter
-// @param: opcode: dest to write opcode to
-void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
+// @param vm: vm state
+void get_opcode(uint256_t program[], vm_state_t *vm) {
   uint256_t op_mask = init_all_uint256(0xFF00000000000000, 0, 0, 0);
   // index opcode is in
-  int index = *pc / 32;
+  int index = vm->pc / 32;
 
   // amount to shift the mask by to get the opcode
-  int op_mask_mv = ((*pc % 32) * 8);
+  int op_mask_mv = ((vm->pc % 32) * 8);
 
   rshift_uint256(&op_mask, &op_mask, op_mask_mv);
   and_uint256(&op_mask, &program[index], &op_mask);
   rshift_uint256(&op_mask, &op_mask, 248 - op_mask_mv);
 
-  *opcode = E11(op_mask);
+  vm->opcode = E11(op_mask);
 }
 
 /*
@@ -56,7 +55,8 @@ void get_opcode(uint256_t program[], int *pc, uint64_t *opcode) {
  */
 
 // EVM ADD operation
-void _add(void) {
+// @param vm: vm state
+void _add(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -74,7 +74,8 @@ void _add(void) {
  */
 
 // EVM MUL operation
-void _mul(void) {
+// @param vm_state: VM state
+void _mul(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -92,7 +93,8 @@ void _mul(void) {
  */
 
 // EVM SUB operation
-void _sub(void) {
+// @param vm_state: VM state
+void _sub(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -110,7 +112,8 @@ void _sub(void) {
  */
 
 // EMV DIV operation
-void _div(void) {
+// @param vm_state: VM state
+void _div(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -131,7 +134,8 @@ void _div(void) {
  */
 
 // EVM MOD operation
-void _mod(void) {
+// @param vm_state: VM state
+void _mod(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -152,7 +156,8 @@ void _mod(void) {
  */
 
 // EVM ADDMOD operation
-void _addmod(void) {
+// @param vm_state: VM state
+void _addmod(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -178,7 +183,8 @@ void _addmod(void) {
  */
 
 // EVM MULMOD operation
-void _mulmod(void) {
+// @param vm_state: VM state
+void _mulmod(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -204,7 +210,8 @@ void _mulmod(void) {
  */
 
 // EVM LT operation
-void _lt(void) {
+// @param vm_state: VM state
+void _lt(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -223,7 +230,8 @@ void _lt(void) {
  */
 
 // EVM GT operation
-void _gt(void) {
+// @param vm_state: VM state
+void _gt(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -242,7 +250,8 @@ void _gt(void) {
  */
 
 // EVM EQ operation
-void _eq(void) {
+// @param vm_state: VM state
+void _eq(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -261,14 +270,15 @@ void _eq(void) {
  */
 
 // EVM ISZERO operation
-void _iszero(void) {
+// @param vm_state: VM state
+void _iszero(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
   uint256_t b = init_uint256(0);
 
-  equal_uint256(&a, &b) ? change_all_uint256(&a, 0, 0, 0, 1)
-                        : change_all_uint256(&a, 0, 0, 0, 0);
+  equal_uint256(&a, &b) ? change_all_uint256(&b, 0, 0, 0, 1)
+                        : change_all_uint256(&b, 0, 0, 0, 0);
   stack_push(&b);
 }
 
@@ -279,7 +289,8 @@ void _iszero(void) {
  */
 
 // EVM AND operation
-void _and(void) {
+// @param vm_state: VM state
+void _and(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -297,7 +308,8 @@ void _and(void) {
  */
 
 // EVM OR operation
-void _or(void) {
+// @param vm_state: VM state
+void _or(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -315,7 +327,8 @@ void _or(void) {
  */
 
 // EVM XOR operation
-void _xor(void) {
+// @param vm_state: VM state
+void _xor(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -333,7 +346,8 @@ void _xor(void) {
  */
 
 // EVM NOT operation
-void _not(void) {
+// @param vm_state: VM state
+void _not(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -348,7 +362,8 @@ void _not(void) {
  */
 
 // EVM SHL operation
-void _shl(void) {
+// @param vm_state: VM state
+void _shl(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -366,10 +381,11 @@ void _shl(void) {
  */
 
 // EVM SHR operation
-void _shr(void) {
+// @param vm_state: VM state
+void _shr(vm_state_t *vm) {
   uint256_t a = stack_peak(stack_length() - 1);
   stack_pop();
-  
+
   uint256_t b = stack_peak(stack_length() - 1);
   stack_pop();
 
@@ -384,7 +400,8 @@ void _shr(void) {
  */
 
 // EVM GASLIMIT operation
-void _gaslimit(void) {
+// @param vm_state: VM state
+void _gaslimit(vm_state_t *vm) {
   uint256_t a = init_all_uint256(0, 0, 0, GAS);
   stack_push(&a);
 }
@@ -397,11 +414,8 @@ void _gaslimit(void) {
 
 // EVM MLOAD operation
 // @param memory[]: the memory
-// @param mem_end: ending index of current memory usage
-// @param mem_expanded: initial memory expansion check
-// @param gas: gas meter
-void _mload(uint256_t *memory, uint64_t *mem_end, bool *mem_expanded,
-            uint64_t *gas) {}
+// @param vm: VM state
+void _mload(uint256_t memory[], vm_state_t *vm) {}
 
 /*
   ┌───────────────────────────────┐
@@ -411,11 +425,8 @@ void _mload(uint256_t *memory, uint64_t *mem_end, bool *mem_expanded,
 
 // EVM MSTORE operation
 // @param memory[]: the memory
-// @param mem_end: ending index of current memory usage
-// @param mem_expanded: initial memory expansion check
-// @param gas: gas meter
-void _mstore(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
-             uint64_t *gas) {
+// @param vm: VM state
+void _mstore(uint256_t memory[], vm_state_t *vm) {
   // mask for 1st & 2nd index
   uint256_t mask1 = init_uint256(0xFFFFFFFFFFFFFFFF);
   uint256_t mask2 = init_uint256(0xFFFFFFFFFFFFFFFF);
@@ -444,19 +455,16 @@ void _mstore(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
   //              gas cost stuff              //
 
   // check if memory has been expanded before
-  if (*mem_expanded) {
-    *mem_expanded = true;
-    *gas -= 3;
-  }
+  !vm->mem_expanded ? vm->mem_expanded = true && vm->gas - 1 : 0;
 
   switch (offset) {
   case 0:
     break;
   default:
     ending_index += 1;
-    if (ending_index - *mem_end > 0) {
-      *gas -= ending_index * 3;
-      *mem_end = ending_index;
+    if (ending_index - vm->mem_end > 0) {
+      vm->gas -= ending_index * 3;
+      vm->mem_end = ending_index;
     }
     break;
   }
@@ -492,11 +500,8 @@ void _mstore(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
 
 // EVM MSTORE8 operation
 // @param memory[]: the memory
-// @param mem_end: ending index of current memory usage
-// @param mem_expanded: initial memory expansion check
-// @param gas: gas left
-void _mstore8(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
-              uint64_t *gas) {
+// @param vm: VM state
+void _mstore8(uint256_t memory[], vm_state_t *vm) {
   // masks for extracting the byte
   uint256_t mask1 = init_uint256(0xFFFFFFFFFFFFFFFF);
   uint256_t mask2 = init_uint256(0xFFFFFFFFFFFFFFFF);
@@ -525,19 +530,16 @@ void _mstore8(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
   //              gas cost stuff              //
 
   // check if memory has been expanded before
-  if (*mem_expanded) {
-    *mem_expanded = true;
-    *gas -= 3;
-  }
+  !vm->mem_expanded ? vm->mem_expanded = true && vm->gas - 1 : 0;
 
   switch (offset) {
   case 0:
     break;
   default:
     ending_index += 1;
-    if (ending_index - *mem_end > 0) {
-      *gas -= ending_index * 3;
-      *mem_end = ending_index;
+    if (ending_index - vm->mem_end > 0) {
+      vm->gas -= ending_index * 3;
+      vm->mem_end = ending_index;
     }
     break;
   }
@@ -595,9 +597,9 @@ void _mstore8(uint256_t memory[], uint64_t *mem_end, bool *mem_expanded,
  */
 
 // EVM PC operation
-// @param pc: the program counter
-void _pc(int *pc) {
-  uint256_t a = init_all_uint256(0, 0, 0, *pc - 1);
+// @param vm: VM state
+void _pc(vm_state_t *vm) {
+  uint256_t a = init_all_uint256(0, 0, 0, vm->pc - 1);
   stack_push(&a);
 }
 
@@ -608,10 +610,9 @@ void _pc(int *pc) {
  */
 
 // EVM MSIZE operation
-// @param mem_end: ending index of current memory usage
-void _msize(uint64_t *mem_end) {
-  uint256_t a = init_all_uint256(0, 0, 0, *mem_end * 8);
-
+// @param vm: VM state
+void _msize(vm_state_t *vm) {
+  uint256_t a = init_all_uint256(0, 0, 0, vm->mem_end * 8);
   stack_push(&a);
 }
 
@@ -622,10 +623,9 @@ void _msize(uint64_t *mem_end) {
  */
 
 // EVM GAS operation
-// @param gas: gas left
-void _gas(uint64_t *gas) {
-  uint256_t a = init_all_uint256(0, 0, 0, *gas);
-
+// @param vm: VM state
+void _gas(vm_state_t *vm) {
+  uint256_t a = init_all_uint256(0, 0, 0, vm->gas);
   stack_push(&a);
 }
 
@@ -641,7 +641,7 @@ void _gas(uint64_t *gas) {
 // @param opcode: the push(x) opcode
 // @param pc: the program counter
 // @return bytes from program[] to push onto the stack
-void _push(uint256_t program[], uint64_t *opcode, int *pc) {
+void _push(uint256_t program[], vm_state_t *vm) {
 
   // masks for getting data from program[] to push
   uint256_t mask256_1 = init_uint256(0xFFFFFFFFFFFFFFFF);
@@ -652,19 +652,19 @@ void _push(uint256_t program[], uint64_t *opcode, int *pc) {
   uint256_t data2 = init_uint256(0);
 
   // calculate bytes to push from program (PUSH1 starts at 96)
-  int num_bytes2push = *opcode - 95;
+  int num_bytes2push = vm->opcode - 95;
 
   // keep track of where to start pushing bytes from in program[]
-  int prev_pc = *pc;
+  int prev_pc = vm->pc;
 
   // increment program counter to next instruction
-  *pc = prev_pc + num_bytes2push;
+  vm->pc = prev_pc + num_bytes2push;
 
   // the index of the first byte to push
   int starting_index = prev_pc / 32;
 
   // the index of the last bytes to push
-  int ending_index = (*pc - 1) / 32;
+  int ending_index = (vm->pc - 1) / 32;
 
   // only need to get data from one uint256_t in program[]
   if (starting_index == ending_index) {
@@ -680,7 +680,7 @@ void _push(uint256_t program[], uint64_t *opcode, int *pc) {
     and_uint256(&data1, &program[starting_index], &mask256_1);
 
     // shift data1 to the right to get the actual value
-    rshift_uint256(&data1, &data1, (31 - ((*pc - 1) % 32)) * 8);
+    rshift_uint256(&data1, &data1, (31 - ((vm->pc - 1) % 32)) * 8);
 
     // else get data from two uint256_ts in program[]
   } else {
@@ -690,14 +690,14 @@ void _push(uint256_t program[], uint64_t *opcode, int *pc) {
 
     and_uint256(&data1, &program[starting_index], &mask256_1);
 
-    lshift_uint256(&data1, &data1, 256 - (32 - (*pc % 32)) * 8);
+    lshift_uint256(&data1, &data1, 256 - (32 - (vm->pc % 32)) * 8);
 
     // second index //
-    lshift_uint256(&mask256_2, &mask256_2, (32 - (*pc % 32)) * 8);
+    lshift_uint256(&mask256_2, &mask256_2, (32 - (vm->pc % 32)) * 8);
 
     and_uint256(&data2, &program[ending_index], &mask256_2);
 
-    rshift_uint256(&data2, &data2, (31 - ((*pc - 1) % 32)) * 8);
+    rshift_uint256(&data2, &data2, (31 - ((vm->pc - 1) % 32)) * 8);
 
     // combine data1 and data2 //
     or_uint256(&data1, &data1, &data2);
@@ -714,9 +714,9 @@ void _push(uint256_t program[], uint64_t *opcode, int *pc) {
 
 // EVM DUP operation
 // @param opcode: the dup(x) opcode
-void _dup(uint64_t *opcode) {
+void _dup(vm_state_t *vm) {
   // dup opcodes start @ 128 (0x80)
-  int dup_index = *opcode - 127;
+  int dup_index = vm->opcode - 127;
 
   uint256_t a = stack_peak(stack_length() - dup_index);
 
@@ -730,10 +730,10 @@ void _dup(uint64_t *opcode) {
  */
 
 // EVM SWAP operation
-// @param opcode: the swap(x) opcode
-void _swap(uint64_t *opcode) {
+// @param vm: VM state
+void _swap(vm_state_t *vm) {
   // swap opcodes start @ 144 (0x90)
-  int swap_index = *opcode - 142;
+  int swap_index = vm->opcode - 142;
   stack_swap(stack_length() - swap_index);
 }
 
@@ -743,7 +743,9 @@ void _swap(uint64_t *opcode) {
   └───────────────────────────────┘
  */
 
-void consume_gas(int *opcode, uint64_t *gas) {}
+// comsume gas
+// @param vm: VM state
+void consume_gas(vm_state_t *vm) {}
 
 // set a buffer to zero
 // @param buffer: the buffer to clear
@@ -764,97 +766,93 @@ void clear_buffer(uint256_t buffer[], int start, int end) {
   └────────────────────────────────────────────────────────────────────────────┘
  */
 
-void _vm(uint256_t program[], uint256_t memory[], int *pc, int max_pc,
-         uint64_t *opcode, uint64_t *gas, bool *mem_expanded,
-         uint64_t *mem_end) {
+void _vm(uint256_t program[], uint256_t memory[], vm_state_t *vm) {
 
   // for storing data to push onto stack
   uint256_t push_data;
 
   // while loop to run program //
-  while (*pc < max_pc) {
-    get_opcode(program, pc, opcode);
-    // consume_gas(opcode, gas);
+  while (vm->pc < vm->max_pc) {
+    get_opcode(program, vm);
+    vm->pc += 1;
 
-    *pc += 1;
-
-    switch (*opcode) {
+    switch (vm->opcode) {
     case 0x00: // STOP
       custom_error(STOP_INSTRUCTION);
       break;
     case 0x01: // ADD
-      _add();
+      _add(vm);
       break;
     case 0x02: // MUL
-      _mul();
+      _mul(vm);
       break;
     case 0x03: // SUB
-      _sub();
+      _sub(vm);
       break;
     case 0x04: // DIV
-      _div();
+      _div(vm);
       break;
     case 0x06: // MOD
-      _mod();
+      _mod(vm);
       break;
     case 0x08: // ADDMOD
-      _addmod();
+      _addmod(vm);
       break;
     case 0x09: // MULMOD
-      _mulmod();
+      _mulmod(vm);
       break;
     case 0x10: // LT
-      _lt();
+      _lt(vm);
       break;
     case 0x11: // GT
-      _gt();
+      _gt(vm);
       break;
     case 0x14: // EQ
-      _eq();
+      _eq(vm);
       break;
     case 0x15: // ISZERO
-      _iszero();
+      _iszero(vm);
       break;
     case 0x16: // AND
-      _and();
+      _and(vm);
       break;
     case 0x17: // OR
-      _or();
+      _or(vm);
       break;
     case 0x18: // XOR
-      _xor();
+      _xor(vm);
       break;
     case 0x19: // NOT
-      _not();
+      _not(vm);
       break;
     case 0x1B: // SHL
-      _shl();
+      _shl(vm);
       break;
     case 0x1C: // SHR
-      _shr();
+      _shr(vm);
       break;
     case 0x45: // GASLIMIT
-      _gaslimit();
+      _gaslimit(vm);
       break;
     case 0x50: // POP
-      stack_pop();
+      stack_pop(vm);
     case 0x51: // MLOAD
-      _mload(memory, mem_end, mem_expanded, gas);
+      _mload(memory, vm);
       break;
     case 0x52: // MSTORE
-      _mstore(memory, mem_end, mem_expanded, gas);
+      _mstore(memory, vm);
       break;
     case 0x53: // MSTORE8
-      _mstore8(memory, mem_end, mem_expanded, gas);
+      _mstore8(memory, vm);
       break;
     case 0x59: // MSIZE
-      _msize(mem_end);
+      _msize(vm);
       break;
     case 0x58: // PC
-      _pc(pc);
+      _pc(vm);
       break;
     case 0x5A: // GAS
-      _gas(gas);
+      _gas(vm);
       break;
     case 0x60: // PUSH1
     case 0x61: // PUSH2
@@ -888,7 +886,7 @@ void _vm(uint256_t program[], uint256_t memory[], int *pc, int max_pc,
     case 0x7D: // PUSH30
     case 0x7E: // PUSH31
     case 0x7F: // PUSH32
-      _push(program, opcode, pc);
+      _push(program, vm);
       break;
     case 0x80: // DUP1
     case 0x81: // DUP2
@@ -906,7 +904,7 @@ void _vm(uint256_t program[], uint256_t memory[], int *pc, int max_pc,
     case 0x8D: // DUP14
     case 0x8E: // DUP15
     case 0x8F: // DUP16
-      _dup(opcode);
+      _dup(vm);
       break;
     case 0x90: // SWAP1
     case 0x91: // SWAP2
@@ -924,7 +922,7 @@ void _vm(uint256_t program[], uint256_t memory[], int *pc, int max_pc,
     case 0x9D: // SWAP14
     case 0x9E: // SWAP15
     case 0x9F: // SWAP16
-      _swap(opcode);
+      _swap(vm);
       break;
     case 0xFE: // INVALID
       custom_error(VM_INVALID_OPCODE);
@@ -940,18 +938,13 @@ void _vm(uint256_t program[], uint256_t memory[], int *pc, int max_pc,
 }
 
 void run_vm(uint256_t program[]) {
-  int pc = 0;
-  uint64_t opcode = 0;
-  uint64_t gas = GAS - 21000;
+  vm_state_t vm;
+  vm.pc = 0;
+  vm.max_pc = 10;
+  vm.gas = GAS - 21000;
+  vm.mem_end = 0;
 
-  // EVM memory
   static uint256_t memory[MAX_MEMORY_LEN];
 
-  // for keeping track memory expansion costs
-  uint64_t mem_end = 0;
-
-  // for checking if the first index in memory is being used (gas calc)
-  bool mem_expanded = false;
-
-  _vm(program, memory, &pc, 10, &opcode, &gas, &mem_expanded, &mem_end);
+  _vm(program, memory, &vm);
 }

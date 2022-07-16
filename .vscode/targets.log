@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul 11 14:47:02 2022
+# Make data base, printed on Sat Jul 16 04:24:46 2022
 
 # Variables
 
@@ -19,9 +19,9 @@ NO_AT_BRIDGE = 1
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/a/.gtkrc:/home/a/.config/gtkrc
 # makefile (from 'Makefile', line 12)
-UTILS := src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c src/common/io/io.c
+UTILS := src/errors/errors.c src/common/utils/hex_utils/hex_utils.c src/common/cmd/cmd.c src/common/cmd/argparse/argparse.c src/common/io/io.c
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-9492c78c-8bec-483e-a7b9-fbf504156392.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-81514513-4b13-4e7f-9dd0-6cdc5289520f.sock
 # environment
 LC_NAME = en_US.UTF-8
 # environment
@@ -35,7 +35,7 @@ LC_ADDRESS = en_US.UTF-8
 # default
 MAKE_COMMAND := make
 # makefile (from 'Makefile', line 55)
-VM := src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c src/errors/errors.c src/debug/debug.c
+VM := src/common/math/bigint/bigint.c src/core/stack/stack.c src/core/vm/vm.c  src/debug/debug.c
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
@@ -69,7 +69,7 @@ XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session1
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/xauth_lnESAh
+XAUTHORITY = /run/user/1000/xauth_ojHdpc
 # default
 .LOADED := 
 # default
@@ -117,7 +117,7 @@ CHAIN := mainnet
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 3212
+VSCODE_PID = 1135
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -127,7 +127,7 @@ DEVKITPPC = /opt/devkitpro/devkitPPC
 # makefile (from 'Makefile', line 8)
 FLAGS := -Oz
 # environment
-SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/775,unix/a-81cu:/tmp/.ICE-unix/775
+SESSION_MANAGER = local/a-81cu:@/tmp/.ICE-unix/796,unix/a-81cu:/tmp/.ICE-unix/796
 # automatic
 *F = $(notdir $*)
 # environment
@@ -160,8 +160,6 @@ LC_MONETARY = en_US.UTF-8
 MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
-# environment
-KCRASH_AUTO_RESTARTED = 1
 # environment
 LC_TIME = en_US.UTF-8
 # environment
@@ -199,7 +197,7 @@ XDG_VTNR = 2
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 645
+SYSTEMD_EXEC_PID = 663
 # environment
 DISPLAY = :1
 # environment
@@ -265,7 +263,7 @@ KDE_FULL_SESSION = true
 # environment
 LC_IDENTIFICATION = en_US.UTF-8
 # variable set hash-table stats:
-# Load=127/1024=12%, Rehash=0, Collisions=5/177=3%
+# Load=126/1024=12%, Rehash=0, Collisions=5/176=3%
 
 # Pattern-specific Variable Values
 
@@ -273,9 +271,9 @@ LC_IDENTIFICATION = en_US.UTF-8
 
 # Directories
 
-# . (device 66306, inode 11955104): 12 files, no impossibilities.
+# . (device 66306, inode 11955104): 13 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -283,11 +281,11 @@ LC_IDENTIFICATION = en_US.UTF-8
 
 # Files
 
- 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-11 13:59:35.076602168
+#  Last modified 2022-07-13 11:06:01.780013049
+ 
 #  File has been updated.
 #  Successfully updated.
 
@@ -327,7 +325,7 @@ all: vevm
 # Not a target:
 src/vevm/main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-11 13:43:54.343286611
+#  Last modified 2022-07-13 15:13:58.110271639
 #  File has been updated.
 #  Successfully updated.
 
@@ -372,12 +370,12 @@ vevm: src/vevm/main.c
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 21 / storage = 188 B / avg = 8 B
-# current buf: size = 8162 B / used = 188 B / count = 21 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 22 / storage = 193 B / avg = 8 B
+# current buf: size = 8162 B / used = 193 B / count = 22 / avg = 8 B
 
-# strcache performance: lookups = 34 / hit rate = 38%
+# strcache performance: lookups = 35 / hit rate = 37%
 # hash-table stats:
-# Load=21/8192=0%, Rehash=0, Collisions=0/34=0%
-# Finished Make data base on Mon Jul 11 14:47:02 2022
+# Load=22/8192=0%, Rehash=0, Collisions=0/35=0%
+# Finished Make data base on Sat Jul 16 04:24:46 2022
 
  

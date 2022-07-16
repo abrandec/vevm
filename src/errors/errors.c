@@ -11,9 +11,7 @@ void custom_error(uint8_t err_code) {
 // optional compilation for easier debugging
 #ifdef DEBUG
   printf(YELLOW "Error code: %X\n" RESET, err_code);
-
   switch (err_code) {
-
   // ┌───────────────────┐
   // │   STACK ERRORS    │
   // └───────────────────┘
