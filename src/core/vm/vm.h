@@ -26,12 +26,7 @@ typedef struct vm_state_t {
 // Entry point for EVM
 // @param program[]: program to run
 // @param memory[]: memory to run program in
-// @param pc: program counter
-// @param max_pc: max program counter
-// @param opcode: opcode
-// @param gas: gas remaining
-// @param mem_expanded: whether memory is expanded
-// @param mem_end: end of memory
+// @param vm: VM state
 void _vm(uint256_t program[], uint256_t memory[], vm_state_t *vm_state);
 
 // wrapper for _vm
