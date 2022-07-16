@@ -69,6 +69,42 @@ typedef struct uint512_t {
 #define E10(x) x.e[1].e[0]
 #define E11(x) x.e[1].e[1]
 
+// accessing uint64_t elements in a uint512_t //
+
+#define E_0_0_0(x) x->e[0].e[0].e[0]
+#define E_0_0_1(x) x->e[0].e[0].e[1]
+#define E_0_1_0(x) x->e[0].e[1].e[0]
+#define E_0_1_1(x) x->e[0].e[1].e[1]
+#define E_1_0_0(x) x->e[1].e[0].e[0]
+#define E_1_0_1(x) x->e[1].e[0].e[1]
+#define E_1_1_0(x) x->e[1].e[1].e[0]
+#define E_1_1_1(x) x->e[1].e[1].e[1]
+
+#define E000(x) x.e[0].e[0].e[0]
+#define E001(x) x.e[0].e[0].e[1]
+#define E010(x) x.e[0].e[1].e[0]
+#define E011(x) x.e[0].e[1].e[1]
+#define E100(x) x.e[1].e[0].e[0]
+#define E101(x) x.e[1].e[0].e[1]
+#define E110(x) x.e[1].e[1].e[0]
+#define E111(x) x.e[1].e[1].e[1]
+
+#define DEC_UINT128 "%020lld%020lld"
+#define DEC_UINT256 "%020lld%020lld%020llX%020lld"
+#define DEC_UINT512 "%020lld%020lld%020llX%020lld%020lld%020lld%020llX%020lld"
+
+#define HEX_UINT128 "%016llX%016llX"
+#define HEX_UINT256 "%016llX%016llX%016llX%016llX"
+#define HEX_UINT512 "%016llX%016llX%016llX%016llX%016llX%016llX%016llX%016llX"
+
+#define UINT_128(x) (x)->e[0], (x)->e[1]
+#define UINT_256(x) E_0_0(x), E_0_1(x), E_1_0(x), E_1_1(x)
+#define UINT_512(x) E_0_0_0(x), E_0_0_1(x), E_0_1_0(x), E_0_1_1(x), E_1_0_0(x), E_1_0_1(x), E_1_1_0(x), E_1_1_1(x)
+
+#define UINT128(x) (x).e[0], (x).e[1]
+#define UINT256(x) UINT128((x).e[0]), UINT128((x).e[1])
+#define UINT512(x) UINT256((x).e[0]), UINT256((x).e[1])
+
 /*
   ┌────────────────────────────────────────────────────────────────────────────┐
   │                                                                            │
